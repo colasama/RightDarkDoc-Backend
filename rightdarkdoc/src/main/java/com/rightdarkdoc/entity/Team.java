@@ -52,7 +52,4 @@ public class Team {
                 ", info='" + teamInfo + '\'' +
                 '}';
     }
-
-
-
 }

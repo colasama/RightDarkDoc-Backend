@@ -90,6 +90,4 @@ public class User {
                 ", description='" + description + '\'' +
                 '}';
     }
-
-
 }
