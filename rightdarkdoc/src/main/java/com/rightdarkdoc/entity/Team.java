@@ -6,8 +6,8 @@ public class Team {
 
     private int teamId;
     private String teamName;
-    private String creator;
-    private String info;              //团队的信息
+    private String creatorId;
+    private String teamInfo;              //团队的信息
 
 
     public int getTeamId() {
@@ -27,19 +27,19 @@ public class Team {
     }
 
     public String getCreator() {
-        return creator;
+        return creatorId;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setCreator(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public String getInfo() {
-        return info;
+        return teamInfo;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public void setInfo(String teamInfo) {
+        this.teamInfo = teamInfo;
     }
 
 
@@ -48,8 +48,8 @@ public class Team {
         return "Team{" +
                 "teamId=" + teamId +
                 ", teamName='" + teamName + '\'' +
-                ", creator='" + creator + '\'' +
-                ", info='" + info + '\'' +
+                ", creator='" + creatorId + '\'' +
+                ", info='" + teamInfo + '\'' +
                 '}';
     }
 

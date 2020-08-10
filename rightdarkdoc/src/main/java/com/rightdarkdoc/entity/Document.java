@@ -10,12 +10,22 @@ public class Document {
     private Date createTime;
     private Date lastEditTime;
     private int editCount;
-    private String lastEditUser;
+    private String lastEditUserId;
     private int auth;         //文件的权限
     private int teamAuth;
-    private String creator;
+    private String creatorId;
     private int isTrash;
 
+
+
+
+    public String getLastEditUserId() {
+        return lastEditUserId;
+    }
+
+    public void setLastEditUserId(String lastEditUserId) {
+        this.lastEditUserId = lastEditUserId;
+    }
 
     public int getDocId() {
         return docId;
@@ -65,14 +75,6 @@ public class Document {
         this.editCount = editCount;
     }
 
-    public String getLastEditUser() {
-        return lastEditUser;
-    }
-
-    public void setLastEditUser(String lastEditUser) {
-        this.lastEditUser = lastEditUser;
-    }
-
     public int getAuth() {
         return auth;
     }
@@ -89,12 +91,12 @@ public class Document {
         this.teamAuth = teamAuth;
     }
 
-    public String getCreator() {
-        return creator;
+    public String getCreatorId() {
+        return creatorId;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public int getIsTrash() {
@@ -114,10 +116,10 @@ public class Document {
                 ", createTime=" + createTime +
                 ", lastEditTime=" + lastEditTime +
                 ", editCount=" + editCount +
-                ", lastEditUser='" + lastEditUser + '\'' +
+                ", lastEditUser='" + lastEditUserId + '\'' +
                 ", auth=" + auth +
                 ", teamAuth=" + teamAuth +
-                ", creator='" + creator + '\'' +
+                ", creator='" + creatorId + '\'' +
                 ", isTrash=" + isTrash +
                 '}';
     }
