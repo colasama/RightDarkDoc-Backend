@@ -25,4 +25,16 @@ public class UserServiceImpl implements UserService {
     public void registerNewUser(User user) {
         userDao.registerNewUser(user);
     }
+
+    /**
+     * 根据用户名和密码登录
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    @Override
+    public User findUserByUsernameAndPassword(String username, String password) {
+        return userDao.findUserByUsernameAndPassword(username, password);
+    }
 }

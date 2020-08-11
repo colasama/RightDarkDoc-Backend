@@ -8,13 +8,13 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 public class User {
 
-    private int userid;
+    private Integer userid;
     private String username;
     private String password;
     private String phone;
@@ -35,6 +35,11 @@ public class User {
         this.password = password;
         this.phone = phone;
         this.email = email;
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public int getUserid() {

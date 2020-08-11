@@ -16,6 +16,15 @@ public interface UserDao {
      */
       public void registerNewUser(User user);
 
+
+    /**
+     * 通过用户名和密码查找用户
+     * @param username
+     * @param password
+     * @return 返回一个User对象
+     */
+      public User findUserByUsernameAndPassword(String username, String password);
+
 //    @Insert("insert into User values(#{userId},#{userName},#{passWord},#{phone},#{birthday}," +
 //            "#{email},#{avatar},#{description})")
 //    public int addUser(User user);

@@ -15,4 +15,12 @@ public interface UserService {
      */
     public void registerNewUser(User user);
 
+    /**
+     * 根据用户名和密码登录
+     * @param username
+     * @param password
+     * @return
+     */
+    public User findUserByUsernameAndPassword(String username, String password);
+
 }

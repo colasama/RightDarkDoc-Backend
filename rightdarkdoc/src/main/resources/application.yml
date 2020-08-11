@@ -1,6 +1,6 @@
 #server配置
 server:
-  port: 8090
+  port: 8080
 
 #spring配置
 #记得修改一下username和password
@@ -16,3 +16,5 @@ spring:
 mybatis:
   mapper-locations: classpath:com/rightdarkdoc/mapper/*.xml
   type-aliases-package: com.rightdarkdoc.entity
+
+#log:

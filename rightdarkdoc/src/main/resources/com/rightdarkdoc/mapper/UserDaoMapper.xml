@@ -7,4 +7,11 @@
         insert into `User`(`username`, `password`, `phone`, `email`) values(#{username}, #{password}, #{phone}, #{email})
     </insert>
 
+    <!--实现用户名和密码登录功能-->
+    <select id="findUserByUsernameAndPassword"  resultType="User">
+        select * from `User` where username = #{username} and password = #{password}
+    </select>
+
+
+
 </mapper>
