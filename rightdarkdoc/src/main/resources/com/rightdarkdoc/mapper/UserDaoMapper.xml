@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rightdarkdoc.dao.UserDao">
+
+    <!--实现注册新的用户的功能-->
+    <insert id="registerNewUser" parameterType="User">
+        insert into `User`(`username`, `password`, `phone`, `email`) values(#{username}, #{password}, #{phone}, #{email})
+    </insert>
+
+</mapper>

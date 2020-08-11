@@ -15,12 +15,12 @@ class UserServiceTest {
     private UserService userService;
 
 
-    @Test
-    public void addUserTest(){
-        User user = new User();
-        user.setUserId(1);
-        user.setUserName("wzk");
-        user.setPassWord("123456");
-        userService.addUser(user);
-    }
+//    @Test
+//    public void addUserTest(){
+//        User user = new User();
+//        user.setUserId(1);
+//        user.setUserName("wzk");
+//        user.setPassWord("123456");
+//        userService.addUser(user);
+//    }
 }
