@@ -8,11 +8,11 @@ import org.apache.ibatis.annotations.*;
 public interface TeamDao {
 
     @Insert("insert into Team values(#{teamId},#{teamName},#{creator},#{info})")
-    public int addTeam(Team team);
+    public void addTeam(Team team);
 
 
     @Update("update Team set teamname=#{teamName},creatorid=#{creatorId},teaminfo=#{teamInfo}")
-    public int updateTeamByTeamId(Team team);
+    public void updateTeamByTeamId(Team team);
 
 
     @Select("select * from Team where teamid=#{teamId}")

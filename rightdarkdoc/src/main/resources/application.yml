@@ -1,18 +1,15 @@
-#server配置
 server:
-  port: 8090
+  port: 8080
 
-#spring配置
-#记得修改一下username和password
+
 spring:
   datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      type: com.alibaba.druid.pool.DruidDataSource
-      url: jdbc:mysql://localhost:3306/rightdarkdoc?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
-      username: root
-      password: root
+    username: root
+    password: 995111
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/rightdarkdoc?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-#mybatis配置
 mybatis:
   mapper-locations: classpath:com/rightdarkdoc/mapper/*.xml
   type-aliases-package: com.rightdarkdoc.entity

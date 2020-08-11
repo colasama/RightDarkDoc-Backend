@@ -23,4 +23,21 @@ class UserServiceTest {
 //        user.setPassWord("123456");
 //        userService.addUser(user);
 //    }
+
+    @Test
+    public void selectUserTest(){
+        User user = userService.selectUserByUserId(1);
+        System.out.println(user);
+    }
+
+
+    @Test
+    public void updateUserTest(){
+    }
+
+
+    @Test
+    public void updateUserPassword(){
+        userService.updateUserPassword(1,"995111");
+    }
 }

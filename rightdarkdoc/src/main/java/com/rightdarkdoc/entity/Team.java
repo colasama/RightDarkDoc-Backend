@@ -4,17 +4,17 @@ public class Team {
 
 
 
-    private int teamId;
+    private Integer teamId;
     private String teamName;
     private String creatorId;
     private String teamInfo;              //团队的信息
 
 
-    public int getTeamId() {
+    public Integer getTeamId() {
         return teamId;
     }
 
-    public void setTeamId(int teamId) {
+    public void setTeamId(Integer teamId) {
         this.teamId = teamId;
     }
 

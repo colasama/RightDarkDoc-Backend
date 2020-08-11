@@ -14,7 +14,7 @@ import java.util.Date;
 @Accessors(chain = true)
 public class User {
 
-    private int userid;
+    private Integer userid;
     private String username;
     private String password;
     private String phone;
@@ -22,6 +22,7 @@ public class User {
     private String email;
     private String avatar;
     private String description;
+
 
     /**
      * 注册时用到的构造函数
@@ -37,11 +38,11 @@ public class User {
         this.email = email;
     }
 
-    public int getUserid() {
+    public Integer getUserid() {
         return userid;
     }
 
-    public void setUserid(int userid) {
+    public void setUserid(Integer userid) {
         this.userid = userid;
     }
 
@@ -100,18 +101,21 @@ public class User {
     public void setDescription(String description) {
         this.description = description;
     }
-    //
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "userId=" + userId +
-//                ", userName='" + userName + '\'' +
-//                ", passWord='" + passWord + '\'' +
-//                ", phone='" + phone + '\'' +
-//                ", birthday=" + birthday +
-//                ", email='" + email + '\'' +
-//                ", avatar='" + avatar + '\'' +
-//                ", description='" + description + '\'' +
-//                '}';
-//    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userid=" + userid +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", birthday=" + birthday +
+                ", email='" + email + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+
 }

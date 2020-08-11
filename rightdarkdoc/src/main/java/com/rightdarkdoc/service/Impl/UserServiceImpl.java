@@ -25,4 +25,38 @@ public class UserServiceImpl implements UserService {
     public void registerNewUser(User user) {
         userDao.registerNewUser(user);
     }
+
+
+    /**
+     * 更新用户信息的功能接口
+     * note : 不提供密码的修改
+     * @param user 封装了需要更新的用户实体
+     */
+    @Override
+    public void updateUser(User user) {
+        userDao.updateUser(user);
+    }
+
+
+    /**
+     * 根据用户id查找用户
+     * @param userid  用户的id
+     */
+    @Override
+    public User selectUserByUserId(Integer userid) {
+        return userDao.selectUserByUserId(userid);
+    }
+
+
+    /**
+     * 更改用户密码
+     * @param userid   用户id
+     * @param password   新密码
+     */
+    @Override
+    public void updateUserPassword(Integer userid, String password) {
+        userDao.updateUserPassword(userid,password);
+    }
+
+
 }

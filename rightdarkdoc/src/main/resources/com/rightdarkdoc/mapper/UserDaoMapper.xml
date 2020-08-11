@@ -7,4 +7,23 @@
         insert into `User`(`username`, `password`, `phone`, `email`) values(#{username}, #{password}, #{phone}, #{email})
     </insert>
 
+    <!-- 实现更新用户信息的功能 -->
+    <update id="updateUser" parameterType="User">
+        update `User` set username=#{username},phone=#{phone},birthday=#{birthday},email=#{email},avatar=#{avatar},description=#{description} where userid=#{userid}
+    </update>
+
+
+    <!-- 更改用户密码的功能 -->
+    <update id="updateUserPassword">
+        update `User` set password=#{password} where userid=#{userid}
+    </update>
+
+    <!-- 实现根据用户id查询用户信息的功能 -->
+    <select id="selectUserByUserId" parameterType="java.lang.Integer" resultType="com.rightdarkdoc.entity.User">
+        select * from User where userid=#{userid}
+    </select>
+
+
+
+
 </mapper>

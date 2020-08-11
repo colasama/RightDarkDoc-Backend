@@ -4,35 +4,24 @@ import java.util.Date;
 
 public class Document {
 
-    private int docId;
+    private Integer docid;
     private String title;
     private String content;
-    private Date createTime;
-    private Date lastEditTime;
-    private int editCount;
-    private String lastEditUserId;
-    private int auth;         //文件的权限
-    private int teamAuth;
-    private String creatorId;
-    private int isTrash;
+    private Date creattime;
+    private Date lastedittime;
+    private Integer editcount;
+    private String lastedituserid;
+    private Integer auth;         //文件的权限
+    private Integer teamauth;
+    private String creatorid;
+    private Integer istrash;
 
-
-
-
-    public String getLastEditUserId() {
-        return lastEditUserId;
+    public Integer getDocid() {
+        return docid;
     }
 
-    public void setLastEditUserId(String lastEditUserId) {
-        this.lastEditUserId = lastEditUserId;
-    }
-
-    public int getDocId() {
-        return docId;
-    }
-
-    public void setDocId(int docId) {
-        this.docId = docId;
+    public void setDocid(Integer docid) {
+        this.docid = docid;
     }
 
     public String getTitle() {
@@ -51,77 +40,86 @@ public class Document {
         this.content = content;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getCreattime() {
+        return creattime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreattime(Date creattime) {
+        this.creattime = creattime;
     }
 
-    public Date getLastEditTime() {
-        return lastEditTime;
+    public Date getLastedittime() {
+        return lastedittime;
     }
 
-    public void setLastEditTime(Date lastEditTime) {
-        this.lastEditTime = lastEditTime;
+    public void setLastedittime(Date lastedittime) {
+        this.lastedittime = lastedittime;
     }
 
-    public int getEditCount() {
-        return editCount;
+    public Integer getEditcount() {
+        return editcount;
     }
 
-    public void setEditCount(int editCount) {
-        this.editCount = editCount;
+    public void setEditcount(Integer editcount) {
+        this.editcount = editcount;
     }
 
-    public int getAuth() {
+    public String getLastedituserid() {
+        return lastedituserid;
+    }
+
+    public void setLastedituserid(String lastedituserid) {
+        this.lastedituserid = lastedituserid;
+    }
+
+    public Integer getAuth() {
         return auth;
     }
 
-    public void setAuth(int auth) {
+    public void setAuth(Integer auth) {
         this.auth = auth;
     }
 
-    public int getTeamAuth() {
-        return teamAuth;
+    public Integer getTeamauth() {
+        return teamauth;
     }
 
-    public void setTeamAuth(int teamAuth) {
-        this.teamAuth = teamAuth;
+    public void setTeamauth(Integer teamauth) {
+        this.teamauth = teamauth;
     }
 
-    public String getCreatorId() {
-        return creatorId;
+    public String getCreatorid() {
+        return creatorid;
     }
 
-    public void setCreatorId(String creatorId) {
-        this.creatorId = creatorId;
+    public void setCreatorid(String creatorid) {
+        this.creatorid = creatorid;
     }
 
-    public int getIsTrash() {
-        return isTrash;
+    public Integer getIstrash() {
+        return istrash;
     }
 
-    public void setIsTrash(int isTrash) {
-        this.isTrash = isTrash;
+    public void setIstrash(Integer istrash) {
+        this.istrash = istrash;
     }
 
     @Override
     public String toString() {
         return "Document{" +
-                "docId=" + docId +
+                "docid=" + docid +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", createTime=" + createTime +
-                ", lastEditTime=" + lastEditTime +
-                ", editCount=" + editCount +
-                ", lastEditUser='" + lastEditUserId + '\'' +
+                ", creattime=" + creattime +
+                ", lastedittime=" + lastedittime +
+                ", editcount=" + editcount +
+                ", lastedituserid='" + lastedituserid + '\'' +
                 ", auth=" + auth +
-                ", teamAuth=" + teamAuth +
-                ", creator='" + creatorId + '\'' +
-                ", isTrash=" + isTrash +
+                ", teamauth=" + teamauth +
+                ", creatorid='" + creatorid + '\'' +
+                ", istrash=" + istrash +
                 '}';
     }
+
 
 }
