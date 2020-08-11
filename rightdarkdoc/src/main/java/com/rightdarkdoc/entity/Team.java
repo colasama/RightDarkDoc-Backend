@@ -1,55 +1,53 @@
 package com.rightdarkdoc.entity;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Accessors(chain = true)
 public class Team {
 
+    private Integer teamid;
+    private String teamname;
+    private Integer creatorid;
+    private String teaminfo;              //团队的信息
 
-
-    private int teamId;
-    private String teamName;
-    private String creatorId;
-    private String teamInfo;              //团队的信息
-
-
-    public int getTeamId() {
-        return teamId;
+    public void setTeamid(Integer teamid) {
+        this.teamid = teamid;
     }
 
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
+    public void setTeamname(String teamname) {
+        this.teamname = teamname;
     }
 
-    public String getTeamName() {
-        return teamName;
+    public void setCreatorid(Integer creatorid) {
+        this.creatorid = creatorid;
     }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
+    public void setTeaminfo(String teaminfo) {
+        this.teaminfo = teaminfo;
     }
 
-    public String getCreator() {
-        return creatorId;
+    public Integer getTeamid() {
+        return teamid;
     }
 
-    public void setCreator(String creatorId) {
-        this.creatorId = creatorId;
+    public String getTeamname() {
+        return teamname;
     }
 
-    public String getInfo() {
-        return teamInfo;
+    public Integer getCreatorid() {
+        return creatorid;
     }
 
-    public void setInfo(String teamInfo) {
-        this.teamInfo = teamInfo;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Team{" +
-                "teamId=" + teamId +
-                ", teamName='" + teamName + '\'' +
-                ", creator='" + creatorId + '\'' +
-                ", info='" + teamInfo + '\'' +
-                '}';
+    public String getTeaminfo() {
+        return teaminfo;
     }
 }

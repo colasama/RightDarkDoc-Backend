@@ -1,9 +1,8 @@
-#server配置
+#server
 server:
   port: 8080
 
-#spring配置
-#记得修改一下username和password
+#spring
 spring:
   datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,7 +11,7 @@ spring:
       username: root
       password: root
 
-#mybatis配置
+#mybatis
 mybatis:
   mapper-locations: classpath:com/rightdarkdoc/mapper/*.xml
   type-aliases-package: com.rightdarkdoc.entity

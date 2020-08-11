@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rightdarkdoc.dao.UserTeamDao">
+
+    <!--用户创建团队，插入时iscreator设置为1-->
+    <insert id="userCreateTeam">
+        insert user_team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 1)
+    </insert>
+
+    <!--用户邀请团队新成员，插入时iscreator设置为0-->
+    <insert id="inviteTeamMember">
+        insert user_team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 0)
+    </insert>
+
+
+</mapper>
