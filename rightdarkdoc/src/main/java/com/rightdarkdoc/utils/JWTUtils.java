@@ -46,4 +46,6 @@ public class JWTUtils {
     public static DecodedJWT verify(String token){
         return JWT.require(Algorithm.HMAC256(SING)).build().verify(token);
     }
+
+    
 }
