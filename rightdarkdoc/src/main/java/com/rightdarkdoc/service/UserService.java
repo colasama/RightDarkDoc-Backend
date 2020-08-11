@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-@Service
-public class UserService {
+public interface UserService {
 
+    /**
+     * 注册新用户的功能
+     * @param user
+     */
+    public void registerNewUser(User user);
 
-    @Autowired
-    private UserDao userDao;
-
-    public void addUser(User user){
-        userDao.addUser(user);
-    }
 }

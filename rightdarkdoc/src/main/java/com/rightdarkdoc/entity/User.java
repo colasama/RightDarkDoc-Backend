@@ -1,40 +1,64 @@
 package com.rightdarkdoc.entity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Accessors(chain = true)
 public class User {
 
-    private int userId;
-    private String userName;
-    private String passWord;
+    private int userid;
+    private String username;
+    private String password;
     private String phone;
     private Date birthday;
     private String email;
     private String avatar;
     private String description;
 
-    public int getUserId() {
-        return userId;
+    /**
+     * 注册时用到的构造函数
+     * @param userName
+     * @param password
+     * @param phone
+     * @param email
+     */
+    public User(String userName, String password, String phone, String email) {
+        this.username = userName;
+        this.password = password;
+        this.phone = phone;
+        this.email = email;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public int getUserid() {
+        return userid;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {
@@ -76,18 +100,18 @@ public class User {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", passWord='" + passWord + '\'' +
-                ", phone='" + phone + '\'' +
-                ", birthday=" + birthday +
-                ", email='" + email + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
+    //
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//                "userId=" + userId +
+//                ", userName='" + userName + '\'' +
+//                ", passWord='" + passWord + '\'' +
+//                ", phone='" + phone + '\'' +
+//                ", birthday=" + birthday +
+//                ", email='" + email + '\'' +
+//                ", avatar='" + avatar + '\'' +
+//                ", description='" + description + '\'' +
+//                '}';
+//    }
 }
