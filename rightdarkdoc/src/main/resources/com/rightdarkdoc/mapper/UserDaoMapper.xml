@@ -16,7 +16,7 @@
 
     <!-- 实现更新用户信息的功能 -->
     <update id="updateUser" parameterType="User">
-        update `User` set username=#{username},phone=#{phone},birthday=#{birthday},email=#{email},avatar=#{avatar},description=#{description} where userid=#{userid}
+        update `User` set phone=#{phone},birthday=#{birthday},email=#{email},avatar=#{avatar},description=#{description} where userid=#{userid}
     </update>
 
 
@@ -28,6 +28,11 @@
     <!-- 实现根据用户id查询用户信息的功能 -->
     <select id="selectUserByUserId" parameterType="java.lang.Integer" resultType="com.rightdarkdoc.entity.User">
         select * from User where userid=#{userid}
+    </select>
+
+    <!-- 实现根据用户名查找用户的功能 -->
+    <select id="selectUserByUsername" parameterType="java.lang.String" resultType="com.rightdarkdoc.entity.User">
+        select * from User where username=#{username}
     </select>
 
 

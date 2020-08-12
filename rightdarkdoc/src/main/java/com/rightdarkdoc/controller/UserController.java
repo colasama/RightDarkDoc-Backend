@@ -31,14 +31,16 @@ public class UserController {
     public User getUserInfo(HttpServletRequest request){
         String token = request.getHeader("token");
         DecodedJWT decoder = JWTUtils.verify(token);
-        Integer userid = decoder.getClaim("userid").asInt();
+        String userTemp = decoder.getClaim("userid").asString();
+        Integer userid = Integer.valueOf(userTemp);
+        System.out.println(userid);
         User user = userService.selectUserByUserId(userid);
         return user;
     }
 
 
     /**
-     * 通过token获取用户id，并更新状态，返回前端相应信息
+     * 通过token获取用户id，并更新信息，返回前端相应信息
      * note ：需要 token,  且不能更改密码，
      * 密码修改通过另一个接口进行
      * @param user 封装更新信息的user对象
@@ -50,7 +52,8 @@ public class UserController {
         try {
             String token = request.getHeader("token");
             DecodedJWT decoder = JWTUtils.verify(token);
-            Integer userid = decoder.getClaim("userid").asInt();
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
             user.setUserid(userid);
             userService.updateUser(user);
             m.put("success",true);
@@ -78,17 +81,22 @@ public class UserController {
         try {
             String token = request.getHeader("token");
             DecodedJWT decoder = JWTUtils.verify(token);
-            Integer userid = decoder.getClaim("userid").asInt();
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
             String oldPassword = m.get("oldpassword").toString();
             String newPassword = m.get("newpassword").toString();
             User user = userService.selectUserByUserId(userid);
-            if(user.getPassword().contentEquals(oldPassword)){
+            if(user == null){
+                remap.put("success",false);
+                remap.put("message","user does not exist");
+            }
+            else if(!user.getPassword().contentEquals(oldPassword)){
+                remap.put("success",false);
+                remap.put("message","the old password is wrong");
+            }else{
                 userService.updateUserPassword(userid,newPassword);
                 remap.put("success",true);
                 remap.put("message","modify user password successfully");
-            }else{
-                remap.put("success",false);
-                remap.put("message","the old password is wrong");
             }
         } catch (Exception ex){
             remap.put("success",false);
@@ -96,5 +104,8 @@ public class UserController {
         }
         return remap;
     }
+
+
+
 
 }

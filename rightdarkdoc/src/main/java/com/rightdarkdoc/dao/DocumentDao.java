@@ -34,6 +34,14 @@ public interface DocumentDao {
 
 
     /**
+     * 更改文档权限
+     * @param docid
+     * @param auth
+     */
+    public void updateDocAuth(@Param("docid") Integer docid,@Param("auth") Integer auth);
+
+
+    /**
      * 根据doc的id查找doc
      * @param docid doc的id
      * @return

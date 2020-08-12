@@ -29,6 +29,14 @@ public interface DocumentService {
 
 
     /**
+     * 修改文档的权限
+     * @param docid  文档的id
+     * @param auth   设置的文档权限
+     */
+    public void updateDocAuth(Integer docid,Integer auth);
+
+
+    /**
      * 根据doc的id查找doc
      * @param docid doc的id
      * @return   对应的doc文件
@@ -41,5 +49,7 @@ public interface DocumentService {
      * @return 包含doc文档的列表
      */
     public List<Document> selectDocByCreatorId(Integer creatorid);
+
+
 
 }

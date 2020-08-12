@@ -10,11 +10,20 @@ public class Document {
     private Date creattime;
     private Date lastedittime;
     private Integer editcount;
-    private String lastedituserid;
+    private Integer lastedituserid;
     private Integer auth;         //文件的权限
     private Integer teamauth;
-    private String creatorid;
+    private Integer creatorid;
     private Integer istrash;
+
+
+    public Integer getCreatorid() {
+        return creatorid;
+    }
+
+    public void setCreatorid(Integer creatorid) {
+        this.creatorid = creatorid;
+    }
 
     public Integer getDocid() {
         return docid;
@@ -64,11 +73,11 @@ public class Document {
         this.editcount = editcount;
     }
 
-    public String getLastedituserid() {
+    public Integer getLastedituserid() {
         return lastedituserid;
     }
 
-    public void setLastedituserid(String lastedituserid) {
+    public void setLastedituserid(Integer lastedituserid) {
         this.lastedituserid = lastedituserid;
     }
 
@@ -88,13 +97,6 @@ public class Document {
         this.teamauth = teamauth;
     }
 
-    public String getCreatorid() {
-        return creatorid;
-    }
-
-    public void setCreatorid(String creatorid) {
-        this.creatorid = creatorid;
-    }
 
     public Integer getIstrash() {
         return istrash;

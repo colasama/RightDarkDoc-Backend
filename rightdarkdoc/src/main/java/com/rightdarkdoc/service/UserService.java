@@ -39,6 +39,14 @@ public interface UserService {
 
 
     /**
+     * 根据用户名查找用户
+     * @param username 需要查找的用户名
+     * @return 对应的用户
+     */
+    public User selectUesrByUsername(String username);
+
+
+    /**
      * 修改密码的功能
      * @param userid   用户id
      * @param password   新密码

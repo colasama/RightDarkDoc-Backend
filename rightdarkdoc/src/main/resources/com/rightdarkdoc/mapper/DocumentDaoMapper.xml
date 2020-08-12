@@ -19,6 +19,11 @@
         title=#{title} where docid=#{docid}
     </update>
 
+    <update id="updateDocAuth">
+        update `Document` set
+        auth=#{auth} where docid=#{docid}
+    </update>
+
 
     <select id="selectDocByDocId" resultType="com.rightdarkdoc.entity.Document">
         select * from `Document`

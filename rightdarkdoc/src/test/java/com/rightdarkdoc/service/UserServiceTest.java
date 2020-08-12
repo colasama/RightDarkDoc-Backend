@@ -40,4 +40,10 @@ class UserServiceTest {
     public void updateUserPassword(){
         userService.updateUserPassword(1,"995111");
     }
+
+    @Test
+    public void selectUserByUsernameTest(){
+        System.out.println(userService.selectUesrByUsername("wzk"));
+
+    }
 }

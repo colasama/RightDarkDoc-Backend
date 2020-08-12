@@ -56,4 +56,12 @@ public interface UserDao {
      * @param userid
      */
     public User selectUserByUserId(int userid);
+
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
+    public User selectUserByUsername(String username);
 }

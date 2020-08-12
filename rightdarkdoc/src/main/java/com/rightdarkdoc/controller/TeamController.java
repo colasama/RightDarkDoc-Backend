@@ -99,7 +99,7 @@ public class TeamController {
             /**
              * 取出被邀请对象的userid
              */
-            String username = request.getParameter("inviteename");
+            String username = request.getParameter("invitename");
 
             String teamname = request.getParameter("teamid");
 
@@ -135,7 +135,7 @@ public class TeamController {
             /**
              * 取出被邀请对象的userid
              */
-            String username = request.getParameter("inviteename");
+            String username = request.getParameter("invitename");
 
             String teamname = request.getParameter("teamid");
 
@@ -171,7 +171,7 @@ public class TeamController {
             /**
              * 取出被邀请对象的userid
              */
-            String username = request.getParameter("inviteename");
+            String username = request.getParameter("invitename");
 
             String teamname = request.getParameter("teamid");
 

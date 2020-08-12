@@ -59,6 +59,10 @@ public class UserServiceImpl implements UserService {
         return userDao.selectUserByUserId(userid);
     }
 
+    @Override
+    public User selectUesrByUsername(String username) {
+        return userDao.selectUserByUsername(username);
+    }
 
     /**
      * 更改用户密码

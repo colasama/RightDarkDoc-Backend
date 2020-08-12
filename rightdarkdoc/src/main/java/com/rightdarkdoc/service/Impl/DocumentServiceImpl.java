@@ -48,6 +48,16 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     /**
+     * 更改文档的权限
+     * @param docid  文档的id
+     * @param auth   设置的文档权限
+     */
+    @Override
+    public void updateDocAuth(Integer docid, Integer auth) {
+        documentDao.updateDocAuth(docid,auth);
+    }
+
+    /**
      * 根据文件的id查找doc文件
      * @param docid doc的id
      * @return
@@ -57,6 +67,12 @@ public class DocumentServiceImpl implements DocumentService {
         return documentDao.selectDocByDocId(docid);
     }
 
+
+    /**
+     * 根据创建者的id查找doc文件
+     * @param creatorid 创建者的id
+     * @return
+     */
     @Override
     public List<Document> selectDocByCreatorId(Integer creatorid){
         return documentDao.selectDocByCreatorId(creatorid);
