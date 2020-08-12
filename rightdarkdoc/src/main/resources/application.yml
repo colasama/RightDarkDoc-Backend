@@ -7,9 +7,9 @@ spring:
   datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       type: com.alibaba.druid.pool.DruidDataSource
-      url: jdbc:mysql://localhost:3306/rightdarkdoc?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+      url: jdbc:mysql://39.106.230.20:3306/rightdarkdoc?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
       username: root
-      password: root
+      password: yhb13579@
 
 #mybatis
 mybatis:
