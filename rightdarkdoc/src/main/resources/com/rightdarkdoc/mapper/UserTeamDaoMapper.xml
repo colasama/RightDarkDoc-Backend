@@ -18,4 +18,13 @@
         delete from User_Team where userid = #{userid} and teamid = #{teamid}
     </insert>
 
+    <!--删除团队-->
+    <delete id="deleteTeamByTeamid" parameterType="Integer">
+        delete from User_Team where teamid = #{teamid}
+    </delete>
+
+    <!--查找团队成员-->
+    <select id="findTeamMembers" parameterType="Integer" resultType="Integer">
+        select * from User_Team where teamid = #{teamid} and iscreator = 0
+    </select>
 </mapper>

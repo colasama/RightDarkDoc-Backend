@@ -1,6 +1,12 @@
 package com.rightdarkdoc.service;
 
+import com.rightdarkdoc.entity.Team;
+import com.rightdarkdoc.entity.User;
+
+import java.util.List;
+
 public interface UserTeamService {
+
     /**
      * 用户创建团队时调用
      * @param userid
@@ -15,11 +21,37 @@ public interface UserTeamService {
      */
     public void inviteTeamMember(Integer teamid, Integer userid);
 
-
     /**
      * 用户删除团队成员
      * @param teamid
      * @param userid
      */
     public void deleteTeamMember(Integer teamid, Integer userid);
+
+    /**
+     * 根据团队id删除记录
+     * @param teamid
+     */
+    public void deleteTeamByTeamid(Integer teamid);
+
+    /**
+     * 用户申请加入团队
+     * @param teamid
+     * @param userid
+     */
+    public void applyToBeATeamMember(Integer teamid, Integer userid);
+
+    /**
+     * 退出团队
+     * @param teamid
+     * @param userid
+     */
+    public void exitTeam(Integer teamid, Integer userid);
+
+    /**
+     * 查找团队成员的id
+     * @param teamid
+     * @return
+     */
+    public List<Integer> findTeamMembers(Integer teamid);
 }

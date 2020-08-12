@@ -33,4 +33,37 @@ public class TeamServiceImpl implements TeamService {
     public Team findTeamByTeamnameAndCreatorId(String teamname, Integer creatorid) {
         return teamDao.findTeamByTeamnameAndCreatorId(teamname,  creatorid);
     }
+
+    /**
+     * 根据团队id删除记录
+     *
+     * @param teamid
+     */
+    @Override
+    public void deleteTeamByTeamid(Integer teamid) {
+        teamDao.deleteTeamByTeamid(teamid);
+    }
+
+    /**
+     * 通过团队id查找团队
+     *
+     * @param teamid
+     * @return
+     */
+    @Override
+    public Team findTeamByTeamid(Integer teamid) {
+        return teamDao.findTeamByTeamid(teamid);
+    }
+
+    /**
+     * 修改team信息
+     *
+     * @param team
+     */
+    @Override
+    public void updateTeam(Team team) {
+        teamDao.updateTeamByTeamId(team);
+    }
+
+
 }

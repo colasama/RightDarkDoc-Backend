@@ -5,8 +5,11 @@ import com.rightdarkdoc.service.UserTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserTeamServiceImpl implements UserTeamService {
+
 
     @Autowired
     private UserTeamDao userTeamDao;
@@ -44,6 +47,47 @@ public class UserTeamServiceImpl implements UserTeamService {
         userTeamDao.deleteTeamMember(teamid, userid);
     }
 
+    /**
+     * 根据团队id删除记录
+     *
+     * @param teamid
+     */
+    @Override
+    public void deleteTeamByTeamid(Integer teamid) {
+        userTeamDao.deleteTeamByTeamid(teamid);
+    }
+
+    /**
+     * 用户申请加入团队
+     *
+     * @param teamid
+     * @param userid
+     */
+    @Override
+    public void applyToBeATeamMember(Integer teamid, Integer userid) {
+        userTeamDao.inviteTeamMember(teamid, userid);
+    }
+
+    /**
+     * 用户申请退出团队
+     * @param teamid
+     * @param userid
+     */
+    @Override
+    public void exitTeam(Integer teamid, Integer userid) {
+        userTeamDao.deleteTeamMember(teamid, userid);
+    }
+
+    /**
+     * 查找团队成员的id
+     *
+     * @param teamid
+     * @return
+     */
+    @Override
+    public List<Integer> findTeamMembers(Integer teamid) {
+        return userTeamDao.findTeamMembers(teamid);
+    }
 
 
 }

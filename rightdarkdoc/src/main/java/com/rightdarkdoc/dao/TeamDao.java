@@ -27,10 +27,20 @@ public interface TeamDao {
      */
     public void deleteTeamByTeamid(Integer teamid);
 
-//
-//
-//    @Update("update Team set teamname=#{teamName},creatorid=#{creatorId},teaminfo=#{teamInfo}")
-//    public int updateTeamByTeamId(Team team);
+    /**
+     * 根据团队id查找团队
+     * @param teamid
+     * @return
+     */
+    public Team findTeamByTeamid(Integer teamid);
+
+
+    /**
+     * 根据team的id修改team信息
+     * @param team
+     * @return
+     */
+    public void updateTeamByTeamId(Team team);
 //
 //
 //    @Select("select * from Team where teamid=#{teamId}")
