@@ -32,13 +32,20 @@ public class LoginController {
         System.out.println("接收到一个注册请求");
         Map<String, Object> map = new HashMap<>();
         try {
-            userService.registerNewUser(user);
-            map.put("success", true);
-            map.put("message", "用户注册成功！");
+            User user1 = userService.selectUserByUsername(user.getUsername());
+            if (user1 != null) {
+                map.put("success", false);
+                map.put("message", "用户名已注册！");
+            }
+            else {
+                userService.registerNewUser(user);
+                map.put("success", true);
+                map.put("message", "用户注册成功！");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);
-            map.put("message", "用户保存失败！");
+            map.put("message", "用户注册失败！");
         }
         return map;
     }

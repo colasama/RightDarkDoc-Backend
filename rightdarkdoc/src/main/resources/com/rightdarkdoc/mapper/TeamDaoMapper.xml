@@ -26,4 +26,10 @@
     <update id="updateTeamByTeamId" parameterType="Team">
         update Team set teamname=#{teamname}, teaminfo=#{teaminfo} where teamid = #{teamid}
     </update>
+
+    <!--根据搜索信息查找团队-->
+    <select id="findTeamsBySearchContent" parameterType="String" resultType="Team">
+        select * from Team where teamname like #{searchContent}
+    </select>
+
 </mapper>

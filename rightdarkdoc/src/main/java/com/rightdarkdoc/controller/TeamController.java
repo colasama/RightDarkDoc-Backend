@@ -1,7 +1,6 @@
 package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rightdarkdoc.dao.TeamDao;
 import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.TeamService;
@@ -337,7 +336,7 @@ public class TeamController {
      * @param teamidString
      * @return
      */
-    @RequestMapping("/{teamidString}/update")
+    @PostMapping("/{teamidString}/update")
     public Map<String, Object> updateTeamInfo(HttpServletRequest request,
                                               @RequestBody Map<String, String> requsetmap,
                                               @PathVariable String teamidString) {
@@ -346,7 +345,6 @@ public class TeamController {
         String newTeamname = requsetmap.get("newTeamname");
         String newTeaminfo = requsetmap.get("newTeaminfo");
         System.out.println(newTeamname + ":" + newTeaminfo);
-
         try {
             //看是否是创建者发起的请求
             String token = request.getHeader("token");
@@ -378,4 +376,32 @@ public class TeamController {
         }
         return map;
     }
+
+    /**
+     * 搜索团队
+     * @param  searchContent
+     * @return
+     */
+    @GetMapping("search")
+    public Map<String, Object> searchTeamInfo(@RequestParam(value = "searchContent", required = false) String searchContent) {
+        System.out.println("接收到一个搜索团队信息请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            //取出searchContent的内容(模糊匹配teamname)
+//            String searchContent = requsetmap.get("searchContent");
+            List<Team> teams = teamService.findTeamsBySearchContent(searchContent);
+            map.put("teams", teams);
+            map.put("success", true);
+            map.put("message", "搜索成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "搜索失败！");
+        }
+        return map;
+    }
+
+
+
+
 }
