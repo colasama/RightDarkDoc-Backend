@@ -12,6 +12,9 @@
         select * from Team where teamname = #{teamname} and creatorid = #{creatorid}
     </select>
 
-
+    <!--删除团队-->
+    <delete id="deleteTeamByTeamid">
+        delete from Team where teamid = #{teamid}
+    </delete>
 
 </mapper>

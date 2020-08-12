@@ -30,7 +30,10 @@
         select * from User where userid=#{userid}
     </select>
 
-
+    <!-- 实现根据用户username查询用户信息的功能 -->
+    <select id="selectUserByUsername" resultType="User">
+        select * from User where username=#{username}
+    </select>
 
 
 </mapper>

@@ -1,8 +1,10 @@
 package com.rightdarkdoc.config;
 
 import com.rightdarkdoc.interceptors.JWTInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.FormContentFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -18,4 +20,5 @@ public class InterceptorConfig implements WebMvcConfigurer {
               //  .excludePathPatterns("/test")
                 .excludePathPatterns("/register");
     }
+
 }

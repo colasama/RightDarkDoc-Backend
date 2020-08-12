@@ -13,6 +13,13 @@ public interface UserTeamService {
      * @param userid
      * @param teamid
      */
-    public void inviteTeamMember(Integer userid, Integer teamid);
+    public void inviteTeamMember(Integer teamid, Integer userid);
 
+
+    /**
+     * 用户删除团队成员
+     * @param teamid
+     * @param userid
+     */
+    public void deleteTeamMember(Integer teamid, Integer userid);
 }

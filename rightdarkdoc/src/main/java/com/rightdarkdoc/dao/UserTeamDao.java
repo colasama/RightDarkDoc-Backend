@@ -17,4 +17,18 @@ public interface UserTeamDao {
      */
     public void inviteTeamMember(Integer teamid, Integer userid);
 
+
+    /**
+     * 根据teamid和userid删除记录
+     * @param teamid
+     * @param userid
+     */
+    public void deleteTeamMember(Integer teamid, Integer userid);
+
+    /**
+     * 删除team
+     * @param teamid 团队id
+     */
+    public void deleteTeamByTeamid(Integer teamid);
+
 }

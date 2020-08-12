@@ -21,6 +21,11 @@ public interface TeamDao {
      */
     public Team findTeamByTeamnameAndCreatorId(String teamname, Integer creatorid);
 
+    /**
+     * 删除team
+     * @param teamid 团队id
+     */
+    public void deleteTeamByTeamid(Integer teamid);
 
 //
 //

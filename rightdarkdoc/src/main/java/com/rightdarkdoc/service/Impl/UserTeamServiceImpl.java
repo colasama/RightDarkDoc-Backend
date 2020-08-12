@@ -29,7 +29,21 @@ public class UserTeamServiceImpl implements UserTeamService {
      * @param teamid
      */
     @Override
-    public void inviteTeamMember(Integer userid, Integer teamid) {
-        userTeamDao.inviteTeamMember(userid, teamid);
+    public void inviteTeamMember(Integer teamid, Integer userid) {
+        userTeamDao.inviteTeamMember(teamid, userid);
     }
+
+    /**
+     * 用户删除团队成员
+     *
+     * @param teamid
+     * @param userid
+     */
+    @Override
+    public void deleteTeamMember(Integer teamid, Integer userid) {
+        userTeamDao.deleteTeamMember(teamid, userid);
+    }
+
+
+
 }
