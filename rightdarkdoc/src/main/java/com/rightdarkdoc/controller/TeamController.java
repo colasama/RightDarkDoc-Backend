@@ -1,14 +1,14 @@
 package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
-import com.rightdarkdoc.service.TeamService;
-import com.rightdarkdoc.service.UserService;
-import com.rightdarkdoc.service.UserTeamService;
+import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -28,6 +28,12 @@ public class TeamController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TeamDocumentService teamDocumentService;
+
+    @Autowired
+    private DocumentService documentService;
 
     /**
      * 创建新的团队
@@ -401,7 +407,40 @@ public class TeamController {
         return map;
     }
 
+    /**
+     * 查看团队的所有文章
+     * @param teamidString
+     * @return
+     */
+    @GetMapping("/{teamidString}/documents")
+    public Map<String, Object> findAllTeamDocuments(@PathVariable String teamidString) {
+        System.out.println("接收到一个查看团队所有文档的请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Integer teamid = Integer.valueOf(teamidString);
+            //取出docids
+            List<Integer> docids = teamDocumentService.findAllTeamDocuments(teamid);
+            List<Document> documents = new ArrayList<>();
 
+            for (Integer docid : docids) {
+                Document tempDoc = documentService.selectDocByDocId(docid);
+
+                //判断一下是不是垃圾文件
+                if (tempDoc.getIstrash() == 0) {
+                    documents.add(tempDoc);
+                }
+
+            }
+            map.put("documents", documents);
+            map.put("success", true);
+            map.put("message", "查看文章成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "查看文章失败！");
+        }
+        return map;
+    }
 
 
 }
