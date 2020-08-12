@@ -2,25 +2,25 @@ package com.rightdarkdoc.entity;
 
 public class Comment {
 
-    private int commentId;
-    private int documentId;
+    private Integer commentId;
+    private Integer documentId;
     private String content;
-    private int userId;
+    private Integer userId;
 
 
-    public int getCommentId() {
+    public Integer getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(Integer commentId) {
         this.commentId = commentId;
     }
 
-    public int getDocumentId() {
+    public Integer getDocumentId() {
         return documentId;
     }
 
-    public void setDocumentId(int documentId) {
+    public void setDocumentId(Integer documentId) {
         this.documentId = documentId;
     }
 
@@ -32,14 +32,13 @@ public class Comment {
         this.content = content;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
-
 
     @Override
     public String toString() {

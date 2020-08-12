@@ -38,4 +38,22 @@ public interface UserDao {
 //
 //    @Select("select * from User")
 //    public List<User> selectAllUser();
+    /**
+     * 更新用户信息
+     * @param user 一个类型为User的参数
+     */
+    public void updateUser(User user);
+
+
+    /**
+     * 重设用户密码
+     */
+    public void updateUserPassword(@Param("userid") Integer userid,@Param("password") String password);
+
+
+    /**
+     * 根据用户id查询用户信息
+     * @param userid
+     */
+    public User selectUserByUserId(int userid);
 }

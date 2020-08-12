@@ -23,4 +23,26 @@ public interface UserService {
      */
     public User findUserByUsernameAndPassword(String username, String password);
 
+    /**
+     * 更新用户的信息
+     * note:不提供密码的修改功能
+     * @param user 封装了需要更新的用户实体
+     */
+    public void updateUser(User user);
+
+    /**
+     * 根据用户id查找用户
+     * @param userid 需要查找的用户id
+     * @return  user对象
+     */
+    public User selectUserByUserId(Integer userid);
+
+
+    /**
+     * 修改密码的功能
+     * @param userid   用户id
+     * @param password   新密码
+     */
+    public void updateUserPassword(Integer userid,String password);
+
 }
