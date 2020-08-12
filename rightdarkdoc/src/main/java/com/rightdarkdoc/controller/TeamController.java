@@ -5,6 +5,7 @@ import com.rightdarkdoc.dao.TeamDao;
 import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.TeamService;
+import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.service.UserTeamService;
 import com.rightdarkdoc.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,15 @@ public class TeamController {
     @Autowired
     private UserTeamService userTeamService;
 
+    @Autowired
+    private UserService userService;
 
+    /**
+     * 创建新的团队
+     * @param request
+     * @param team
+     * @return
+     */
     @PostMapping("create")
     public Map<String, Object> userCreateANewTeam(HttpServletRequest request, @RequestBody Team team) {
         System.out.println("接收到一个创建新团队的请求");
@@ -77,5 +86,105 @@ public class TeamController {
     }
 
 
+    /**
+     * 邀请团队新成员
+     * @param request   传入被邀请者的username，teamname
+     * @return
+     */
+    @PostMapping("inviteMember")
+    public Map<String, Object> registerNewUser(HttpServletRequest request) {
+        System.out.println("接收到一个团队邀请请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            /**
+             * 取出被邀请对象的userid
+             */
+            String username = request.getParameter("inviteename");
+
+            String teamname = request.getParameter("teamid");
+
+
+
+            map.put("success", true);
+            map.put("message", "邀请成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "邀请失败！");
+        }
+        return map;
+    }
+
+    @PostMapping("deleteMember")
+    public Map<String, Object> deleteMember(HttpServletRequest request) {
+
+        //看是否是创建者发起的请求
+
+
+
+        //删除Team表对应记录
+
+
+
+        //删除User_Team表对应的记录
+
+
+        System.out.println("接收到一个团队邀请请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            /**
+             * 取出被邀请对象的userid
+             */
+            String username = request.getParameter("inviteename");
+
+            String teamname = request.getParameter("teamid");
+
+
+
+            map.put("success", true);
+            map.put("message", "邀请成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "邀请失败！");
+        }
+        return map;
+    }
+
+
+    @PostMapping("deleteTeam")
+    public Map<String, Object> deleteTeam(HttpServletRequest request) {
+
+        //看是否是创建者发起的请求
+
+
+
+        //删除Team表对应记录
+
+
+
+        //删除User_Team表对应的记录
+
+        System.out.println("接收到一个团队邀请请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            /**
+             * 取出被邀请对象的userid
+             */
+            String username = request.getParameter("inviteename");
+
+            String teamname = request.getParameter("teamid");
+
+
+
+            map.put("success", true);
+            map.put("message", "邀请成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "邀请失败！");
+        }
+        return map;
+    }
 
 }

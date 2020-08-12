@@ -13,6 +13,6 @@ public interface UserTeamService {
      * @param userid
      * @param teamid
      */
-    public void userCreateTeam(Integer userid, Integer teamid);
+    public void inviteTeamMember(Integer userid, Integer teamid);
 
 }
