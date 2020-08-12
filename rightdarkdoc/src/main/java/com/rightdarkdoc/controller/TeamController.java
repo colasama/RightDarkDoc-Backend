@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,7 +32,7 @@ public class TeamController {
 
     /**
      * 创建新的团队
-     * @param request
+     * @param request   传入创建团队的teamname和teaminfo
      * @param team
      * @return
      */
@@ -88,59 +90,27 @@ public class TeamController {
 
     /**
      * 邀请团队新成员
-     * @param request   传入被邀请者的username，teamname
+     * @param  inviteename  传入被邀请者的username，
+     * @param  teamidString teamid
      * @return
      */
-    @PostMapping("inviteMember")
-    public Map<String, Object> registerNewUser(HttpServletRequest request) {
+    @GetMapping("/{teamidString}/inviteMember")
+    public Map<String, Object> registerNewUser(@RequestParam(value = "inviteename", required = false) String inviteename,
+                                               @PathVariable String teamidString) {
         System.out.println("接收到一个团队邀请请求");
+
         Map<String, Object> map = new HashMap<>();
         try {
             /**
-             * 取出被邀请对象的userid
+             * 取出被邀请对象的userid和teamid
              */
-            String username = request.getParameter("invitename");
-
-            String teamname = request.getParameter("teamid");
-
-
-
-            map.put("success", true);
-            map.put("message", "邀请成功！");
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("success", false);
-            map.put("message", "邀请失败！");
-        }
-        return map;
-    }
-
-    @PostMapping("deleteMember")
-    public Map<String, Object> deleteMember(HttpServletRequest request) {
-
-        //看是否是创建者发起的请求
-
-
-
-        //删除Team表对应记录
-
-
-
-        //删除User_Team表对应的记录
-
-
-        System.out.println("接收到一个团队邀请请求");
-        Map<String, Object> map = new HashMap<>();
-        try {
-            /**
-             * 取出被邀请对象的userid
-             */
-            String username = request.getParameter("invitename");
-
-            String teamname = request.getParameter("teamid");
-
-
-
+            //System.out.println(inviteename);
+            User invitee = userService.selectUserByUsername(inviteename);
+            //System.out.println(invitee);
+            Integer inviteeId = invitee.getUserid();
+            Integer teamid = Integer.valueOf(teamidString);
+            //System.out.println(teamid);
+            userTeamService.inviteTeamMember(teamid, inviteeId);
             map.put("success", true);
             map.put("message", "邀请成功！");
         } catch (Exception e) {
@@ -152,39 +122,260 @@ public class TeamController {
     }
 
 
-    @PostMapping("deleteTeam")
-    public Map<String, Object> deleteTeam(HttpServletRequest request) {
+    /**
+     * 删除一个团队成员
+     * @param deletedname 被删除者用户名
+     * @param teamidString  团队id
+     * @param teamname 团队名称
+     * @return
+     */
+    @GetMapping("/{teamidString}/deleteMember")
+    public Map<String, Object> deleteMember(@RequestParam(value = "deletedname", required = false) String deletedname,
+                                            @RequestParam(value = "teamname", required = false) String teamname,
+                                            @PathVariable String teamidString, HttpServletRequest request) {
 
-        //看是否是创建者发起的请求
-
-
-
-        //删除Team表对应记录
-
-
-
-        //删除User_Team表对应的记录
-
-        System.out.println("接收到一个团队邀请请求");
+        System.out.println("接收到一个删除团队成员请求");
         Map<String, Object> map = new HashMap<>();
+
         try {
-            /**
-             * 取出被邀请对象的userid
-             */
-            String username = request.getParameter("invitename");
+            //看是否是创建者发起的请求
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
 
-            String teamname = request.getParameter("teamid");
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
 
+            Team team = teamService.findTeamByTeamnameAndCreatorId(teamname, userid);
 
-
-            map.put("success", true);
-            map.put("message", "邀请成功！");
-        } catch (Exception e) {
+            if (team == null) {
+                map.put("success", false);
+                map.put("message", "用户没有删除权限！");
+            } else {
+                //删除User_Team表对应的记录
+                User deleted = userService.selectUserByUsername(deletedname);
+                //System.out.println(invitee);
+                Integer deletedid = deleted.getUserid();
+                Integer teamid = Integer.valueOf(teamidString);
+                userTeamService.deleteTeamMember(teamid, deletedid);
+                map.put("success", true);
+                map.put("message", "删除成员成功！");
+            }
+        } catch (NumberFormatException e) {
             e.printStackTrace();
             map.put("success", false);
-            map.put("message", "邀请失败！");
+            map.put("message", "删除失败！");
         }
         return map;
     }
 
+    /**
+     * 删除团队
+     * @param request
+     * @param teamname  团队名称
+     * @param teamidString 团队id
+     * @return
+     */
+    @GetMapping("/{teamidString}/deleteTeam")
+    public Map<String, Object> deleteTeam(HttpServletRequest request,
+                                          @RequestParam(value = "teamname", required = false) String teamname,
+                                          @PathVariable String teamidString) {
+        System.out.println("接收到一个团队删除请求");
+        Map<String, Object> map = new HashMap<>();
+
+        try {
+            //看是否是创建者发起的请求
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
+
+            Team team = teamService.findTeamByTeamnameAndCreatorId(teamname, userid);
+
+            if (team == null) {
+                map.put("success", false);
+                map.put("message", "用户没有删除权限！");
+            } else {
+                //删除User_Team, Team表对应的记录
+                Integer teamid = Integer.valueOf(teamidString);
+                userTeamService.deleteTeamByTeamid(teamid);
+                teamService.deleteTeamByTeamid(teamid);
+                map.put("success", true);
+                map.put("message", "删除团队成功！");
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "删除失败！");
+        }
+        return map;
+    }
+
+
+    /**
+     * 申请加入团队
+     * @param  teamidString teamid
+     * @return
+     */
+    @GetMapping("/{teamidString}/apply")
+    public Map<String, Object> applyToBeATeamMember(@PathVariable String teamidString,
+                                                    HttpServletRequest request) {
+        System.out.println("接收到一个团队申请请求");
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            /**
+             * 取出申请对象的userid
+             */
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
+
+            Integer teamid = Integer.valueOf(teamidString);
+            userTeamService.applyToBeATeamMember(teamid, userid);
+            map.put("success", true);
+            map.put("message", "申请成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "申请失败！");
+        }
+        return map;
+    }
+
+    /**
+     * 退出团队
+     * @param  teamidString teamid
+     * @return
+     */
+    @GetMapping("/{teamidString}/exit")
+    public Map<String, Object> exitTeam(@PathVariable String teamidString,
+                                                    HttpServletRequest request) {
+        System.out.println("接收到一个团队退出请求");
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            /**
+             * 取出申请对象的userid
+             */
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
+
+            Integer teamid = Integer.valueOf(teamidString);
+            userTeamService.exitTeam(teamid, userid);
+            map.put("success", true);
+            map.put("message", "退出团队成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "退出失败！");
+        }
+        return map;
+    }
+
+
+    /**
+     * 查看团队信息
+     * @param  teamidString teamid
+     * @return
+     */
+    @GetMapping("/{teamidString}/view")
+    public Map<String, Object> viewTeamInfo(@PathVariable String teamidString,
+                                        HttpServletRequest request) {
+        System.out.println("接收到一个查看团队信息请求");
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Integer teamid = Integer.valueOf(teamidString);
+
+            //取出团队
+            Team team = teamService.findTeamByTeamid(teamid);
+
+            //取出团队创建者
+            Integer creatorid = team.getCreatorid();
+            User teamCreator = userService.selectUserByUserId(creatorid);
+            teamCreator.setPassword("");
+
+            //取出团队成员
+            List<Integer> teamMembersIdList = new ArrayList<>();
+            teamMembersIdList = userTeamService.findTeamMembers(teamid);
+            List<User> teamMembers = new ArrayList<>();
+            for (Integer integer : teamMembersIdList) {
+                User usertemp = userService.selectUserByUserId(integer);
+                usertemp.setPassword("");
+                teamMembers.add(usertemp);
+            }
+
+            map.put("team", team);
+            map.put("teamCreator", teamCreator);
+            map.put("teamMembers", teamMembers);
+            map.put("success", true);
+            map.put("message", "查看成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "查看失败！");
+        }
+        return map;
+    }
+
+    /**
+     * 修改团队信息
+     * @param request
+     * @param requsetmap
+     * @param teamidString
+     * @return
+     */
+    @RequestMapping("/{teamidString}/update")
+    public Map<String, Object> updateTeamInfo(HttpServletRequest request,
+                                              @RequestBody Map<String, String> requsetmap,
+                                              @PathVariable String teamidString) {
+        System.out.println("接收到一个团队删除请求");
+        Map<String, Object> map = new HashMap<>();
+        String newTeamname = requsetmap.get("newTeamname");
+        String newTeaminfo = requsetmap.get("newTeaminfo");
+        System.out.println(newTeamname + ":" + newTeaminfo);
+
+        try {
+            //看是否是创建者发起的请求
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
+
+            Integer teamid = Integer.valueOf(teamidString);
+            Team team = teamService.findTeamByTeamid(teamid);
+
+            if (!team.getCreatorid().equals(userid)) {
+                map.put("success", false);
+                map.put("message", "用户没有修改权限！");
+            } else {
+                //修改team表
+                team.setTeaminfo(newTeaminfo);
+                team.setTeamname(newTeamname);
+                teamService.updateTeam(team);
+                map.put("success", true);
+                map.put("message", "修改团队信息成功！");
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "修改失败！");
+        }
+        return map;
+    }
 }

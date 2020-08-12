@@ -59,10 +59,17 @@ public class UserServiceImpl implements UserService {
         return userDao.selectUserByUserId(userid);
     }
 
+    /**
+     * 根据用户username查找用户
+     *
+     * @param username 需要查找的用户id
+     * @return user对象
+     */
     @Override
-    public User selectUesrByUsername(String username) {
+    public User selectUserByUsername(String username) {
         return userDao.selectUserByUsername(username);
     }
+
 
     /**
      * 更改用户密码

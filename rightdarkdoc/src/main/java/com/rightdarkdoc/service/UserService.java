@@ -39,11 +39,11 @@ public interface UserService {
 
 
     /**
-     * 根据用户名查找用户
-     * @param username 需要查找的用户名
-     * @return 对应的用户
+     * 根据用户username查找用户
+     * @param username 需要查找的用户id
+     * @return  user对象
      */
-    public User selectUesrByUsername(String username);
+    public User selectUserByUsername(String username);
 
 
     /**

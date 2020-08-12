@@ -4,13 +4,27 @@
 
     <!--用户创建团队，插入时iscreator设置为1-->
     <insert id="userCreateTeam">
-        insert user_team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 1)
+        insert User_Team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 1)
     </insert>
 
     <!--用户邀请团队新成员，插入时iscreator设置为0-->
     <insert id="inviteTeamMember">
-        insert user_team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 0)
+        insert User_Team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 0)
     </insert>
 
 
+    <!--用户删除团队新成员-->
+    <insert id="deleteTeamMember">
+        delete from User_Team where userid = #{userid} and teamid = #{teamid}
+    </insert>
+
+    <!--删除团队-->
+    <delete id="deleteTeamByTeamid" parameterType="Integer">
+        delete from User_Team where teamid = #{teamid}
+    </delete>
+
+    <!--查找团队成员-->
+    <select id="findTeamMembers" parameterType="Integer" resultType="Integer">
+        select * from User_Team where teamid = #{teamid} and iscreator = 0
+    </select>
 </mapper>

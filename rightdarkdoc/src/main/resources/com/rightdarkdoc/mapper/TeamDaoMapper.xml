@@ -12,6 +12,18 @@
         select * from Team where teamname = #{teamname} and creatorid = #{creatorid}
     </select>
 
+    <!--删除团队-->
+    <delete id="deleteTeamByTeamid" parameterType="Integer">
+        delete from Team where teamid = #{teamid}
+    </delete>
 
+    <!--根据团队id寻找团队-->
+    <select id="findTeamByTeamid" parameterType="Integer" resultType="Team">
+        select * from Team where teamid = #{teamid}
+    </select>
 
+    <!--修改团队信息-->
+    <update id="updateTeamByTeamId" parameterType="Team">
+        update Team set teamname=#{teamname}, teaminfo=#{teaminfo} where teamid = #{teamid}
+    </update>
 </mapper>
