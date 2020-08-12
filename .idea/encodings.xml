@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/rightdarkdoc/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rightdarkdoc/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rightdarkdoc/src/main/resources/application.yml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/rightdarkdoc/target/classes/application.yml" charset="GBK" />
   </component>
 </project>
