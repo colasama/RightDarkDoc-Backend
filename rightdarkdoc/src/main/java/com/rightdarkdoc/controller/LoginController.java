@@ -1,6 +1,7 @@
 package com.rightdarkdoc.controller;
 
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.utils.JWTUtils;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.Keymap;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,6 +51,7 @@ public class LoginController {
         }
         return map;
     }
+
 
     /**
      * 登录

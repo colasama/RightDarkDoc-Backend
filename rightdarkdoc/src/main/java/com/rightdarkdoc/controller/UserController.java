@@ -13,14 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
 @RestController
-@RequestMapping("/user")
+@CrossOrigin
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
     private UserService userService;
-
 
     /**
      * 通过token获取用户id，再通过数据库查询用户相关信息，返回前端
@@ -28,7 +27,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @GetMapping("info")
+    @PostMapping("info")
     public User getUserInfo(HttpServletRequest request){
         String token = request.getHeader("token");
         DecodedJWT decoder = JWTUtils.verify(token);
@@ -39,11 +38,10 @@ public class UserController {
         return user;
     }
 
-
     /**
      * 请求方法：Put
      * 请求Url：/user/fuzSearch
-     * 功能：模糊匹配usre信息并返回前端
+     * 功能：模糊匹配user信息并返回前端
      * @param map 参数：1. String: username
      * @return
      */
@@ -66,6 +64,7 @@ public class UserController {
         }
         return remap;
     }
+
 
 
     /**

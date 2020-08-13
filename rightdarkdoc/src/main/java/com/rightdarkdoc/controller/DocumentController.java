@@ -7,6 +7,7 @@ import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.DocumentService;
 import com.rightdarkdoc.service.UserFavDocService;
 import com.rightdarkdoc.service.UserService;
+import com.rightdarkdoc.service.UserViewDocService;
 import com.rightdarkdoc.utils.JWTUtils;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @RestController
-@RequestMapping("/document")
+@RequestMapping("document")
 @CrossOrigin
 public class DocumentController {
 
@@ -31,6 +32,9 @@ public class DocumentController {
     @Autowired
     private UserFavDocService userFavDocService;
 
+    @Autowired
+    private UserViewDocService userViewDocService;
+
 
     /**
      * 请求方法：Post
@@ -42,7 +46,7 @@ public class DocumentController {
      * @return
      */
     @PostMapping("")
-    public Map<String,Object> addDocument(HttpServletRequest request,@RequestBody Document document){
+    public Map<String,Object> addDocument(HttpServletRequest request,@RequestBody(required = false) Document document){
 
         Map<String,Object> m = new HashMap<>();
         try {
@@ -51,6 +55,9 @@ public class DocumentController {
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
 
+            if(document == null){
+                document = new Document();
+            }
 
             if(document.getContent()==null){
                 document.setContent("");
@@ -59,7 +66,6 @@ public class DocumentController {
                 document.setTitle("untitle");
             }
             Date date = new Date();
-
 
             //设置文档的创建者
             document.setCreatorid(userid);
@@ -88,22 +94,38 @@ public class DocumentController {
     /**
      * 请求方法：Get
      * 请求url：/document/{docid}
-     * 功能：根据docid查找对应的doc文档
+     * 功能：根据docid查找对应的doc文档,并将其加入用户的最近浏览列表
+     * note ： 需要token
      * @param docid
      * @return
      */
     @GetMapping("{docid}")
-    public Map<String,Object> getDocument(@PathVariable("docid") Integer docid){
+    public Map<String,Object> getDocument(@PathVariable("docid") Integer docid,HttpServletRequest request){
         Map<String,Object> remap = new HashMap<>();
-        Document document = documentService.selectDocByDocId(docid);
-        if(document!=null){
-            remap.put("success",true);
-            remap.put("contents",document);
-            documentService.updateDocument(document);
-        }
-        else{
+        try {
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Document document = documentService.selectDocByDocId(docid);
+            if(document!=null){
+                remap.put("success",true);
+                remap.put("contents",document);
+                //检查是否是最近浏览，如果不是将其加入
+                System.out.println(userid);
+                System.out.println(document.getDocid());
+                if(userViewDocService.selectUserViewDocByUidAndDid(userid,document.getDocid())==null){
+                    System.out.println("addUserViewDoc");
+                    userViewDocService.addUserViewDoc(userid,document.getDocid());
+                }
+            }
+            else{
+                remap.put("success",false);
+                remap.put("message","doc does not exists");
+            }
+        } catch (Exception ex){
             remap.put("success",false);
-            remap.put("contents",document);
+            remap.put("message","token error");
         }
         return remap;
     }
@@ -452,7 +474,15 @@ public class DocumentController {
         return remap;
     }
 
-
+    /**
+     * 请求方法：Delete
+     * 请求URL: /document/fav
+     * 功能:删除用户的收藏文档
+     * note： 需要token
+     * @param request 请求
+     * @param map 封装数据的map
+     * @return
+     */
     @DeleteMapping("fav")
     public Map<String,Object> delUserFavDoc(HttpServletRequest request,@RequestBody Map<String,Object> map){
         Map<String,Object> remap = new HashMap<>();
@@ -473,6 +503,15 @@ public class DocumentController {
         return remap;
     }
 
+
+    /**
+     * 请求方法：Delete
+     * 请求URL: /document/fav
+     * 功能:删除用户的收藏文档
+     * note： 需要token
+     * @param request 请求
+     * @return
+     */
     @GetMapping("fav")
     public Map<String,Object> getDocByUserid(HttpServletRequest request){
         Map<String,Object> remap = new HashMap<>();
@@ -501,6 +540,43 @@ public class DocumentController {
     }
 
 
+    /**
+     * 请求方法：Get
+     * 请求URL: /document/view
+     * 功能: 查找用户最近查找
+     * note： 需要token
+     * @param request 请求
+     * @return 封装返回信息的map
+     */
+    @GetMapping("view")
+    public Map<String,Object> getUserViewDoc(HttpServletRequest request){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            List<Integer> docids = userViewDocService.selectUserViewDoc(userid);
+            List<Document> reList = new ArrayList<>();
+            int len = docids.size();
+            System.out.println(len);
+            for(int i=0;i<len;i++){
+                Document doc = documentService.selectDocByDocId(docids.get(i));
+                if(doc!=null){
+                    reList.add(doc);
+                }
+            }
+            System.out.println(reList);
+            remap.put("success",true);
+            remap.put("contents",reList);
+            remap.put("message","get view successfully");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","failed to get favorites");
+        }
+        return remap;
+    }
 
 
 }
