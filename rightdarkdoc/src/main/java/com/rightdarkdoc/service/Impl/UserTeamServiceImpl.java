@@ -89,5 +89,14 @@ public class UserTeamServiceImpl implements UserTeamService {
         return userTeamDao.findTeamMembers(teamid);
     }
 
-
+    /**
+     * 查找我加入的团队
+     *
+     * @param userid
+     * @return
+     */
+    @Override
+    public List<Integer> findMyAttendTeams(Integer userid) {
+        return userTeamDao.findMyAttendTeams(userid);
+    }
 }

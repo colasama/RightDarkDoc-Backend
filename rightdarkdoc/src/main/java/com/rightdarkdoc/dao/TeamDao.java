@@ -51,6 +51,12 @@ public interface TeamDao {
      */
     public List<Team> findTeamsBySearchContent(String searchContent);
 
+    /**
+     * 根据创建者id寻找我创建的团队
+     * @param creatorid
+     */
+    public List<Team> findMyCreateTeams(Integer creatorid);
+
 //
 //
 //    @Select("select * from Team where teamid=#{teamId}")

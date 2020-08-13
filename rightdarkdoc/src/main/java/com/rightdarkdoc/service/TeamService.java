@@ -40,4 +40,8 @@ public interface TeamService {
     public void updateTeam(Team team);
 
     public List<Team> findTeamsBySearchContent(String searchContent);
+
+
+    public List<Team> findMyCreateTeamsByCreatorId(Integer creatorid);
+
 }

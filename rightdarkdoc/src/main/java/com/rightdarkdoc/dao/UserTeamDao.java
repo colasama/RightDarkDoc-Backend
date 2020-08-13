@@ -40,4 +40,11 @@ public interface UserTeamDao {
      */
     public List<Integer> findTeamMembers(Integer teamid);
 
+    /**
+     * 更具userid寻找我加入的团队
+     * @param userid
+     * @return
+     */
+    public List<Integer> findMyAttendTeams(Integer userid);
+
 }

@@ -54,4 +54,12 @@ public interface UserTeamService {
      * @return
      */
     public List<Integer> findTeamMembers(Integer teamid);
+
+    /**
+     * 查找我加入的团队
+     * @param userid
+     * @return
+     */
+    public List<Integer> findMyAttendTeams(Integer userid);
+
 }

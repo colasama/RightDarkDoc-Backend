@@ -24,6 +24,11 @@
 
     <!--查找团队成员-->
     <select id="findTeamMembers" parameterType="Integer" resultType="Integer">
-        select * from User_Team where teamid = #{teamid} and iscreator = 0
+        select userid from User_Team where teamid = #{teamid} and iscreator = 0
+    </select>
+
+    <!--查找我的团队（不是我创建的）-->
+    <select id="findMyAttendTeams" resultType="Integer" parameterType="Integer">
+        select teamid from User_Team where userid = #{userid} and iscreator = 0
     </select>
 </mapper>

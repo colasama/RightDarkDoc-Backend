@@ -19,7 +19,6 @@ import java.util.Map;
 
 
 @RestController
-@CrossOrigin
 public class CommentController {
     @Autowired
     private DocumentService documentService;

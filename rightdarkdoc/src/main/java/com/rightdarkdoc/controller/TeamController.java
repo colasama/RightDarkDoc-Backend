@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("team")
-@CrossOrigin
 public class TeamController {
 
     @Autowired
@@ -137,7 +136,6 @@ public class TeamController {
      */
     @GetMapping("/{teamidString}/deleteMember")
     public Map<String, Object> deleteMember(@RequestParam(value = "deletedname", required = false) String deletedname,
-                                            @RequestParam(value = "teamname", required = false) String teamname,
                                             @PathVariable String teamidString, HttpServletRequest request) {
 
         System.out.println("接收到一个删除团队成员请求");
@@ -185,7 +183,6 @@ public class TeamController {
      */
     @GetMapping("/{teamidString}/deleteTeam")
     public Map<String, Object> deleteTeam(HttpServletRequest request,
-                                          @RequestParam(value = "teamname", required = false) String teamname,
                                           @PathVariable String teamidString) {
         System.out.println("接收到一个团队删除请求");
         Map<String, Object> map = new HashMap<>();
@@ -200,14 +197,16 @@ public class TeamController {
             //System.out.println(userid1);
             Integer userid = Integer.valueOf(userid1);
 
-            Team team = teamService.findTeamByTeamnameAndCreatorId(teamname, userid);
+            Integer teamid = Integer.valueOf(teamidString);
+            Team team = teamService.findTeamByTeamid(teamid);
 
-            if (team == null) {
+            System.out.println(userid);
+            System.out.println(team.getCreatorid());
+            if (!team.getCreatorid().equals(userid)) {
                 map.put("success", false);
                 map.put("message", "用户没有删除权限！");
             } else {
                 //删除User_Team, Team表对应的记录
-                Integer teamid = Integer.valueOf(teamidString);
                 userTeamService.deleteTeamByTeamid(teamid);
                 teamService.deleteTeamByTeamid(teamid);
                 map.put("success", true);
@@ -370,8 +369,12 @@ public class TeamController {
                 map.put("message", "用户没有修改权限！");
             } else {
                 //修改team表
-                team.setTeaminfo(newTeaminfo);
-                team.setTeamname(newTeamname);
+                if (newTeamname != null) {
+                    team.setTeamname(newTeamname);
+                }
+                if (newTeaminfo != null) {
+                    team.setTeaminfo(newTeaminfo);
+                }
                 teamService.updateTeam(team);
                 map.put("success", true);
                 map.put("message", "修改团队信息成功！");
@@ -422,15 +425,16 @@ public class TeamController {
             //取出docids
             List<Integer> docids = teamDocumentService.findAllTeamDocuments(teamid);
             List<Document> documents = new ArrayList<>();
-
+            System.out.println(docids);
             for (Integer docid : docids) {
                 Document tempDoc = documentService.selectDocByDocId(docid);
-
                 //判断一下是不是垃圾文件
-                if (tempDoc.getIstrash() == 0) {
-                    documents.add(tempDoc);
+                tempDoc.setContent("");
+                if (tempDoc != null) {
+                    if (tempDoc.getIstrash() == 0) {
+                        documents.add(tempDoc);
+                    }
                 }
-
             }
             map.put("documents", documents);
             map.put("success", true);
@@ -443,5 +447,54 @@ public class TeamController {
         return map;
     }
 
+
+    /**
+     * 查看我的团队
+     * @param request
+     * @return
+     */
+    @GetMapping("/myTeams")
+    public Map<String, Object> viewMyTeams(HttpServletRequest request) {
+        System.out.println("接收到一个查看我的团队的请求");
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+
+            //看是否是创建者发起的请求
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
+
+            List<Team> myCreateTeams = new ArrayList<>();
+            myCreateTeams = teamService.findMyCreateTeamsByCreatorId(userid);
+
+            List<Integer> myAttendTeamsId = new ArrayList<>();
+            myAttendTeamsId = userTeamService.findMyAttendTeams(userid);
+//            System.out.println(myAttendTeamsId);
+            List<Team> myAttendTeams = new ArrayList<>();
+
+            for (Integer integer : myAttendTeamsId) {
+                Team team = teamService.findTeamByTeamid(integer);
+                myAttendTeams.add(team);
+            }
+
+            for (Team myCreateTeam : myCreateTeams) {
+                myAttendTeams.add(myCreateTeam);
+            }
+
+//            map.put("myCreateTeams", myCreateTeams);
+            map.put("myAttendTeams", myAttendTeams);
+            map.put("success", true);
+            map.put("message", "查看成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "查看失败！");
+        }
+        return map;
+    }
 
 }
