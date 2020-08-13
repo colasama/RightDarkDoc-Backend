@@ -3,6 +3,12 @@
 <mapper namespace="com.rightdarkdoc.dao.DocumentDao">
 
     <insert id="addDocument"  parameterType="com.rightdarkdoc.entity.Document">
+
+
+
+
+
+
         insert into `Document`
          values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash})
     </insert>

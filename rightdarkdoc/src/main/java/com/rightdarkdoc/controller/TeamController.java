@@ -176,7 +176,6 @@ public class TeamController {
     /**
      * 删除团队
      * @param request
-     * @param teamname  团队名称
      * @param teamidString 团队id
      * @return
      */

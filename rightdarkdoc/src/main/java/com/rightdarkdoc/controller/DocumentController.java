@@ -1,6 +1,5 @@
 package com.rightdarkdoc.controller;
 
-
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.entity.User;
@@ -135,7 +134,6 @@ public class DocumentController {
      * 请求Url：/document
      * 功能： 更新doc的信息，用于打开文件编辑之后的保存
      * note: 需要token，用来设置最后编辑用户的id
-     * @param document  封装更新的信息
      * @return 封装了信息的map
      */
     @PutMapping("")
@@ -155,14 +153,11 @@ public class DocumentController {
             remap.put("success",true);
             remap.put("message","modify doc successfully");
         } catch(Exception ex) {
-            remap.put("success",true);
+            remap.put("success",false);
             remap.put("message","failed to modify doc");
         }
         return remap;
     }
-
-
-
 
 
     /**
@@ -229,6 +224,7 @@ public class DocumentController {
         return remap;
     }
 
+
     /**
      *  请求方法：PUT
      *  请求URL：/document/mod_auth
@@ -259,7 +255,6 @@ public class DocumentController {
         }
         return remap;
     }
-
 
 
     /**
@@ -447,6 +442,7 @@ public class DocumentController {
         return m;
     }
 
+
     /**
      * 请求方法：Post
      * 请求URL: /document/fav
@@ -482,6 +478,7 @@ public class DocumentController {
         }
         return remap;
     }
+
 
     /**
      * 请求方法：Delete
@@ -587,6 +584,7 @@ public class DocumentController {
         return remap;
     }
 
+
     /**
      * 请求方法：Get
      * 请求URL: /document/trash
@@ -622,6 +620,4 @@ public class DocumentController {
         }
         return remap;
     }
-
-
 }
