@@ -1,5 +1,6 @@
 package com.rightdarkdoc.controller;
 
+
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.entity.User;
@@ -66,14 +67,37 @@ public class DocumentController {
             Date date = new Date();
 
             //设置文档的创建者
-            document.setCreatorid(userid);
-            document.setEditcount(1);
-            document.setIstrash(0);
-            document.setLastedituserid(userid);
-            document.setAuth(7);
-            document.setTeamauth(1);
-            document.setCreattime(date);
-            document.setLastedittime(date);
+
+            if(document.getCreatorid()==null){
+                document.setCreatorid(userid);
+            }
+
+            if(document.getEditcount()==null){
+                document.setEditcount(1);
+            }
+
+            if(document.getIstrash()==null){
+                document.setIstrash(0);
+            }
+
+            if(document.getLastedituserid()==null){
+                document.setLastedituserid(userid);
+            }
+
+            if(document.getAuth()==null){
+                document.setAuth(7);
+            }
+
+            if(document.getTeamauth()==null){
+                document.setTeamauth(1);
+            }
+
+            if(document.getCreattime()==null){
+                document.setCreattime(date);
+            }
+            if(document.getLastedituserid()==null){
+                document.setLastedittime(date);
+            }
             //创建document
             documentService.addDocument(document);
             System.out.println(document);
@@ -134,6 +158,7 @@ public class DocumentController {
      * 请求Url：/document
      * 功能： 更新doc的信息，用于打开文件编辑之后的保存
      * note: 需要token，用来设置最后编辑用户的id
+     * @param document  封装更新的信息
      * @return 封装了信息的map
      */
     @PutMapping("")
@@ -153,11 +178,15 @@ public class DocumentController {
             remap.put("success",true);
             remap.put("message","modify doc successfully");
         } catch(Exception ex) {
+            ex.printStackTrace();
             remap.put("success",false);
             remap.put("message","failed to modify doc");
         }
         return remap;
     }
+
+
+
 
 
     /**
@@ -223,7 +252,6 @@ public class DocumentController {
         return remap;
     }
 
-
     /**
      *  请求方法：PUT
      *  请求URL：/document/mod_auth
@@ -254,6 +282,7 @@ public class DocumentController {
         }
         return remap;
     }
+
 
 
     /**
@@ -441,14 +470,13 @@ public class DocumentController {
         return m;
     }
 
-
     /**
      * 请求方法：Post
      * 请求URL: /document/fav
      * 功能：增加用户的收藏文档
      * note： 需要token
      * @param request 请求
-     * @param map
+     * @param map 1.int:docid
      * @return
      */
     @PostMapping("fav")
@@ -461,6 +489,7 @@ public class DocumentController {
             Integer userid = Integer.valueOf(userTemp);
             Integer docid = Integer.valueOf(map.get("docid").toString());
             Integer judge = userFavDocService.selectDocByUidAndDid(userid,docid);
+            System.out.println(judge);
             if(judge!=null){
                 remap.put("success",false);
                 remap.put("message","already add this doc to favorites");
@@ -477,7 +506,6 @@ public class DocumentController {
         }
         return remap;
     }
-
 
     /**
      * 请求方法：Delete
@@ -547,6 +575,40 @@ public class DocumentController {
 
     /**
      * 请求方法：Get
+     * 请求URL: /document/fav/{docid}
+     * 功能:获取用户的是否收藏了文档
+     * note： 需要token
+     * @param docid 文档的id
+     * @param request 请求体
+     * @return
+     */
+    @GetMapping("fav/{docid}")
+    public Map<String,Object> getFavDocByUidAndDid(@PathVariable("docid") Integer docid,HttpServletRequest request){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Integer judge = userFavDocService.selectDocByUidAndDid(userid,docid);
+            System.out.println(judge);
+            if(judge==null){
+                remap.put("success",true);
+                remap.put("isFav",false);
+            } else{
+                remap.put("success",true);
+                remap.put("isFav",true);
+            }
+        } catch (Exception ex){
+            remap.put("success",false);
+            remap.put("isFav",false);
+        }
+        return remap;
+    }
+
+
+    /**
+     * 请求方法：Get
      * 请求URL: /document/view
      * 功能: 查找用户最近浏览
      * note： 需要token
@@ -583,7 +645,6 @@ public class DocumentController {
         return remap;
     }
 
-
     /**
      * 请求方法：Get
      * 请求URL: /document/trash
@@ -619,4 +680,6 @@ public class DocumentController {
         }
         return remap;
     }
+
+
 }

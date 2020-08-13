@@ -411,7 +411,7 @@ HTTP方法：`Get`
 
 HTTP方法：`put`
 
-请求URL:  `http://39.106.230.20:8090/document/creator`
+请求URL:  `http://39.106.230.20:8090/document/`
 
 请求参数
 
@@ -736,6 +736,49 @@ or:
 | ------- | ------- | ------------------- | -------------- |
 | success | Boolean | false               | 请求失败的标识 |
 | message | string  | doc does not exists | 文件不存在     |
+
+
+
+
+
+#### 判断用户是否收藏了文档
+
+**请求说明**
+
+HTTP：Get
+
+Url：`http：http://39.106.230.20:8090/document/fav/{int:docid}`
+
+请求参数：在url中
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值   | 说明           |
+| ------- | ------- | ---- | -------------- |
+| success | Boolean | true | 请求成功的标识 |
+| isFav   | Boolean | True | 用户以收藏     |
+
+Or:
+
+| 参数    | 类型    | 值    | 说明           |
+| ------- | ------- | ----- | -------------- |
+| success | Boolean | true  | 请求成功的标识 |
+| isFav   | Boolean | false | 用户未收藏     |
+
+请求失败：
+
+| 参数    | 类型    | 值    | 说明         |
+| ------- | ------- | ----- | ------------ |
+| success | Boolean | false | 请求失败标识 |
+| isFav   | Boolean | false | 无效         |
+
+
+
+
 
 
 
