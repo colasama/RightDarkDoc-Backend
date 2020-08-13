@@ -34,6 +34,11 @@
     <select id="selectUserByUsername" resultType="User">
         select * from User where username=#{username}
     </select>
-
+    
+    
+    <select id="selectUserByUsernameFuz" parameterType="java.lang.String" resultType="com.rightdarkdoc.entity.User">
+        select * from User
+        where username like CONCAT('%',#{username},'%')
+    </select>
 
 </mapper>

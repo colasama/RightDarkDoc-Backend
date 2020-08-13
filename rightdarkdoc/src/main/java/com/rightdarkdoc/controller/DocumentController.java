@@ -3,18 +3,19 @@ package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.Document;
+import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.DocumentService;
+import com.rightdarkdoc.service.UserFavDocService;
+import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.utils.JWTUtils;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/document")
@@ -23,6 +24,12 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserFavDocService userFavDocService;
 
 
     /**
@@ -267,7 +274,7 @@ public class DocumentController {
      * 功能：将指定的文件移入垃圾箱
      * note：需要token来查找用户身份，来确定用户是否有权限将其放入垃圾箱
      * @param docid 要移入垃圾箱的doc文件id
-     * @return  包含返回怒信息的对象
+     * @return  包含返回信息的对象
      */
     @DeleteMapping("{docid}")
     public Map<String,Object> moveDocToTrash(@PathVariable("docid") Integer docid,HttpServletRequest request){
@@ -301,7 +308,82 @@ public class DocumentController {
         return m;
     }
 
+    /**
+     * 请求方法：Delete
+     * 请求Url：/document/permanent/{int:docid}
+     * 功能：永久删除一个文档
+     * @param docid 永久删除的文档id
+     * @param request  请求体
+     * @return  封装返回信息的map
+     */
+    @DeleteMapping("/permanent/{docid}")
+    public Map<String,Object> permanentDelete(@PathVariable("docid") Integer docid,HttpServletRequest request){
+        Map<String,Object> m = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Document document = documentService.selectDocByDocId(docid);
+            System.out.println(document);
+            if(document==null){
+                m.put("success",false);
+                m.put("message","doc does not exists");
+            }
+            else if(!document.getCreatorid().equals(userid)){
+                m.put("success",false);
+                m.put("message","haven't authority to delete doc permanently");
+            }
+            else{
+                documentService.deleteDoc(docid);
+                m.put("success",true);
+                m.put("message","successfully delete doc permanently");
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            m.put("success",false);
+            m.put("message","failed to delete permanently");
+        }
+        return m;
+    }
 
+
+    /**
+     * 请求方法：Delete
+     * 请求Url：/document/permanent/all
+     * 功能:清空回收站里的所有doc文档，回收站里的文档的创建者都应该是这个用户，也就是说，只有
+     *  创建者才有权限删除文档
+     */
+    @DeleteMapping("/permanent/all")
+    public Map<String,Object> clearUserTrash(HttpServletRequest request){
+
+        Map<String,Object> m = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            documentService.deleteAllDocInTrash(userid);
+            m.put("success",true);
+            m.put("message","successfully clear trash");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            m.put("success",false);
+            m.put("message","failed to clear trash");
+        }
+        return m;
+
+    }
+
+
+    /**
+     * 请求方法：Put
+     * 请求Url：/recover/{int:docid}
+     * 功能：恢复一个被放入回收站的文档
+     * @param docid 从回收站恢复的文档id
+     * @param request   请求体
+     * @return
+     */
     @PutMapping("recover/{docid}")
     public Map<String,Object> recoverDocFromTrash(@PathVariable("docid") Integer docid,HttpServletRequest request){
 
@@ -332,6 +414,90 @@ public class DocumentController {
             m.put("message","failed to move to trash");
         }
         return m;
+    }
+
+    /**
+     * 请求方法：Post
+     * 请求URL: /document/fav
+     * 功能：增加用户的收藏文档
+     * note： 需要token
+     * @param request 请求
+     * @param map
+     * @return
+     */
+    @PostMapping("fav")
+    public Map<String,Object> addUserFavDoc(HttpServletRequest request, @RequestBody Map<String,Object> map){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Integer docid = Integer.valueOf(map.get("docid").toString());
+            Integer judge = userFavDocService.selectDocByUidAndDid(userid,docid);
+            if(judge!=null){
+                remap.put("success",false);
+                remap.put("message","already add this doc to favorites");
+            }
+            else {
+                userFavDocService.addUserFavDoc(userid, docid);
+                remap.put("success", true);
+                remap.put("message", "Add to favorites successfully");
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","failed to add to favorites");
+        }
+        return remap;
+    }
+
+
+    @DeleteMapping("fav")
+    public Map<String,Object> delUserFavDoc(HttpServletRequest request,@RequestBody Map<String,Object> map){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Integer docid = Integer.valueOf(map.get("docid").toString());
+            userFavDocService.deleteUserFavDoc(userid,docid);
+            remap.put("success",false);
+            remap.put("message","remove from favorites successfully");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","failed to delete");
+        }
+        return remap;
+    }
+
+    @GetMapping("fav")
+    public Map<String,Object> getDocByUserid(HttpServletRequest request){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            System.out.println(userid);
+            List<Integer> docids = userFavDocService.selectDocByUserid(userid);
+            List<Document> reList = new ArrayList<>();
+            int len = docids.size();
+            System.out.println(len);
+            for(int i=0;i<len;i++){
+                reList.add(documentService.selectDocByDocId(docids.get(i)));
+            }
+            remap.put("success",true);
+            remap.put("contents",reList);
+            remap.put("message","get favorites successfully");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","failed to get favorites");
+        }
+        return remap;
     }
 
 

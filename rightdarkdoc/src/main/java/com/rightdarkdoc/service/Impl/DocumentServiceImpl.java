@@ -27,6 +27,24 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     /**
+     * 根据文件的id删除一个文件
+     * @param docid 待删除文件的id
+     */
+    @Override
+    public void deleteDoc(Integer docid) {
+        documentDao.deleteDoc(docid);
+    }
+
+    /**
+     * 删除用户回收站里的所有文档
+     * @param creatorid  用户的id
+     */
+    @Override
+    public void deleteAllDocInTrash(Integer creatorid){
+        documentDao.deleteAllDocInTrash(creatorid);
+    }
+
+    /**
      * 更新一个文件的信息
      * @param document 更新文件的信息
      */

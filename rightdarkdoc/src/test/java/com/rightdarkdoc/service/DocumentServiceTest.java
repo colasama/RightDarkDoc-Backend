@@ -55,5 +55,11 @@ public class DocumentServiceTest {
     }
 
 
+    @Test
+    public void deleDocTest(){
+        documentService.deleteDoc(2);
+    }
+
+
 
 }

@@ -48,8 +48,16 @@ public interface UserDao {
 
     /**
      * 根据用户名查询用户信息
-     * @param username
+     * @param username 待查询用户名
      * @return
      */
     public User selectUserByUsername(String username);
+
+
+    /**
+     * 根据用户名进行模糊匹配
+     * @param username  待查询用户名
+     * @return 封装User的List
+     */
+    public List<User> selectUserByUsernameFuz(String username);
 }

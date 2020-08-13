@@ -6,6 +6,8 @@ import com.rightdarkdoc.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 public interface UserService {
 
@@ -44,6 +46,14 @@ public interface UserService {
      * @return  user对象
      */
     public User selectUserByUsername(String username);
+
+
+    /**
+     * 根据用户username模糊查找用户名
+     * @param username 需要查找的用户id
+     * @return
+     */
+    public List<User> selectUserByUsernameFuz(String username);
 
 
     /**

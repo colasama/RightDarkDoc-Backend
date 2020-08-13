@@ -7,6 +7,15 @@
          values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash})
     </insert>
 
+
+    <delete id="deleteDoc" parameterType="java.lang.Integer">
+        delete from `Document` where docid=#{docid}
+    </delete>
+
+    <delete id="deleteAllDocInTrash" parameterType="java.lang.Integer">
+        delete from `Document` where creatorid=#{creatorid} and istrash=1
+    </delete>
+
     <update id="updateDocument" parameterType="com.rightdarkdoc.entity.Document">
         update `Document` set
         creatorid=#{creatorid},title=#{title},content=#{content},creattime=#{creattime},

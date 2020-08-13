@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -40,7 +41,37 @@ public class UserController {
 
 
     /**
-     * 通过token获取用户id，并更新信息，返回前端相应信息
+     * 请求方法：Put
+     * 请求Url：/user/fuzSearch
+     * 功能：模糊匹配usre信息并返回前端
+     * @param map 参数：1. String: username
+     * @return
+     */
+    @GetMapping("fuzSearch")
+    public Map<String,Object> getUserByUserNameFuz(@RequestBody Map<String,Object> map){
+        HashMap<String,Object> remap = new HashMap<>();
+        try{
+            String username = map.get("username").toString();
+            List<User> users = userService.selectUserByUsernameFuz(username);
+            int len = users.size();
+            for(int i=0;i<len;i++){
+                users.get(i).setPassword("");
+            }
+            remap.put("success",true);
+            remap.put("message","successfully get users");
+            remap.put("contents",users);
+        }catch (Exception ex){
+            remap.put("success",false);
+            remap.put("message","fail to get users");
+        }
+        return remap;
+    }
+
+
+    /**
+     * 请求方法：Put
+     * 请求Url：/user/mod_info
+     * 功能：通过token获取用户id，并更新信息，返回前端相应信息
      * note ：需要 token,  且不能更改密码，
      * 密码修改通过另一个接口进行
      * @param user 封装更新信息的user对象

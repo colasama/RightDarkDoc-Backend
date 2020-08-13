@@ -43,7 +43,7 @@ class UserServiceTest {
 
     @Test
     public void selectUserByUsernameTest(){
-        System.out.println(userService.selectUesrByUsername("wzk"));
-
+        System.out.println(userService.selectUserByUsername("wzk"));
+        System.out.println(userService.selectUserByUsernameFuz("y"));
     }
 }

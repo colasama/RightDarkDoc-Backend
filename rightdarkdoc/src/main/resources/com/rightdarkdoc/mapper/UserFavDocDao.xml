@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rightdarkdoc.dao.UserFavDocDao">
+    <!-- 实现用户收藏文档的功能 -->
+    <insert id="addUserFavDoc">
+        insert into `User_Doc_Fav` values(#{userid},#{docid})
+    </insert>
+
+    <delete id="deleteUserFavDoc">
+        delete from `User_Doc_Fav` where userid=#{userid} and docid=#{docid}
+    </delete>
+
+    <select id="selectDocByUserid" resultType="java.lang.Integer">
+        select docid from `User_Doc_Fav` where userid=#{userid}
+    </select>
+
+    <select id="selectDocByUidAndDid" resultType="java.lang.Integer">
+        select docid from `User_Doc_Fav` where userid=#{userid} and docid=#{docid}
+    </select>
+</mapper>

@@ -15,6 +15,20 @@ public interface DocumentService {
 
 
     /**
+     * 删除一个文件
+     * @param docid 待删除文件的id
+     */
+    public void deleteDoc(Integer docid);
+
+
+    /**
+     * 删除用户回收站里的所有文档
+     * @param creatorid  用户的id
+     */
+    public void deleteAllDocInTrash(Integer creatorid);
+
+
+    /**
      * 更新一个文件的内容
      * @param document
      */

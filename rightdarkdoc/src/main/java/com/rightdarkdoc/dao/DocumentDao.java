@@ -19,6 +19,20 @@ public interface DocumentDao {
 
 
     /**
+     * 永久删除doc
+     * @param docid   需要删除的doc的id
+     */
+    public void deleteDoc(Integer docid);
+
+
+    /**
+     * 永久删除用户回收站里的doc文档
+     * @param creatorid  用户的id
+     */
+    public void deleteAllDocInTrash(Integer creatorid);
+
+
+    /**
      * 更新doc的信息
      * @param document  保存信息的document对象
      */
@@ -54,6 +68,7 @@ public interface DocumentDao {
      * @return 包含doc的list
      */
     public List<Document> selectDocByCreatorId(@Param("creatorid") Integer creatorid);
+
 
 }
 
