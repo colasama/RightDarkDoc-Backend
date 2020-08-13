@@ -476,7 +476,7 @@ public class DocumentController {
      * 功能：增加用户的收藏文档
      * note： 需要token
      * @param request 请求
-     * @param map
+     * @param map 1.int:docid
      * @return
      */
     @PostMapping("fav")
@@ -489,6 +489,7 @@ public class DocumentController {
             Integer userid = Integer.valueOf(userTemp);
             Integer docid = Integer.valueOf(map.get("docid").toString());
             Integer judge = userFavDocService.selectDocByUidAndDid(userid,docid);
+            System.out.println(judge);
             if(judge!=null){
                 remap.put("success",false);
                 remap.put("message","already add this doc to favorites");
@@ -567,6 +568,40 @@ public class DocumentController {
             ex.printStackTrace();
             remap.put("success",false);
             remap.put("message","failed to get favorites");
+        }
+        return remap;
+    }
+
+
+    /**
+     * 请求方法：Get
+     * 请求URL: /document/fav/{docid}
+     * 功能:获取用户的是否收藏了文档
+     * note： 需要token
+     * @param docid 文档的id
+     * @param request 请求体
+     * @return
+     */
+    @GetMapping("fav/{docid}")
+    public Map<String,Object> getFavDocByUidAndDid(@PathVariable("docid") Integer docid,HttpServletRequest request){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Integer judge = userFavDocService.selectDocByUidAndDid(userid,docid);
+            System.out.println(judge);
+            if(judge==null){
+                remap.put("success",true);
+                remap.put("isFav",false);
+            } else{
+                remap.put("success",true);
+                remap.put("isFav",true);
+            }
+        } catch (Exception ex){
+            remap.put("success",false);
+            remap.put("isFav",false);
         }
         return remap;
     }
