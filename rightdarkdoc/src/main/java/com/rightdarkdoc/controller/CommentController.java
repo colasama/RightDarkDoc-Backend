@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("team")
+@CrossOrigin
 public class CommentController {
     @Autowired
     private DocumentService documentService;
@@ -37,8 +37,8 @@ public class CommentController {
      * @param teamidString
      * @return
      */
-    @PostMapping("/{teamidString}/document/{docidString}/createComment")
-    public Map<String, Object> createComment(HttpServletRequest request,
+    @PostMapping("/team/{teamidString}/document/{docidString}/createComment")
+    public Map<String, Object> createTeamDocComment(HttpServletRequest request,
                                                @RequestBody Map<String, String> requestmap,
                                                @PathVariable String docidString,
                                                @PathVariable String teamidString) {
@@ -79,17 +79,17 @@ public class CommentController {
     }
 
     /**
-     * 删除评论     只有评论者自己或者是团队的管理员可以删除评论
+     * 删除评论   只有评论者自己或者是文档作者可以删除评论
      * @param request
      * @param requestmap        需要评论的id comid
      * @param teamidString
      * @param docidString
      * @return
      */
-    @PostMapping("/{teamidString}/document/{docidString}/deleteComment")
-    public Map<String, Object> deleteComment(HttpServletRequest request,
+    @PostMapping("/document/{docidString}/deleteComment")
+    public Map<String, Object> deleteTeamDocComment(HttpServletRequest request,
                                              @RequestBody Map<String, String> requestmap,
-                                             @PathVariable String teamidString,
+//                                             @PathVariable String teamidString,
                                              @PathVariable String docidString) {
         System.out.println("接收到一个团队文档评论请求");
         Map<String, Object> map = new HashMap<>();
@@ -101,14 +101,22 @@ public class CommentController {
             Integer userid = Integer.valueOf(userid1);
 
             //判断是否有删除权限（只有评论者自己和团队的队长可以删除）
-            Integer teamid = Integer.valueOf(teamidString);
-            Integer teamCreatorId = teamService.findTeamByTeamid(teamid).getCreatorid();    //团队队长
+//            Integer teamid = Integer.valueOf(teamidString);
+//            Integer teamCreatorId = teamService.findTeamByTeamid(teamid).getCreatorid();    //团队队长
             String comidString = requestmap.get("comid");
             Integer comid = Integer.valueOf(comidString);
             Integer commentCreatorId = commentService.findCommentByCommentId(comid).getUserid();    //创建者id
 
+            //文档创建者id
+            Integer docid = Integer.valueOf(docidString);
+            Integer documentCreatorId = documentService.selectDocByDocId(docid).getCreatorid();
+
             Boolean isDeleteable = false;
-            if ((teamCreatorId.equals(userid)) || (commentCreatorId.equals(userid))) {
+//            if ((teamCreatorId.equals(userid)) || (commentCreatorId.equals(userid))) {
+//                isDeleteable = true;
+//            }
+
+            if(documentCreatorId.equals(userid) || commentCreatorId.equals(userid)) {
                 isDeleteable = true;
             }
 
@@ -132,27 +140,16 @@ public class CommentController {
     /**
      * 显示文档的所有评论
      * @param request
-     * @param teamidString
      * @param docidString
      * @return
      */
-    @GetMapping("/{teamidString}/document/{docidString}/comments")
-    public Map<String, Object> showDocComments(HttpServletRequest request,
-                                             @PathVariable String teamidString,
+    @GetMapping("/document/{docidString}/comments")
+    public Map<String, Object> showTeamDocComments(HttpServletRequest request,
                                              @PathVariable String docidString) {
         System.out.println("接收到一个查看团队文档所有评论请求");
         Map<String, Object> map = new HashMap<>();
         try {
-            String token = request.getHeader("token");
-            //取出token中的用户id
-            DecodedJWT verify = JWTUtils.verify(token);
-            String userid1 = verify.getClaim("userid").asString();
-            Integer userid = Integer.valueOf(userid1);
-
-            Integer teamid = Integer.valueOf(teamidString);
             Integer docid = Integer.valueOf(docidString);
-
-
             List<Comment> comments = new ArrayList<>();
             comments = commentService.findAllCommentsByDocumentId(docid);
             map.put("comments", comments);
@@ -168,5 +165,54 @@ public class CommentController {
         return map;
     }
 
+
+    /**
+     * 给一个普通文档创建评论
+     * @param request
+     * @param requestmap
+     * @param docidString
+     * @return
+     */
+    @PostMapping("/document/{docidString}/createComment")
+    public Map<String, Object> createNormalDocComment(HttpServletRequest request,
+                                                    @RequestBody Map<String, String> requestmap,
+                                                    @PathVariable String docidString) {
+        System.out.println("接收到一个普通文档评论请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+            String userid1 = verify.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userid1);
+
+            //判断document是否可评论
+            Integer docid = Integer.valueOf(docidString);
+            Document document = documentService.selectDocByDocId(docid);
+            Boolean isCommentable = true;
+            System.out.println(document.getIstrash());
+            System.out.println(document.getAuth());
+            if (document.getIstrash() == 1 || document.getAuth() <= 1) {
+                isCommentable = false;
+            }
+            System.out.println(isCommentable);
+            if (isCommentable) {
+                String content = requestmap.get("content");
+                Comment comment = new Comment(docid, content, userid);
+                commentService.createNewComment(comment);
+                map.put("success", true);
+                map.put("message", "用户评论成功！");
+            }
+            else {
+                map.put("success", false);
+                map.put("message", "该文档您不能评论！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "用户评论失败！");
+        }
+        return map;
+    }
 
 }

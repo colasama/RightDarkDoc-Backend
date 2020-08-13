@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("team")
+@CrossOrigin
 public class TeamController {
 
     @Autowired
