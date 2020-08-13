@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
 @RequestMapping("user")
 public class UserController {
 
@@ -28,7 +28,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @PostMapping("info")
+    @GetMapping("info")
     public User getUserInfo(HttpServletRequest request){
         String token = request.getHeader("token");
         DecodedJWT decoder = JWTUtils.verify(token);
@@ -65,7 +65,6 @@ public class UserController {
         }
         return remap;
     }
-
 
 
     /**
@@ -135,8 +134,5 @@ public class UserController {
         }
         return remap;
     }
-
-
-
 
 }
