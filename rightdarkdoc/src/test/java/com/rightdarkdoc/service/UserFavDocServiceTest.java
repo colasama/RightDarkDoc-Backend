@@ -30,8 +30,8 @@ public class UserFavDocServiceTest {
 
     @Test
     public void selectAllTest(){
-//        System.out.println(userFavDocService.selectDocByUidAndDid(1,2));
-//        System.out.println(userFavDocService.selectDocByUidAndDid(1,3));
+        System.out.println(userFavDocService.selectDocByUidAndDid(1,2));
+        System.out.println(userFavDocService.selectDocByUidAndDid(1,4));
     }
 
 }

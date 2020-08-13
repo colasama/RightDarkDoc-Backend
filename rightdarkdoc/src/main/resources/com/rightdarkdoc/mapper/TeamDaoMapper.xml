@@ -32,4 +32,9 @@
         select * from Team where teamname like #{searchContent}
     </select>
 
+
+    <!--根据创建者id寻找我的团队-->
+    <select id="findMyCreateTeams" parameterType="Integer" resultType="Team">
+        select * from Team where creatorid like #{creatorid}
+    </select>
 </mapper>

@@ -79,4 +79,9 @@ public class TeamServiceImpl implements TeamService {
         return teamDao.findTeamsBySearchContent(searchContent1);
     }
 
+    @Override
+    public List<Team> findMyCreateTeamsByCreatorId(Integer creatorid) {
+        return teamDao.findMyCreateTeams(creatorid);
+    }
+
 }
