@@ -38,7 +38,7 @@ public interface UserFavDocService {
      * @param docid doc文档id
      * @return  返回查找到的docid
      */
-    public Integer selectDocByUidAndDid(@Param("userid") Integer userid,@Param("docid") Integer docid);
+    public Integer selectDocByUidAndDid(Integer userid,Integer docid);
 
 
 }

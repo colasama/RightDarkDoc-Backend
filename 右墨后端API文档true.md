@@ -229,7 +229,7 @@ token均通过headers传入，参数名为`token`
 
 HTTP方法：`GET`
 
-请求URL：`http://39.106.230.20:8090/team/inviteMember`
+请求URL：`http://39.106.230.20:8090/user/info`
 
 **返回说明**
 

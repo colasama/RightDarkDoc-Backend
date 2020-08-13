@@ -42,9 +42,4 @@ public interface UserFavDocDao {
     public Integer selectDocByUidAndDid(@Param("userid") Integer userid,@Param("docid") Integer docid);
 
 
-
-
-
-
-
 }
