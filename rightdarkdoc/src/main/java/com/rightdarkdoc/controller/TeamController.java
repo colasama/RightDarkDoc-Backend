@@ -131,12 +131,10 @@ public class TeamController {
      * 删除一个团队成员
      * @param deletedname 被删除者用户名
      * @param teamidString  团队id
-     * @param teamname 团队名称
      * @return
      */
     @GetMapping("/{teamidString}/deleteMember")
     public Map<String, Object> deleteMember(@RequestParam(value = "deletedname", required = false) String deletedname,
-                                            @RequestParam(value = "teamname", required = false) String teamname,
                                             @PathVariable String teamidString, HttpServletRequest request) {
 
         System.out.println("接收到一个删除团队成员请求");
@@ -152,9 +150,10 @@ public class TeamController {
             //System.out.println(userid1);
             Integer userid = Integer.valueOf(userid1);
 
-            Team team = teamService.findTeamByTeamnameAndCreatorId(teamname, userid);
+            Integer teamid = Integer.valueOf(teamidString);
+            Team team = teamService.findTeamByTeamid(teamid);
 
-            if (team == null) {
+            if (team == null||(!team.getCreatorid().equals(userid))) {
                 map.put("success", false);
                 map.put("message", "用户没有删除权限！");
             } else {
@@ -162,7 +161,6 @@ public class TeamController {
                 User deleted = userService.selectUserByUsername(deletedname);
                 //System.out.println(invitee);
                 Integer deletedid = deleted.getUserid();
-                Integer teamid = Integer.valueOf(teamidString);
                 userTeamService.deleteTeamMember(teamid, deletedid);
                 map.put("success", true);
                 map.put("message", "删除成员成功！");
