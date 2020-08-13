@@ -411,7 +411,7 @@ HTTP方法：`Get`
 
 HTTP方法：`put`
 
-请求URL:  `http://39.106.230.20:8090/document/creator`
+请求URL:  `http://39.106.230.20:8090/document/`
 
 请求参数
 

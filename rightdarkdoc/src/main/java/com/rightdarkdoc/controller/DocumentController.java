@@ -67,14 +67,37 @@ public class DocumentController {
             Date date = new Date();
 
             //设置文档的创建者
-            document.setCreatorid(userid);
-            document.setEditcount(1);
-            document.setIstrash(0);
-            document.setLastedituserid(userid);
-            document.setAuth(7);
-            document.setTeamauth(1);
-            document.setCreattime(date);
-            document.setLastedittime(date);
+
+            if(document.getCreatorid()==null){
+                document.setCreatorid(userid);
+            }
+
+            if(document.getEditcount()==null){
+                document.setEditcount(1);
+            }
+
+            if(document.getIstrash()==null){
+                document.setIstrash(0);
+            }
+
+            if(document.getLastedituserid()==null){
+                document.setLastedituserid(userid);
+            }
+
+            if(document.getAuth()==null){
+                document.setAuth(7);
+            }
+
+            if(document.getTeamauth()==null){
+                document.setTeamauth(1);
+            }
+
+            if(document.getCreattime()==null){
+                document.setCreattime(date);
+            }
+            if(document.getLastedituserid()==null){
+                document.setLastedittime(date);
+            }
             //创建document
             documentService.addDocument(document);
             System.out.println(document);
@@ -155,7 +178,8 @@ public class DocumentController {
             remap.put("success",true);
             remap.put("message","modify doc successfully");
         } catch(Exception ex) {
-            remap.put("success",true);
+            ex.printStackTrace();
+            remap.put("success",false);
             remap.put("message","failed to modify doc");
         }
         return remap;
