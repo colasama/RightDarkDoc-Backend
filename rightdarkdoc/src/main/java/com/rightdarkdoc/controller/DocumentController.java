@@ -77,15 +77,15 @@ public class DocumentController {
             document.setLastedittime(date);
             //创建document
             documentService.addDocument(document);
+            System.out.println(document);
+            m.put("contents",document);
             m.put("success",true);
             m.put("message","create file successfully");
-
         } catch (Exception ex){
             ex.printStackTrace();
             m.put("success",false);
             m.put("message","failed to create doc");
         }
-
         return m;
     }
 
@@ -225,7 +225,6 @@ public class DocumentController {
             remap.put("success",false);
             remap.put("message","failed to modify title");
         }
-
         return remap;
     }
 

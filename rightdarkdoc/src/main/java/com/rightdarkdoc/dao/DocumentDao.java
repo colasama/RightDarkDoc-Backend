@@ -15,7 +15,7 @@ public interface DocumentDao {
      * @param document document对象
      * @return
      */
-    public void addDocument(Document document);
+    public Integer addDocument(Document document);
 
 
     /**

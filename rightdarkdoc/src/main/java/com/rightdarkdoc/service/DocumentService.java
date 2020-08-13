@@ -11,7 +11,7 @@ public interface DocumentService {
      * 创建一个新文件
      * @param document  创建的文件对象
      */
-    public void addDocument(Document document);
+    public Integer addDocument(Document document);
 
 
     /**
