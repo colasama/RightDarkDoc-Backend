@@ -687,6 +687,8 @@ Url:`http://39.106.230.20:8090/document/permanent/all`
 
 HTTP：`GET`
 
+URL:`http://39.106.230.20:8090/document/trash`
+
 
 
 

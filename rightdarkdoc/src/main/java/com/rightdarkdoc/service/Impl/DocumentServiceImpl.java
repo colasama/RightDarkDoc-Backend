@@ -21,8 +21,8 @@ public class DocumentServiceImpl implements DocumentService {
      * @param document  创建的文件对象
      */
     @Override
-    public void addDocument(Document document) {
-        documentDao.addDocument(document);
+    public Integer addDocument(Document document) {
+        return documentDao.addDocument(document);
     }
 
 

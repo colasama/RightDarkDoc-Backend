@@ -2,15 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.rightdarkdoc.dao.DocumentDao">
 
-    <insert id="addDocument"  parameterType="com.rightdarkdoc.entity.Document">
-
-
-
-
-
-
+    <insert id="addDocument" parameterType="com.rightdarkdoc.entity.Document" keyColumn="docid">
         insert into `Document`
          values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash})
+        <selectKey resultType="java.lang.Integer" keyProperty="docid" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
     </insert>
 
 
