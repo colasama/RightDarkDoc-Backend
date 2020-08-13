@@ -6,6 +6,8 @@ import com.rightdarkdoc.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TeamServiceImpl implements TeamService {
 
@@ -65,5 +67,16 @@ public class TeamServiceImpl implements TeamService {
         teamDao.updateTeamByTeamId(team);
     }
 
+    /**
+     * 根据搜索内容查找团队（模糊匹配teamname）
+     *
+     * @param searchContent
+     * @return
+     */
+    @Override
+    public List<Team> findTeamsBySearchContent(String searchContent) {
+        String searchContent1 = "%" + searchContent + "%";                      //加上模糊匹配
+        return teamDao.findTeamsBySearchContent(searchContent1);
+    }
 
 }

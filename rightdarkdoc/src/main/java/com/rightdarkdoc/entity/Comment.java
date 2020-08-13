@@ -1,27 +1,41 @@
 package com.rightdarkdoc.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class Comment {
 
-    private Integer commentId;
-    private Integer documentId;
+    private Integer comid;
+    private Integer docid;
     private String content;
-    private Integer userId;
+    private Integer userid;
 
-
-    public Integer getCommentId() {
-        return commentId;
+    public Comment(Integer docid, String content, Integer userid) {
+        this.docid = docid;
+        this.content = content;
+        this.userid = userid;
     }
 
-    public void setCommentId(Integer commentId) {
-        this.commentId = commentId;
+    public Integer getComid() {
+        return comid;
     }
 
-    public Integer getDocumentId() {
-        return documentId;
+    public void setComid(Integer comid) {
+        this.comid = comid;
     }
 
-    public void setDocumentId(Integer documentId) {
-        this.documentId = documentId;
+    public Integer getDocid() {
+        return docid;
+    }
+
+    public void setDocid(Integer docid) {
+        this.docid = docid;
     }
 
     public String getContent() {
@@ -32,22 +46,11 @@ public class Comment {
         this.content = content;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getUserid() {
+        return userid;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUserid(Integer userid) {
+        this.userid = userid;
     }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "commentId=" + commentId +
-                ", documentId=" + documentId +
-                ", content='" + content + '\'' +
-                ", userId=" + userId +
-                '}';
-    }
-
 }

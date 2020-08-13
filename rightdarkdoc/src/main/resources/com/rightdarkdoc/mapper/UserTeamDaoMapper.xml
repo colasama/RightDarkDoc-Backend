@@ -12,7 +12,6 @@
         insert User_Team(userid, teamid, iscreator) values (#{userid}, #{teamid}, 0)
     </insert>
 
-
     <!--用户删除团队新成员-->
     <insert id="deleteTeamMember">
         delete from User_Team where userid = #{userid} and teamid = #{teamid}

@@ -2,6 +2,8 @@ package com.rightdarkdoc.service;
 
 import com.rightdarkdoc.entity.Team;
 
+import java.util.List;
+
 public interface TeamService {
 
     /**
@@ -36,4 +38,6 @@ public interface TeamService {
      * @param team
      */
     public void updateTeam(Team team);
+
+    public List<Team> findTeamsBySearchContent(String searchContent);
 }

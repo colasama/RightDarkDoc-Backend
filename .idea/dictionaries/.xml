@@ -1,11 +1,16 @@
 <component name="ProjectDictionaryState">
   <dictionary name="杨海波">
     <words>
+      <w>comid</w>
+      <w>commentable</w>
       <w>creatorid</w>
       <w>deletedname</w>
+      <w>docid</w>
+      <w>docids</w>
       <w>inviteeid</w>
       <w>inviteename</w>
       <w>iscreator</w>
+      <w>requsetmap</w>
       <w>rightdarkdoc</w>
       <w>teamid</w>
       <w>teaminfo</w>

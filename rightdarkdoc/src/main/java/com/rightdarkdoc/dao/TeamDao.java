@@ -4,6 +4,8 @@ package com.rightdarkdoc.dao;
 import com.rightdarkdoc.entity.Team;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface TeamDao {
 
@@ -41,6 +43,14 @@ public interface TeamDao {
      * @return
      */
     public void updateTeamByTeamId(Team team);
+
+    /**
+     * 根据搜索内容去查找团队信息
+     * @param searchContent
+     * @return
+     */
+    public List<Team> findTeamsBySearchContent(String searchContent);
+
 //
 //
 //    @Select("select * from Team where teamid=#{teamId}")

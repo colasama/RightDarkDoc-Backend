@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rightdarkdoc.dao.CommentDao">
+
+    <!--创建新的团队文档评论-->
+    <insert id="createNewComment" parameterType="Comment">
+        insert into Comment values (#{comid}, #{docid}, #{userid}, #{content})
+    </insert>
+
+<!--    根据评论id找到评论-->
+    <select id="findCommentByCommentId" parameterType="Integer" resultType="Comment">
+        select * from Comment where comid = #{comid}
+    </select>
+
+
+    <!--根据comid删除评论-->
+    <delete id="deleteComment" parameterType="Integer">
+        delete from Comment where comid = #{comid}
+    </delete>
+    
+    <!--查看文档的所有评论-->
+    <select id="findAllCommentsByDocumentId" parameterType="Integer" resultType="Comment">
+        select * from Comment where docid = #{docid}
+    </select>
+</mapper>
