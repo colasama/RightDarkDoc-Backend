@@ -20,7 +20,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("document")
-@CrossOrigin
 public class DocumentController {
 
     @Autowired

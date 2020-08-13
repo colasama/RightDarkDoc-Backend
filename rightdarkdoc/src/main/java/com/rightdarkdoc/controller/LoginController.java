@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController                 //返回json数据
-@CrossOrigin                    //实现跨域请求
 public class LoginController {
 
     @Autowired
