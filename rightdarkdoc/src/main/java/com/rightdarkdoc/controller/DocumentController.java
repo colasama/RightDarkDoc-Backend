@@ -106,6 +106,7 @@ public class DocumentController {
             DecodedJWT decoder = JWTUtils.verify(token);
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
+
             Document document = documentService.selectDocByDocId(docid);
             if(document!=null){
                 remap.put("success",true);
@@ -113,7 +114,7 @@ public class DocumentController {
                 //检查是否是最近浏览，如果不是将其加入
                 System.out.println(userid);
                 System.out.println(document.getDocid());
-                if(userViewDocService.selectUserViewDocByUidAndDid(userid,document.getDocid())==null){
+                if(userViewDocService.selectUserViewDocByUidAndDid(userid,document.getDocid())==null&&userService.selectUserByUserId(userid)!=null){
                     System.out.println("addUserViewDoc");
                     userViewDocService.addUserViewDoc(userid,document.getDocid());
                 }
@@ -161,6 +162,9 @@ public class DocumentController {
     }
 
 
+
+
+
     /**
      * 请求方法：Get
      * 请求url：/document/creator
@@ -177,8 +181,16 @@ public class DocumentController {
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
             List<Document> docs = documentService.selectDocByCreatorId(userid);
+            List<Document> reList  = new ArrayList<>();
+            int len = docs.size();
+            for(int i=0;i<len;i++){
+                Document doc = docs.get(i);
+                if(docs.get(i).getIstrash()==0){
+                    reList.add(doc);
+                }
+            }
             m.put("success",true);
-            m.put("contents",docs);
+            m.put("contents",reList);
         } catch (Exception ex){
             m.put("success",false);
             m.put("message","token error");
@@ -267,7 +279,6 @@ public class DocumentController {
         Integer docid = Integer.valueOf(docidTemp);
         String authTemp = m.get("teamauth").toString();
         Integer teamauth = Integer.valueOf(authTemp);
-
         try{
             Document document = documentService.selectDocByDocId(docid);
             if(document==null){
@@ -284,7 +295,6 @@ public class DocumentController {
             remap.put("success",false);
             remap.put("message","failed to modify doc auth");
         }
-
         return remap;
     }
 
@@ -393,7 +403,6 @@ public class DocumentController {
             m.put("message","failed to clear trash");
         }
         return m;
-
     }
 
 
@@ -401,6 +410,7 @@ public class DocumentController {
      * 请求方法：Put
      * 请求Url：/recover/{int:docid}
      * 功能：恢复一个被放入回收站的文档
+     * note : 需要token
      * @param docid 从回收站恢复的文档id
      * @param request   请求体
      * @return
@@ -492,21 +502,21 @@ public class DocumentController {
             Integer userid = Integer.valueOf(userTemp);
             Integer docid = Integer.valueOf(map.get("docid").toString());
             userFavDocService.deleteUserFavDoc(userid,docid);
-            remap.put("success",false);
+            remap.put("success",true);
             remap.put("message","remove from favorites successfully");
         } catch (Exception ex){
             ex.printStackTrace();
             remap.put("success",false);
-            remap.put("message","failed to delete");
+            remap.put("message","failed to remove from favorite");
         }
         return remap;
     }
 
 
     /**
-     * 请求方法：Delete
+     * 请求方法：Get
      * 请求URL: /document/fav
-     * 功能:删除用户的收藏文档
+     * 功能:获取用户的收藏文档
      * note： 需要token
      * @param request 请求
      * @return
@@ -542,7 +552,7 @@ public class DocumentController {
     /**
      * 请求方法：Get
      * 请求URL: /document/view
-     * 功能: 查找用户最近查找
+     * 功能: 查找用户最近浏览
      * note： 需要token
      * @param request 请求
      * @return 封装返回信息的map
@@ -572,7 +582,43 @@ public class DocumentController {
         } catch (Exception ex){
             ex.printStackTrace();
             remap.put("success",false);
-            remap.put("message","failed to get favorites");
+            remap.put("message","failed to get view doc");
+        }
+        return remap;
+    }
+
+    /**
+     * 请求方法：Get
+     * 请求URL: /document/trash
+     * 功能: 查找用户回收站中的文档
+     * note： 需要token
+     * @param request 请求
+     * @return 封装返回信息的map
+     */
+    @GetMapping("trash")
+    public Map<String,Object> getUserTrash(HttpServletRequest request){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            List<Document> docs = documentService.selectDocByCreatorId(userid);
+            int len = docs.size();
+            List<Document> reList = new ArrayList<>();
+            for(int i=0;i<len;i++){
+                Document doc = docs.get(i);
+                if(doc.getIstrash()==1){
+                    reList.add(doc);
+                }
+            }
+            remap.put("success",true);
+            remap.put("contents",reList);
+            remap.put("message","get trash doc successfully");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","failed to get trash doc");
         }
         return remap;
     }

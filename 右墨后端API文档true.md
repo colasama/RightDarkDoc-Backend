@@ -345,7 +345,31 @@ or
 
 HTTP方法：Post
 
-请求Url
+请求Url：`http://39.106.230.20:8090/document`
+
+请求参数
+
+| 参数     | 类型    | 说明         | 是否可选       |
+| -------- | ------- | ------------ | -------------- |
+| Document | Boolean | document对象 | 是，可不带参数 |
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                       | 说明           |
+| ------- | ------- | ------------------------ | -------------- |
+| success | Boolean | true                     | 请求成功的标识 |
+| message | string  | create file successfully | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                   | 说明           |
+| ------- | ------- | -------------------- | -------------- |
+| success | Boolean | False                | 请求失败的标识 |
+| message | string  | failed to create doc | 请求失败的信息 |
 
 
 
@@ -376,6 +400,477 @@ HTTP方法：`Get`
 | ------- | ------- | ----------- | -------------- |
 | success | Boolean | false       | 请求成功的标识 |
 | message | String  | token error | token验证失败  |
+
+
+
+
+
+#### 修改文档信息
+
+**请求说明**
+
+HTTP方法：`put`
+
+请求URL:  `http://39.106.230.20:8090/document/creator`
+
+请求参数
+
+| 参数     | 类型    | 说明         | 是否可选             |
+| -------- | ------- | ------------ | -------------------- |
+| Document | Boolean | document对象 | 否，必须要带document |
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                      | 说明           |
+| ------- | ------- | ----------------------- | -------------- |
+| success | Boolean | true                    | 请求成功的标识 |
+| message | string  | modify doc successfully | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                   | 说明           |
+| ------- | ------- | -------------------- | -------------- |
+| success | Boolean | False                | 请求失败的标识 |
+| message | string  | failed to modify doc | 请求失败的信息 |
+
+
+
+#### 更改文档名称
+
+**请求说明**
+
+HTTP方法：`Put`
+
+请求Url：`http://39.106.230.20:8090/document/mod_title`
+
+请求参数：
+
+| 参数  | 类型    | 说明           | 是否可选         |
+| ----- | ------- | -------------- | ---------------- |
+| docid | Integer | 待更改的文档id | 否，必须带此参数 |
+| title | string  | 待更改的文件名 | 否，必须带此参数 |
+
+
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                            | 说明           |
+| ------- | ------- | ----------------------------- | -------------- |
+| success | Boolean | true                          | 请求成功的标识 |
+| message | string  | modify doc title successfully | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                     | 说明           |
+| ------- | ------- | ---------------------- | -------------- |
+| success | Boolean | false                  | 请求失败的标识 |
+| message | string  | failed to modify title | 请求失败的信息 |
+
+
+
+
+
+#### 更改文档个人权限
+
+**请求说明**
+
+HTTP方法：`Put`
+
+请求Url：`http://39.106.230.20:8090/document/mod_auth`
+
+请求参数：
+
+| 参数  | 类型    | 说明           | 是否可选         |
+| ----- | ------- | -------------- | ---------------- |
+| docid | Integer | 待更改的文档id | 否，必须带此参数 |
+| auth  | Integer | 待更改的权限   | 否，必须带此参数 |
+
+
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                           | 说明           |
+| ------- | ------- | ---------------------------- | -------------- |
+| success | Boolean | true                         | 请求成功的标识 |
+| message | string  | modify doc auth successfully | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                        | 说明           |
+| ------- | ------- | ------------------------- | -------------- |
+| success | Boolean | false                     | 请求失败的标识 |
+| message | string  | failed to modify doc auth | 请求失败的信息 |
+
+
+
+
+
+
+
+#### 更改文档团队权限
+
+**请求说明**
+
+HTTP方法：`Put`
+
+请求Url：`http://39.106.230.20:8090/document/mod_teamauth`
+
+请求参数：
+
+| 参数     | 类型    | 说明             | 是否可选         |
+| -------- | ------- | ---------------- | ---------------- |
+| docid    | Integer | 待更改的文档id   | 否，必须带此参数 |
+| teamauth | Integer | 待更改的团队权限 | 否，必须带此参数 |
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                           | 说明           |
+| ------- | ------- | ---------------------------- | -------------- |
+| success | Boolean | true                         | 请求成功的标识 |
+| message | string  | modify doc auth successfully | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                  | 说明           |
+| ------- | ------- | ------------------- | -------------- |
+| success | Boolean | false               | 请求失败的标识 |
+| message | string  | doc does not exists | 文件不存在     |
+
+or:
+
+| 参数    | 类型    | 值                        | 说明           |
+| ------- | ------- | ------------------------- | -------------- |
+| success | Boolean | false                     | 请求失败的标识 |
+| message | string  | failed to modify doc auth | 请求失败的信息 |
+
+
+
+
+
+#### 将文档移入垃圾箱
+
+**请求说明**
+
+HTTP方法：`Delete`
+
+Url:`http://39.106.230.20:8090/document/{int:docid}`
+
+请求参数：请求参数包含在`url`中
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                         | 说明           |
+| ------- | ------- | -------------------------- | -------------- |
+| success | Boolean | true                       | 请求成功的标识 |
+| message | string  | move to trash successfully | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                  | 说明           |
+| ------- | ------- | ------------------- | -------------- |
+| success | Boolean | false               | 请求失败的标识 |
+| message | string  | doc does not exists | 文件不存在     |
+
+or:
+
+| 参数    | 类型    | 值                                     | 说明           |
+| ------- | ------- | -------------------------------------- | -------------- |
+| success | Boolean | false                                  | 请求失败的标识 |
+| message | string  | haven't authority to move doc to trash | 请求失败的信息 |
+
+or:
+
+| 参数    | 类型    | 值                      | 说明           |
+| ------- | ------- | ----------------------- | -------------- |
+| success | Boolean | false                   | 请求失败的标识 |
+| message | string  | failed to move to trash | 请求失败的信息 |
+
+
+
+#### 永久删除文档
+
+**请求说明**
+
+HTTP方法：`Delete`
+
+Url:`http://39.106.230.20:8090/document/permanent/{int:docid}`
+
+请求参数：请求参数包含在`url`中
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                                  | 说明           |
+| ------- | ------- | ----------------------------------- | -------------- |
+| success | Boolean | true                                | 请求成功的标识 |
+| message | string  | successfully delete doc permanently | 请求成功的信息 |
+
+请求失败：
+
+| 参数    | 类型    | 值                  | 说明           |
+| ------- | ------- | ------------------- | -------------- |
+| success | Boolean | false               | 请求失败的标识 |
+| message | string  | doc does not exists | 文件不存在     |
+
+or:
+
+| 参数    | 类型    | 值                                          | 说明           |
+| ------- | ------- | ------------------------------------------- | -------------- |
+| success | Boolean | false                                       | 请求失败的标识 |
+| message | string  | haven't authority to delete doc permanently | 请求失败的信息 |
+
+or:
+
+| 参数    | 类型    | 值                           | 说明           |
+| ------- | ------- | ---------------------------- | -------------- |
+| success | Boolean | false                        | 请求失败的标识 |
+| message | string  | failed to delete permanently | 请求失败的信息 |
+
+
+
+#### 	清空回收站
+
+**请求说明**
+
+HTTP:`Delete`
+
+Url:`http://39.106.230.20:8090/document/permanent/all`
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                       | 说明           |
+| ------- | ------- | ------------------------ | -------------- |
+| success | Boolean | true                     | 请求成功的标识 |
+| message | string  | successfully clear trash | 清空回收站成功 |
+
+请求失败：
+
+| 参数    | 类型    | 值                    | 说明           |
+| ------- | ------- | --------------------- | -------------- |
+| success | Boolean | false                 | 请求失败的标识 |
+| message | string  | failed to clear trash | 清空回收站失败 |
+
+
+
+
+
+#### 查找用户的回收站文档
+
+**请求说明**
+
+HTTP：`GET`
+
+
+
+
+
+
+
+#### 	恢复在回收站中的文件
+
+**请求说明**
+
+HTTP:`Delete`
+
+Url:`http://39.106.230.20:8090/document/recover/{int:docid}`
+
+请求参数：docid在url路径中。
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                              | 说明           |
+| ------- | ------- | ------------------------------- | -------------- |
+| success | Boolean | true                            | 请求成功的标识 |
+| message | string  | recover from trash successfully | 清空回收站成功 |
+
+请求失败：
+
+| 参数    | 类型    | 值                    | 说明           |
+| ------- | ------- | --------------------- | -------------- |
+| success | Boolean | false                 | 请求失败的标识 |
+| message | string  | failed to clear trash | 清空回收站失败 |
+
+or:
+
+| 参数    | 类型    | 值                               | 说明           |
+| ------- | ------- | -------------------------------- | -------------- |
+| success | Boolean | false                            | 请求失败的标识 |
+| message | string  | haven't authority to recover doc | 没有恢复的权限 |
+
+or:
+
+| 参数    | 类型    | 值                  | 说明           |
+| ------- | ------- | ------------------- | -------------- |
+| success | Boolean | false               | 请求失败的标识 |
+| message | string  | doc does not exists | 文件不存在     |
+
+
+
+#### 增加用户的收藏文档
+
+**请求说明**
+
+HTTP：`Post`
+
+Url: `http://39.106.230.20:8090/document/fav` 
+
+请求参数：
+
+| 参数  | 类型    | 说明           | 是否可选         |
+| ----- | ------- | -------------- | ---------------- |
+| docid | Integer | 待收藏的文档id | 否，必须带此参数 |
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                            | 说明           |
+| ------- | ------- | ----------------------------- | -------------- |
+| success | Boolean | true                          | 请求失败的标识 |
+| message | string  | Add to favorites successfully | 清空回收站失败 |
+
+请求失败：
+
+| 参数    | 类型    | 值                                | 说明                 |
+| ------- | ------- | --------------------------------- | -------------------- |
+| success | Boolean | false                             | 请求失败的标识       |
+| message | string  | already add this doc to favorites | 此文档已经在收藏夹中 |
+
+Or:
+
+| 参数    | 类型    | 值                         | 说明           |
+| ------- | ------- | -------------------------- | -------------- |
+| success | Boolean | false                      | 请求失败的标识 |
+| message | string  | failed to add to favorites | 出现了其他错误 |
+
+
+
+#### 删除用户的收藏文档
+
+**请求说明**
+
+HTTP：`Delete`
+
+Url: `http://39.106.230.20:8090/document/fav` 
+
+请求参数：
+
+| 参数  | 类型    | 说明               | 是否可选         |
+| ----- | ------- | ------------------ | ---------------- |
+| docid | Integer | 待删除的收藏文档id | 否，必须带此参数 |
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数    | 类型    | 值                                 | 说明           |
+| ------- | ------- | ---------------------------------- | -------------- |
+| success | Boolean | true                               | 请求失败的标识 |
+| message | string  | remove from favorites successfully | 移出收藏夹成功 |
+
+请求失败：
+
+| 参数    | 类型    | 值                             | 说明                 |
+| ------- | ------- | ------------------------------ | -------------------- |
+| success | Boolean | false                          | 请求失败的标识       |
+| message | string  | failed to remove from favorite | 此文档已经在收藏夹中 |
+
+
+
+### 获取个人收藏文档
+
+**请求说明**
+
+HTTP:`Get`
+
+Url:`http://39.106.230.20:8090/document/fav` 
+
+请求参数：无
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数     | 类型    | 值                         | 说明               |
+| -------- | ------- | -------------------------- | ------------------ |
+| success  | Boolean | true                       | 请求成功的标识     |
+| message  | string  | get favorites successfully | 请求成功           |
+| contents | List    | 保存document的列表         | 保存document的列表 |
+
+请求失败：
+
+| 参数    | 类型    | 值                      | 说明           |
+| ------- | ------- | ----------------------- | -------------- |
+| success | Boolean | false                   | 请求失败的标识 |
+| message | string  | failed to get favorites | 请求失败的标识 |
+
+
+
+### 获取个人最近浏览文档
+
+**请求说明**
+
+HTTP:`Get`
+
+Url:`http://39.106.230.20:8090/document/view` 
+
+请求参数：无
+
+**返回说明**
+
+返回参数：
+
+请求成功：
+
+| 参数     | 类型    | 值                    | 说明               |
+| -------- | ------- | --------------------- | ------------------ |
+| success  | Boolean | true                  | 请求成功的标识     |
+| message  | string  | get view successfully | 请求成功的信息     |
+| contents | List    | 保存document的列表    | 保存document的列表 |
+
+请求失败：
+
+| 参数    | 类型    | 值                     | 说明           |
+| ------- | ------- | ---------------------- | -------------- |
+| success | Boolean | false                  | 请求失败的标识 |
+| message | string  | failed to get view doc | 请求失败的信息 |
 
 
 

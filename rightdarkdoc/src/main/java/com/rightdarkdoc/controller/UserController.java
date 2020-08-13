@@ -3,7 +3,6 @@ package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.User;
-import com.rightdarkdoc.service.UserFavDocService;
 import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +133,6 @@ public class UserController {
         }
         return remap;
     }
-
 
 
 
