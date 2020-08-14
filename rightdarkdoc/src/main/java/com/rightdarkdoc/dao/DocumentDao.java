@@ -70,5 +70,12 @@ public interface DocumentDao {
     public List<Document> selectDocByCreatorId(@Param("creatorid") Integer creatorid);
 
 
+    /**
+     * 查找所有的团队文档
+     * @param creatorid
+     * @return
+     */
+     public List<Document> selectDocByTeamId(Integer teamid);
+
 }
 

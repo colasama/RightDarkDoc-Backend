@@ -17,6 +17,15 @@ public class Document {
     private Integer istrash;
     private String lastetidtimeString = "";
     private String createtimeString = "";
+    private Integer teamid;
+
+    public Integer getTeamid() {
+        return teamid;
+    }
+
+    public void setTeamid(Integer teamid) {
+        this.teamid = teamid;
+    }
 
     public String getLastetidtimeString() {
         return lastetidtimeString;

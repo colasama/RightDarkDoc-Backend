@@ -80,4 +80,10 @@ public interface DocumentService {
     public List<Document> selectDocInTrashByCreatorId(Integer creatorid);
 
 
+    /**
+     * 根据团队id查找文档
+     * @param teamid 团队id
+     * @return
+     */
+    public List<Document> selectDocByTeamId(Integer teamid);
 }

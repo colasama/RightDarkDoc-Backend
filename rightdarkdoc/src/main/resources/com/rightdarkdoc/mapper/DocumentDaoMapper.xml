@@ -47,4 +47,9 @@
         where creatorid=#{creatorid}
     </select>
 
+    <!--查找所有的团队文档-->
+    <select id="selectDocByTeamId" resultType="com.rightdarkdoc.entity.Document">
+        select * from `Document`
+        where teamid=#{teamid}
+    </select>
 </mapper>

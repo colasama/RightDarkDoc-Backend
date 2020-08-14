@@ -29,9 +29,6 @@ public class TeamController {
     private UserService userService;
 
     @Autowired
-    private TeamDocumentService teamDocumentService;
-
-    @Autowired
     private DocumentService documentService;
 
     /**
@@ -124,7 +121,6 @@ public class TeamController {
         }
         return map;
     }
-
 
     /**
      * 删除一个团队成员
@@ -419,18 +415,11 @@ public class TeamController {
         try {
             Integer teamid = Integer.valueOf(teamidString);
             //取出docids
-            List<Integer> docids = teamDocumentService.findAllTeamDocuments(teamid);
-            List<Document> documents = new ArrayList<>();
-            System.out.println(docids);
-            for (Integer docid : docids) {
-                Document tempDoc = documentService.selectDocByDocId(docid);
+            List<Document> documents = documentService.selectDocByTeamId(teamid);
+            for (Document doc : documents) {
                 //判断一下是不是垃圾文件
-                System.out.println(tempDoc);
-                if (tempDoc != null) {
-                    if (tempDoc.getIstrash() == 0) {
-                        tempDoc = TimeUtils.setDocumentTimeString(tempDoc);         //给时间赋值
-                        documents.add(tempDoc);
-                    }
+                if (doc.getIstrash() == 0) {
+                    doc = TimeUtils.setDocumentTimeString(doc);         //给时间赋值
                 }
             }
             map.put("documents", documents);
@@ -520,6 +509,9 @@ public class TeamController {
                     document = new Document();
                 }
 
+                //给团队文档附上团队值
+                document.setTeamid(teamid);
+
                 if (document.getContent() == null) {
                     document.setContent("");
                 }
@@ -570,9 +562,7 @@ public class TeamController {
 
                 //创建document
                 documentService.addDocument(document);
-                teamDocumentService.createNewTeamDocument(teamid, document.getDocid());
-                document.setLastetidtimeString(TimeUtils.formatTime(document.getLastedittime()));
-                document.setCreatetimeString(TimeUtils.formatTime(document.getCreattime()));
+                document = TimeUtils.setDocumentTimeString(document);
                 m.put("teamDocument", document);
                 m.put("success", true);
                 m.put("message", "create file successfully");
@@ -587,4 +577,5 @@ public class TeamController {
         }
         return m;
     }
+
 }
