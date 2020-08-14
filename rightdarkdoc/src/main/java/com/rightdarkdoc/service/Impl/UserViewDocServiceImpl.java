@@ -6,6 +6,7 @@ import com.rightdarkdoc.service.UserViewDocService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,8 +18,14 @@ public class UserViewDocServiceImpl implements UserViewDocService {
 
 
     @Override
-    public void addUserViewDoc(Integer userid, Integer docid) {
-        userViewDocDao.addUserViewDoc(userid,docid);
+    public void addUserViewDoc(Integer userid, Integer docid, Date viewtime) {
+        userViewDocDao.addUserViewDoc(userid,docid,viewtime);
+    }
+
+
+    @Override
+    public void updateViewtime(Integer userid, Integer docid, Date viewtime) {
+        userViewDocDao.updateViewtime(userid,docid,viewtime);
     }
 
     @Override

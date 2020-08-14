@@ -6,12 +6,16 @@
 
     <!-- 实现增加用户最近浏览的功能 -->
     <insert id="addUserViewDoc">
-        Insert into `User_Doc_View` values(#{userid},#{docid})
+        Insert into `User_Doc_View` values(#{userid},#{docid},#{viewtime})
     </insert>
 
     <delete id="delUserViewDoc">
         delete from `User_Doc_View` where userid=#{userid} and docid=#{docid}
     </delete>
+
+    <update id="updateViewtime">
+        update `User_Doc_View` set viewtime=#{viewtime} where userid=#{userid} and docid=#{docid}
+    </update>
 
     <select id="selectUserViewDoc" resultType="java.lang.Integer">
         select docid from `User_Doc_View` where userid=#{userid}
