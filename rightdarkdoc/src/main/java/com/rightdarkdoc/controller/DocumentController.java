@@ -142,25 +142,33 @@ public class DocumentController {
             }
             Document document = documentService.selectDocByDocId(docid);
             if(document!=null){
-                remap.put("success",true);
-                remap.put("contents",document);
-                //检查是否是最近浏览，如果不是将其加入
-                System.out.println(userid);
-                System.out.println(document.getDocid());
 
-                //检查用户是否存在
-                if(userService.selectUserByUserId(userid)!=null){
+                //该文档已经被删除
+                if(document.getIstrash()==0) {
+                    remap.put("success", true);
+                    remap.put("contents", document);
+                    //检查是否是最近浏览，如果不是将其加入
+                    System.out.println(userid);
+                    System.out.println(document.getDocid());
 
-                    //检查是否是已浏览，若是则只更改时间
-                    if(userViewDocService.selectUserViewDocByUidAndDid(userid,document.getDocid())!=null){
-                        Date date = new Date();
-                        userViewDocService.updateViewtime(userid,document.getDocid(),date);
+                    //检查用户是否存在
+                    if (userService.selectUserByUserId(userid) != null) {
+
+                        //检查是否是已浏览，若是则只更改时间
+                        if (userViewDocService.selectUserViewDocByUidAndDid(userid, document.getDocid()) != null) {
+                            Date date = new Date();
+                            userViewDocService.updateViewtime(userid, document.getDocid(), date);
+                        }
+                        //若不是已浏览，则增加此记录并设置当前时间
+                        else {
+                            Date date = new Date();
+                            userViewDocService.addUserViewDoc(userid, document.getDocid(), date);
+                        }
                     }
-                    //若不是已浏览，则增加此记录并设置当前时间
-                    else{
-                        Date date = new Date();
-                        userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
-                    }
+                }
+                else{
+                    remap.put("success", false);
+                    remap.put("message", "this doc has been deleted");
                 }
             }
             else{
@@ -566,7 +574,10 @@ public class DocumentController {
             int len = docids.size();
             System.out.println(len);
             for(int i=0;i<len;i++){
-                reList.add(documentService.selectDocByDocId(docids.get(i)));
+                Document doc = documentService.selectDocByDocId(docids.get(i));
+                if(doc!=null){
+                    reList.add(doc);
+                }
             }
             remap.put("success",true);
             remap.put("contents",reList);

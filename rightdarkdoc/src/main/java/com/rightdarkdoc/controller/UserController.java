@@ -128,6 +128,7 @@ public class UserController {
                 remap.put("message","modify user password successfully");
             }
         } catch (Exception ex){
+            ex.printStackTrace();
             remap.put("success",false);
             remap.put("message","token error");
         }
