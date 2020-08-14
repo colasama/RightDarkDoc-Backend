@@ -4,7 +4,7 @@
 
     <insert id="addDocument" parameterType="com.rightdarkdoc.entity.Document" keyColumn="docid">
         insert into `Document`
-         values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash},{teamid})
+         values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash}, #{teamid})
         <selectKey resultType="java.lang.Integer" keyProperty="docid" order="AFTER">
             SELECT LAST_INSERT_ID();
         </selectKey>

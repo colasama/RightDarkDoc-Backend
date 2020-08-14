@@ -7,6 +7,7 @@ import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.TimeUtils;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
@@ -110,10 +111,17 @@ public class TeamController {
             //System.out.println(invitee);
             Integer inviteeId = invitee.getUserid();
             Integer teamid = Integer.valueOf(teamidString);
-            //System.out.println(teamid);
-            userTeamService.inviteTeamMember(teamid, inviteeId);
-            map.put("success", true);
-            map.put("message", "邀请成功！");
+
+            //判断是否在团队中
+            Boolean isInTeam = userTeamService.isTeamMember(teamid, inviteeId);
+            if (isInTeam) {
+                map.put("success", false);
+                map.put("message", "该成员已在团队中！");
+            } else {
+                userTeamService.inviteTeamMember(teamid, inviteeId);
+                map.put("success", true);
+                map.put("message", "邀请成功！");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);

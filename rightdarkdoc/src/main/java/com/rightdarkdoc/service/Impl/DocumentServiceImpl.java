@@ -5,6 +5,7 @@ import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.service.DocumentService;
 import com.rightdarkdoc.service.UserFavDocService;
 import com.rightdarkdoc.service.UserViewDocService;
+import com.rightdarkdoc.utils.SortUtils;
 import com.rightdarkdoc.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -157,6 +158,7 @@ public class DocumentServiceImpl implements DocumentService {
      */
     @Override
     public List<Document> selectDocByTeamId(Integer teamid) {
-        return documentDao.selectDocByTeamId(teamid);
+        ArrayList<Document> documents = (ArrayList<Document>) documentDao.selectDocByTeamId(teamid);
+        return SortUtils.sortByLastEditTime(documents);
     }
 }
