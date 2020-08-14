@@ -30,18 +30,16 @@ public class CommentController {
     private TeamService teamService;
 
     /**
-     * 给团队文档创建一个新的评论
+     * 创建一个新的评论
      * @param request
      * @param requestmap        需要content和里面的内容
      * @param docidString
-     * @param teamidString
      * @return
      */
     @PostMapping("/team/{teamidString}/document/{docidString}/createComment")
     public Map<String, Object> createTeamDocComment(HttpServletRequest request,
                                                @RequestBody Map<String, String> requestmap,
-                                               @PathVariable String docidString,
-                                               @PathVariable String teamidString) {
+                                               @PathVariable String docidString) {
         System.out.println("接收到一个团队文档评论请求");
         Map<String, Object> map = new HashMap<>();
         try {

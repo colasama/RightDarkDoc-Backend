@@ -425,9 +425,10 @@ public class TeamController {
             for (Integer docid : docids) {
                 Document tempDoc = documentService.selectDocByDocId(docid);
                 //判断一下是不是垃圾文件
-                tempDoc.setContent("");
+                System.out.println(tempDoc);
                 if (tempDoc != null) {
                     if (tempDoc.getIstrash() == 0) {
+                        tempDoc = TimeUtils.setDocumentTimeString(tempDoc);         //给时间赋值
                         documents.add(tempDoc);
                     }
                 }
@@ -566,13 +567,12 @@ public class TeamController {
                 if (document.getLastedituserid() == null) {
                     document.setLastedittime(date);
                 }
+
                 //创建document
                 documentService.addDocument(document);
-                //放入team_doc表中
                 teamDocumentService.createNewTeamDocument(teamid, document.getDocid());
-//                System.out.println(document);
-                m.put("lastEidtTime", TimeUtils.formatTime(document.getLastedittime()));
-                m.put("createTime", TimeUtils.formatTime(document.getCreattime()));
+                document.setLastetidtimeString(TimeUtils.formatTime(document.getLastedittime()));
+                document.setCreatetimeString(TimeUtils.formatTime(document.getCreattime()));
                 m.put("teamDocument", document);
                 m.put("success", true);
                 m.put("message", "create file successfully");

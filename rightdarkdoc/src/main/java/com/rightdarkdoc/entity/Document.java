@@ -15,7 +15,24 @@ public class Document {
     private Integer teamauth;
     private Integer creatorid;
     private Integer istrash;
+    private String lastetidtimeString = "";
+    private String createtimeString = "";
 
+    public String getLastetidtimeString() {
+        return lastetidtimeString;
+    }
+
+    public void setLastetidtimeString(String lastetidtimeString) {
+        this.lastetidtimeString = lastetidtimeString;
+    }
+
+    public String getCreatetimeString() {
+        return createtimeString;
+    }
+
+    public void setCreatetimeString(String createtimeString) {
+        this.createtimeString = createtimeString;
+    }
 
     public Integer getCreatorid() {
         return creatorid;

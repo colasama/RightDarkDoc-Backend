@@ -323,7 +323,7 @@ public class DocumentController {
             }
             else {
                 document.setTeamauth(teamauth);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document, document.getLastedituserid());
                 remap.put("success", true);
                 remap.put("message", "modify doc team auth successfully");
             }
@@ -363,7 +363,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(1);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document, document.getLastedituserid());
                 m.put("success",true);
                 m.put("message","move to trash successfully");
             }
@@ -471,7 +471,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(0);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document, document.getLastedituserid());
                 m.put("success",true);
                 m.put("message","recover from trash successfully");
             }

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +17,24 @@ public class Comment {
     private Integer docid;
     private String content;
     private Integer userid;
+    private Date commenttime;
+    private String commenttimestring;
+
+    public Date getCommenttime() {
+        return commenttime;
+    }
+
+    public void setCommenttime(Date commenttime) {
+        this.commenttime = commenttime;
+    }
+
+    public String getCommenttimestring() {
+        return commenttimestring;
+    }
+
+    public void setCommenttimestring(String commenttimestring) {
+        this.commenttimestring = commenttimestring;
+    }
 
     public Comment(Integer docid, String content, Integer userid) {
         this.docid = docid;

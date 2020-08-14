@@ -1,13 +1,13 @@
 package com.rightdarkdoc.service.Impl;
 
 import com.rightdarkdoc.dao.CommentDao;
-import com.rightdarkdoc.dao.DocumentDao;
 import com.rightdarkdoc.entity.Comment;
-import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.service.CommentService;
+import com.rightdarkdoc.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,6 +23,9 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public void createNewComment(Comment comment) {
+        Date commenttime = new Date();
+        comment.setCommenttime(commenttime);
+        comment.setCommenttimestring(TimeUtils.formatTime(commenttime));
         commentDao.createNewComment(comment);
     }
 
