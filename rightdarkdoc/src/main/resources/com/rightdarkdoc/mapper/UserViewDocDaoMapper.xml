@@ -13,6 +13,10 @@
         delete from `User_Doc_View` where userid=#{userid} and docid=#{docid}
     </delete>
 
+    <delete id="delUserViewDocByDocid">
+        delete from `User_Doc_View` where docid=#{docid}
+    </delete>
+
     <update id="updateViewtime">
         update `User_Doc_View` set viewtime=#{viewtime} where userid=#{userid} and docid=#{docid}
     </update>

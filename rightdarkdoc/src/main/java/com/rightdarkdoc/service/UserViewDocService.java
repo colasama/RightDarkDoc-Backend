@@ -26,6 +26,13 @@ public interface UserViewDocService {
 
 
     /**
+     * 删除对于某个文档的最近浏览
+     * @param docid 文档id
+     */
+    public void delUserViewDocByDocid(Integer docid);
+
+
+    /**
      * 刷新最近浏览的浏览时间
      * @param userid 浏览的用户id
      * @param docid 浏览的文档id
@@ -48,8 +55,6 @@ public interface UserViewDocService {
      * @return
      */
     public Integer selectUserViewDocByUidAndDid(Integer userid,Integer docid);
-
-
 
 
 }

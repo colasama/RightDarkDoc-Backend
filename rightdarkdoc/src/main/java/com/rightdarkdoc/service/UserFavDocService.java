@@ -25,6 +25,13 @@ public interface UserFavDocService {
 
 
     /**
+     * 删除对于某个用户的收藏
+     * @param docid
+     */
+    public void deleteUserFavDocByDocid(Integer docid);
+
+
+    /**
      * 根据用户id查询文档
      * @param userid 用户的id
      * @return 包含Doc

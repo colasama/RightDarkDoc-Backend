@@ -34,6 +34,11 @@ public class UserViewDocServiceImpl implements UserViewDocService {
     }
 
     @Override
+    public void delUserViewDocByDocid(Integer docid) {
+        userViewDocDao.delUserViewDocByDocid(docid);
+    }
+
+    @Override
     public List<Integer> selectUserViewDoc(Integer userid) {
         return userViewDocDao.selectUserViewDoc(userid);
     }
