@@ -15,6 +15,8 @@ public class Document {
     private Integer teamauth;
     private Integer creatorid;
     private Integer istrash;
+    private String creattimeString;
+    private String lastedittimeString;
 
 
     public Integer getCreatorid() {
