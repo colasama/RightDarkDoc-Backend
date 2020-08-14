@@ -6,5 +6,8 @@
         select docid from Team_Document where teamid = #{teamid}
     </select>
 
+    <insert id="createNewTeamDocument" parameterType="Integer">
+        insert into Team_Document(teamid, docid) values (#{teamid}, #{docid})
+    </insert>
 
 </mapper>

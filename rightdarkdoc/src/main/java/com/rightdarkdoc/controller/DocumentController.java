@@ -95,6 +95,7 @@ public class DocumentController {
             if(document.getCreattime()==null){
                 document.setCreattime(date);
             }
+
             if(document.getLastedituserid()==null){
                 document.setLastedittime(date);
             }

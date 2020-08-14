@@ -2,6 +2,7 @@ package com.rightdarkdoc.dao;
 
 import com.rightdarkdoc.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
 import java.util.List;
 
@@ -46,5 +47,14 @@ public interface UserTeamDao {
      * @return
      */
     public List<Integer> findMyAttendTeams(Integer userid);
+
+
+    /**
+     * 判断某人是不是团队成员
+     * @param teamid
+     * @param userid
+     * @return
+     */
+    public Integer isTeamMember(Integer teamid, Integer userid);
 
 }

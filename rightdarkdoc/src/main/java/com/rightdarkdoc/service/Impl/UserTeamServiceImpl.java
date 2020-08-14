@@ -1,6 +1,7 @@
 package com.rightdarkdoc.service.Impl;
 
 import com.rightdarkdoc.dao.UserTeamDao;
+import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.service.UserTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,5 +99,23 @@ public class UserTeamServiceImpl implements UserTeamService {
     @Override
     public List<Integer> findMyAttendTeams(Integer userid) {
         return userTeamDao.findMyAttendTeams(userid);
+    }
+
+    /**
+     * 判断成员是不是某团队的成员
+     *
+     * @param teamid 团队id
+     * @param userid 成员id
+     * @return true：是该团队的成员
+     */
+    @Override
+    public Boolean isTeamMember(Integer teamid, Integer userid) {
+        Integer temp = userTeamDao.isTeamMember(teamid, userid);
+        if (temp != null) {
+            return true;        //找到了对应的记录
+        }
+        else {
+            return false;       //没有找到对应的记录
+        }
     }
 }
