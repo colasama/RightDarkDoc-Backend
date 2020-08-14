@@ -22,4 +22,15 @@ public class TeamDocumentServiceImpl implements TeamDocumentService {
     public List<Integer> findAllTeamDocuments(Integer teamid) {
         return teamDocumentDao.findAllTeamDocuments(teamid);
     }
+
+    /**
+     * 创建新的团队文档
+     *
+     * @param teamid 团队id
+     * @param docid  文档id
+     */
+    @Override
+    public void createNewTeamDocument(Integer teamid, Integer docid) {
+        teamDocumentDao.createNewTeamDocument(teamid, docid);
+    }
 }

@@ -164,7 +164,6 @@ public class DocumentController {
                 remap.put("message","doc does not exists");
             }
         } catch (Exception ex){
-            ex.printStackTrace();
             remap.put("success",false);
             remap.put("message","token error");
         }
@@ -322,7 +321,7 @@ public class DocumentController {
             }
             else {
                 document.setTeamauth(teamauth);
-                documentService.updateDocument(document,document.getLastedituserid());
+                documentService.updateDocument(document);
                 remap.put("success", true);
                 remap.put("message", "modify doc team auth successfully");
             }
@@ -362,7 +361,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(1);
-                documentService.updateDocument(document,document.getLastedituserid());
+                documentService.updateDocument(document);
                 m.put("success",true);
                 m.put("message","move to trash successfully");
             }
@@ -470,7 +469,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(0);
-                documentService.updateDocument(document,document.getLastedituserid());
+                documentService.updateDocument(document);
                 m.put("success",true);
                 m.put("message","recover from trash successfully");
             }

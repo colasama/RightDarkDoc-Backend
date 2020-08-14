@@ -31,4 +31,10 @@
     <select id="findMyAttendTeams" resultType="Integer" parameterType="Integer">
         select teamid from User_Team where userid = #{userid} and iscreator = 0
     </select>
+
+
+    <!--判断是否是团队成员-->
+    <select id="isTeamMember" parameterType="Integer" resultType="Integer">
+        select teamid from User_Team where  userid = #{userid} and teamid = #{teamid}
+    </select>
 </mapper>

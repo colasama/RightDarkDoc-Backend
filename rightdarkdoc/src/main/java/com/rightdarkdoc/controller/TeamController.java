@@ -6,15 +6,14 @@ import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
+import com.rightdarkdoc.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("team")
@@ -287,7 +286,6 @@ public class TeamController {
         return map;
     }
 
-
     /**
      * 查看团队信息
      * @param  teamidString teamid
@@ -494,4 +492,99 @@ public class TeamController {
         return map;
     }
 
+
+    /**
+     * 创建团队文档
+     * @param request
+     * @param document
+     * @return
+     */
+    @PostMapping("/{teamidString}/createDocument")
+    public Map<String, Object> createNewTeamDoc(HttpServletRequest request,
+                                                @RequestBody(required = false) Document document,
+                                                @PathVariable String teamidString) {
+        Map<String, Object> m = new HashMap<>();
+        try {
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Integer teamid = Integer.valueOf(teamidString);
+            //判断你是不是团队成员
+            Boolean isTeamMember = userTeamService.isTeamMember(teamid, userid);
+
+            //是团队成员
+            if (isTeamMember) {
+                if (document == null) {
+                    document = new Document();
+                }
+
+                if (document.getContent() == null) {
+                    document.setContent("");
+                }
+
+                if (document.getTitle() == null) {
+                    document.setTitle("untitle");
+                }
+                //设置当前时间
+                Date date = new Date();
+                //设置文档的创建者
+//                System.out.println(date);
+
+                if (document.getCreatorid() == null) {
+                    document.setCreatorid(userid);
+                }
+
+                if (document.getEditcount() == null) {
+                    document.setEditcount(1);
+                }
+
+                if (document.getIstrash() == null) {
+                    document.setIstrash(0);
+                }
+
+                if (document.getLastedituserid() == null) {
+                    document.setLastedituserid(userid);
+                }
+
+                if (document.getAuth() == null) {
+                    document.setAuth(0);
+                }
+
+                if (document.getTeamauth() == null) {
+                    document.setTeamauth(1);
+                }
+
+                if (document.getCreattime() == null) {
+                    document.setCreattime(date);
+                }
+
+                if (document.getLastedittime() == null) {
+                    document.setLastedittime(date);
+                }
+
+                if (document.getLastedituserid() == null) {
+                    document.setLastedittime(date);
+                }
+                //创建document
+                documentService.addDocument(document);
+                //放入team_doc表中
+                teamDocumentService.createNewTeamDocument(teamid, document.getDocid());
+//                System.out.println(document);
+                m.put("lastEidtTime", TimeUtils.formatTime(document.getLastedittime()));
+                m.put("createTime", TimeUtils.formatTime(document.getCreattime()));
+                m.put("teamDocument", document);
+                m.put("success", true);
+                m.put("message", "create file successfully");
+            } else {
+                m.put("success", false);
+                m.put("message", "您不是团队成员，没有权限创建文档！");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            m.put("success", false);
+            m.put("message", "failed to create doc");
+        }
+        return m;
+    }
 }
