@@ -99,6 +99,10 @@ public class DocumentController {
             if(document.getLastedittime()==null){
                 document.setLastedittime(date);
             }
+
+            if(document.getTeamid()==null){
+                document.setTeamid(0);
+            }
             //创建document
             documentService.addDocument(document);
             userViewDocService.addUserViewDoc(userid,document.getDocid(),date);

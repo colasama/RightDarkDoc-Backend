@@ -17,6 +17,7 @@ public class Document {
     private Integer istrash;
     private String creattimeString="";
     private String lastedittimeString="";
+    private Integer teamid = 0;
 
 
     public Integer getCreatorid() {
@@ -122,6 +123,14 @@ public class Document {
 
     public void setLastedittimeString(String lastedittimeString) {
         this.lastedittimeString = lastedittimeString;
+    }
+
+    public Integer getTeamid() {
+        return teamid;
+    }
+
+    public void setTeamid(Integer teamid) {
+        this.teamid = teamid;
     }
 
     @Override
