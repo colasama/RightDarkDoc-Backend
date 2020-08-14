@@ -15,10 +15,33 @@ public class Document {
     private Integer teamauth;
     private Integer creatorid;
     private Integer istrash;
-    private String creattimeString="";
-    private String lastedittimeString="";
-    private Integer teamid = 0;
+    private String lastetidtimeString = "";
+    private String createtimeString = "";
+    private Integer teamid;
 
+    public Integer getTeamid() {
+        return teamid;
+    }
+
+    public void setTeamid(Integer teamid) {
+        this.teamid = teamid;
+    }
+
+    public String getLastetidtimeString() {
+        return lastetidtimeString;
+    }
+
+    public void setLastetidtimeString(String lastetidtimeString) {
+        this.lastetidtimeString = lastetidtimeString;
+    }
+
+    public String getCreatetimeString() {
+        return createtimeString;
+    }
+
+    public void setCreatetimeString(String createtimeString) {
+        this.createtimeString = createtimeString;
+    }
 
     public Integer getCreatorid() {
         return creatorid;
@@ -107,30 +130,6 @@ public class Document {
 
     public void setIstrash(Integer istrash) {
         this.istrash = istrash;
-    }
-
-    public String getCreattimeString() {
-        return creattimeString;
-    }
-
-    public void setCreattimeString(String creattimeString) {
-        this.creattimeString = creattimeString;
-    }
-
-    public String getLastedittimeString() {
-        return lastedittimeString;
-    }
-
-    public void setLastedittimeString(String lastedittimeString) {
-        this.lastedittimeString = lastedittimeString;
-    }
-
-    public Integer getTeamid() {
-        return teamid;
-    }
-
-    public void setTeamid(Integer teamid) {
-        this.teamid = teamid;
     }
 
     @Override

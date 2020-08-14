@@ -5,6 +5,7 @@ import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.service.DocumentService;
 import com.rightdarkdoc.service.UserFavDocService;
 import com.rightdarkdoc.service.UserViewDocService;
+import com.rightdarkdoc.utils.SortUtils;
 import com.rightdarkdoc.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,8 +101,8 @@ public class DocumentServiceImpl implements DocumentService {
     public Document selectDocByDocId(Integer docid) {
         Document doc = documentDao.selectDocByDocId(docid);
         if(doc!=null) {
-            doc.setLastedittimeString(TimeUtils.formatTime(doc.getLastedittime()));
-            doc.setCreattimeString(TimeUtils.formatTime(doc.getCreattime()));
+            doc.setLastetidtimeString(TimeUtils.formatTime(doc.getLastedittime()));
+            doc.setCreatetimeString(TimeUtils.formatTime(doc.getCreattime()));
         }
         return doc;
     }
@@ -118,8 +119,8 @@ public class DocumentServiceImpl implements DocumentService {
         List<Document> docs = new ArrayList<>();
         for(Document doc : docsTemp){
             if(doc.getIstrash()==0) {
-                doc.setLastedittimeString(TimeUtils.formatTime(doc.getLastedittime()));
-                doc.setCreattimeString(TimeUtils.formatTime(doc.getCreattime()));
+                doc.setLastetidtimeString(TimeUtils.formatTime(doc.getLastedittime()));
+                doc.setCreatetimeString(TimeUtils.formatTime(doc.getCreattime()));
                 docs.add(doc);
             }
         }
@@ -133,14 +134,13 @@ public class DocumentServiceImpl implements DocumentService {
         List<Document> docs = new ArrayList<>();
         for(Document doc : docsTemp){
             if(doc.getIstrash()==1) {
-                doc.setLastedittimeString(TimeUtils.formatTime(doc.getLastedittime()));
-                doc.setCreattimeString(TimeUtils.formatTime(doc.getCreattime()));
+                doc.setLastetidtimeString(TimeUtils.formatTime(doc.getLastedittime()));
+                doc.setCreatetimeString(TimeUtils.formatTime(doc.getCreattime()));
                 docs.add(doc);
             }
         }
         return docs;
     }
-
 
     @Override
     public void docMoveToTrash(Document document) {
@@ -148,5 +148,17 @@ public class DocumentServiceImpl implements DocumentService {
         updateDocument(document,document.getLastedituserid());
         userViewDocService.delUserViewDocByDocid(document.getDocid());
         userFavDocService.deleteUserFavDocByDocid(document.getDocid());
+    }
+
+    /**
+     * 根据团队id查找文档
+     *
+     * @param teamid 团队id
+     * @return
+     */
+    @Override
+    public List<Document> selectDocByTeamId(Integer teamid) {
+        ArrayList<Document> documents = (ArrayList<Document>) documentDao.selectDocByTeamId(teamid);
+        return SortUtils.sortByLastEditTime(documents);
     }
 }

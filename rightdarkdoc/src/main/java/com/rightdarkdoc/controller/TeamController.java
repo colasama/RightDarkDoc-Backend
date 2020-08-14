@@ -7,6 +7,7 @@ import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.TimeUtils;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
@@ -27,9 +28,6 @@ public class TeamController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private TeamDocumentService teamDocumentService;
 
     @Autowired
     private DocumentService documentService;
@@ -113,10 +111,17 @@ public class TeamController {
             //System.out.println(invitee);
             Integer inviteeId = invitee.getUserid();
             Integer teamid = Integer.valueOf(teamidString);
-            //System.out.println(teamid);
-            userTeamService.inviteTeamMember(teamid, inviteeId);
-            map.put("success", true);
-            map.put("message", "邀请成功！");
+
+            //判断是否在团队中
+            Boolean isInTeam = userTeamService.isTeamMember(teamid, inviteeId);
+            if (isInTeam) {
+                map.put("success", false);
+                map.put("message", "该成员已在团队中！");
+            } else {
+                userTeamService.inviteTeamMember(teamid, inviteeId);
+                map.put("success", true);
+                map.put("message", "邀请成功！");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);
@@ -124,7 +129,6 @@ public class TeamController {
         }
         return map;
     }
-
 
     /**
      * 删除一个团队成员
@@ -419,17 +423,11 @@ public class TeamController {
         try {
             Integer teamid = Integer.valueOf(teamidString);
             //取出docids
-            List<Integer> docids = teamDocumentService.findAllTeamDocuments(teamid);
-            List<Document> documents = new ArrayList<>();
-            System.out.println(docids);
-            for (Integer docid : docids) {
-                Document tempDoc = documentService.selectDocByDocId(docid);
+            List<Document> documents = documentService.selectDocByTeamId(teamid);
+            for (Document doc : documents) {
                 //判断一下是不是垃圾文件
-                tempDoc.setContent("");
-                if (tempDoc != null) {
-                    if (tempDoc.getIstrash() == 0) {
-                        documents.add(tempDoc);
-                    }
+                if (doc.getIstrash() == 0) {
+                    doc = TimeUtils.setDocumentTimeString(doc);         //给时间赋值
                 }
             }
             map.put("documents", documents);
@@ -519,6 +517,9 @@ public class TeamController {
                     document = new Document();
                 }
 
+                //给团队文档附上团队值
+                document.setTeamid(teamid);
+
                 if (document.getContent() == null) {
                     document.setContent("");
                 }
@@ -566,13 +567,10 @@ public class TeamController {
                 if (document.getLastedituserid() == null) {
                     document.setLastedittime(date);
                 }
+
                 //创建document
                 documentService.addDocument(document);
-                //放入team_doc表中
-                teamDocumentService.createNewTeamDocument(teamid, document.getDocid());
-//                System.out.println(document);
-                m.put("lastEidtTime", TimeUtils.formatTime(document.getLastedittime()));
-                m.put("createTime", TimeUtils.formatTime(document.getCreattime()));
+                document = TimeUtils.setDocumentTimeString(document);
                 m.put("teamDocument", document);
                 m.put("success", true);
                 m.put("message", "create file successfully");
@@ -587,4 +585,5 @@ public class TeamController {
         }
         return m;
     }
+
 }

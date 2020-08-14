@@ -4,7 +4,7 @@
 
     <!--创建新的团队文档评论-->
     <insert id="createNewComment" parameterType="Comment">
-        insert into Comment values (#{comid}, #{docid}, #{userid}, #{content})
+        insert into Comment values (#{comid}, #{docid}, #{userid}, #{content}, #{commenttime}, #{commenttimestring})
     </insert>
 
 <!--    根据评论id找到评论-->

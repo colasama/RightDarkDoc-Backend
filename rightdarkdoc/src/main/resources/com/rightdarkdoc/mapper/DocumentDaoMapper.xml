@@ -4,7 +4,7 @@
 
     <insert id="addDocument" parameterType="com.rightdarkdoc.entity.Document" keyColumn="docid">
         insert into `Document`
-         values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash},#{teamid})
+         values(#{docid},#{creatorid},#{title},#{content},#{creattime},#{lastedittime},#{editcount},#{lastedituserid},#{auth},#{teamauth},#{istrash}, #{teamid})
         <selectKey resultType="java.lang.Integer" keyProperty="docid" order="AFTER">
             SELECT LAST_INSERT_ID();
         </selectKey>
@@ -47,4 +47,9 @@
         where creatorid=#{creatorid}
     </select>
 
+    <!--查找所有的团队文档-->
+    <select id="selectDocByTeamId" resultType="com.rightdarkdoc.entity.Document">
+        select * from `Document`
+        where teamid=#{teamid}
+    </select>
 </mapper>
