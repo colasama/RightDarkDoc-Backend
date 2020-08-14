@@ -32,7 +32,7 @@ public interface DocumentService {
      * 更新一个文件的内容
      * @param document
      */
-    public void updateDocument(Document document);
+    public void updateDocument(Document document,Integer userid);
 
     /**
      * 更新一个文件的名字

@@ -6,6 +6,7 @@ import com.rightdarkdoc.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -45,11 +46,15 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     /**
-     * 更新一个文件的信息
+     * 后台更新编辑次数，最后编辑用户，最后编辑时间等信息,写入数据库
      * @param document 更新文件的信息
      */
     @Override
-    public void updateDocument(Document document) {
+    public void updateDocument(Document document,Integer userid) {
+        document.setEditcount(document.getEditcount()+1);
+        Date date = new Date();
+        document.setLastedittime(date);
+        document.setLastedituserid(userid);
         documentDao.updateDocument(document);
     }
 

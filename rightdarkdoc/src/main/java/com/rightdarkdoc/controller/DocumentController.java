@@ -85,7 +85,7 @@ public class DocumentController {
             }
 
             if(document.getAuth()==null){
-                document.setAuth(7);
+                document.setAuth(0);
             }
 
             if(document.getTeamauth()==null){
@@ -95,11 +95,13 @@ public class DocumentController {
             if(document.getCreattime()==null){
                 document.setCreattime(date);
             }
-            if(document.getLastedituserid()==null){
+
+            if(document.getLastedittime()==null){
                 document.setLastedittime(date);
             }
             //创建document
             documentService.addDocument(document);
+            userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
             System.out.println(document);
             m.put("contents",document);
             m.put("success",true);
@@ -126,10 +128,14 @@ public class DocumentController {
         Map<String,Object> remap = new HashMap<>();
         try {
             String token = request.getHeader("token");
-            DecodedJWT decoder = JWTUtils.verify(token);
-            String userTemp = decoder.getClaim("userid").asString();
-            Integer userid = Integer.valueOf(userTemp);
+            Integer userid = 0;
 
+            //未登陆的人也可以访问
+            if(token!=null) {
+                DecodedJWT decoder = JWTUtils.verify(token);
+                String userTemp = decoder.getClaim("userid").asString();
+                userid = Integer.valueOf(userTemp);
+            }
             Document document = documentService.selectDocByDocId(docid);
             if(document!=null){
                 remap.put("success",true);
@@ -137,9 +143,20 @@ public class DocumentController {
                 //检查是否是最近浏览，如果不是将其加入
                 System.out.println(userid);
                 System.out.println(document.getDocid());
-                if(userViewDocService.selectUserViewDocByUidAndDid(userid,document.getDocid())==null&&userService.selectUserByUserId(userid)!=null){
-                    System.out.println("addUserViewDoc");
-                    userViewDocService.addUserViewDoc(userid,document.getDocid());
+
+                //检查用户是否存在
+                if(userService.selectUserByUserId(userid)!=null){
+
+                    //检查是否是已浏览，若是则只更改时间
+                    if(userViewDocService.selectUserViewDocByUidAndDid(userid,document.getDocid())!=null){
+                        Date date = new Date();
+                        userViewDocService.updateViewtime(userid,document.getDocid(),date);
+                    }
+                    //若不是已浏览，则增加此记录并设置当前时间
+                    else{
+                        Date date = new Date();
+                        userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
+                    }
                 }
             }
             else{
@@ -147,6 +164,7 @@ public class DocumentController {
                 remap.put("message","doc does not exists");
             }
         } catch (Exception ex){
+            ex.printStackTrace();
             remap.put("success",false);
             remap.put("message","token error");
         }
@@ -170,11 +188,7 @@ public class DocumentController {
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
             //后台更新编辑次数，最后编辑用户，最后编辑时间等信息
-            document.setEditcount(document.getEditcount()+1);
-            Date date = new Date();
-            document.setLastedittime(date);
-            document.setLastedituserid(userid);
-            documentService.updateDocument(document);
+            documentService.updateDocument(document,userid);
             remap.put("success",true);
             remap.put("message","modify doc successfully");
         } catch(Exception ex) {
@@ -310,7 +324,7 @@ public class DocumentController {
             }
             else {
                 document.setTeamauth(teamauth);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document,document.getLastedituserid());
                 remap.put("success", true);
                 remap.put("message", "modify doc team auth successfully");
             }
@@ -350,7 +364,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(1);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document,document.getLastedituserid());
                 m.put("success",true);
                 m.put("message","move to trash successfully");
             }
@@ -458,7 +472,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(0);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document,document.getLastedituserid());
                 m.put("success",true);
                 m.put("message","recover from trash successfully");
             }

@@ -482,7 +482,6 @@ public class TeamController {
             for (Team myCreateTeam : myCreateTeams) {
                 myAttendTeams.add(myCreateTeam);
             }
-
 //            map.put("myCreateTeams", myCreateTeams);
             map.put("myAttendTeams", myAttendTeams);
             map.put("success", true);

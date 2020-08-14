@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
+
 @SpringBootTest
 public class UserViewDocServiceTest {
 
@@ -15,7 +17,9 @@ public class UserViewDocServiceTest {
 
     @Test
     public void addTest(){
-        userViewDocService.addUserViewDoc(3,4);
+
+        Date date = new Date();
+        userViewDocService.addUserViewDoc(3,4,date);
     }
 
     @Test
