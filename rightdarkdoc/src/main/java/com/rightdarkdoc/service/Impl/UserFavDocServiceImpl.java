@@ -24,6 +24,12 @@ public class UserFavDocServiceImpl implements UserFavDocService {
         userFavDocDao.deleteUserFavDoc(userid,docid);
     }
 
+
+    @Override
+    public void deleteUserFavDocByDocid(Integer docid) {
+        userFavDocDao.deleteUserFavDocByDocid(docid);
+    }
+
     @Override
     public List<Integer> selectDocByUserid(Integer userid) {
         return userFavDocDao.selectDocByUserid(userid);

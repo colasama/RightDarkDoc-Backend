@@ -28,6 +28,13 @@ public interface UserFavDocDao {
 
 
     /**
+     * 根据文档删除收藏
+     * @param docid
+     */
+    public void deleteUserFavDocByDocid(@Param("docid") Integer docid);
+
+
+    /**
      * 根据用户id选择其收藏的docid
      */
     public List<Integer> selectDocByUserid(@Param("userid") Integer userid);

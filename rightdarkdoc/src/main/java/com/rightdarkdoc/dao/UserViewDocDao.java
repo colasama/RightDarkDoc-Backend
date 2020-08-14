@@ -15,6 +15,8 @@ public interface UserViewDocDao {
 
     public void delUserViewDoc(@Param("userid") Integer userid,@Param("docid") Integer docid);
 
+    public void delUserViewDocByDocid(@Param("docid") Integer docid);
+
     public void updateViewtime(@Param("userid") Integer userid,@Param("docid") Integer docid,@Param("viewtime") Date viewtime);
 
     public List<Integer> selectUserViewDoc(@Param("userid") Integer userid);

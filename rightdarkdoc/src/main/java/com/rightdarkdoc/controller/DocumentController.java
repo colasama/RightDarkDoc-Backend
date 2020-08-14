@@ -164,6 +164,7 @@ public class DocumentController {
                 remap.put("message","doc does not exists");
             }
         } catch (Exception ex){
+            ex.printStackTrace();
             remap.put("success",false);
             remap.put("message","token error");
         }
@@ -216,16 +217,8 @@ public class DocumentController {
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
             List<Document> docs = documentService.selectDocByCreatorId(userid);
-            List<Document> reList  = new ArrayList<>();
-            int len = docs.size();
-            for(int i=0;i<len;i++){
-                Document doc = docs.get(i);
-                if(docs.get(i).getIstrash()==0){
-                    reList.add(doc);
-                }
-            }
             m.put("success",true);
-            m.put("contents",reList);
+            m.put("contents",docs);
         } catch (Exception ex){
             m.put("success",false);
             m.put("message","token error");
@@ -321,7 +314,7 @@ public class DocumentController {
             }
             else {
                 document.setTeamauth(teamauth);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document,document.getLastedituserid());
                 remap.put("success", true);
                 remap.put("message", "modify doc team auth successfully");
             }
@@ -360,8 +353,7 @@ public class DocumentController {
                 m.put("message","haven't authority to move doc to trash");
             }
             else{
-                document.setIstrash(1);
-                documentService.updateDocument(document);
+                documentService.docMoveToTrash(document);
                 m.put("success",true);
                 m.put("message","move to trash successfully");
             }
@@ -469,7 +461,7 @@ public class DocumentController {
             }
             else{
                 document.setIstrash(0);
-                documentService.updateDocument(document);
+                documentService.updateDocument(document,document.getLastedituserid());
                 m.put("success",true);
                 m.put("message","recover from trash successfully");
             }
@@ -672,17 +664,9 @@ public class DocumentController {
             DecodedJWT decoder = JWTUtils.verify(token);
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
-            List<Document> docs = documentService.selectDocByCreatorId(userid);
-            int len = docs.size();
-            List<Document> reList = new ArrayList<>();
-            for(int i=0;i<len;i++){
-                Document doc = docs.get(i);
-                if(doc.getIstrash()==1){
-                    reList.add(doc);
-                }
-            }
+            List<Document> docs = documentService.selectDocInTrashByCreatorId(userid);
             remap.put("success",true);
-            remap.put("contents",reList);
+            remap.put("contents",docs);
             remap.put("message","get trash doc successfully");
         } catch (Exception ex){
             ex.printStackTrace();

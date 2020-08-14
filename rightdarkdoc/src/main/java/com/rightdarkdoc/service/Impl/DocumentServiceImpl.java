@@ -3,9 +3,13 @@ package com.rightdarkdoc.service.Impl;
 import com.rightdarkdoc.dao.DocumentDao;
 import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.service.DocumentService;
+import com.rightdarkdoc.service.UserFavDocService;
+import com.rightdarkdoc.service.UserViewDocService;
+import com.rightdarkdoc.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +20,13 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private DocumentDao documentDao;
+
+
+    @Autowired
+    private UserViewDocService userViewDocService;
+
+    @Autowired
+    private UserFavDocService userFavDocService;
 
     /**
      * 创建一个新的文件
@@ -87,7 +98,12 @@ public class DocumentServiceImpl implements DocumentService {
      */
     @Override
     public Document selectDocByDocId(Integer docid) {
-        return documentDao.selectDocByDocId(docid);
+        Document doc = documentDao.selectDocByDocId(docid);
+        if(doc!=null) {
+            doc.setLastedittimeString(TimeUtils.formatTime(doc.getLastedittime()));
+            doc.setCreattimeString(TimeUtils.formatTime(doc.getCreattime()));
+        }
+        return doc;
     }
 
 
@@ -98,6 +114,39 @@ public class DocumentServiceImpl implements DocumentService {
      */
     @Override
     public List<Document> selectDocByCreatorId(Integer creatorid){
-        return documentDao.selectDocByCreatorId(creatorid);
+        List<Document> docsTemp = documentDao.selectDocByCreatorId(creatorid);
+        List<Document> docs = new ArrayList<>();
+        for(Document doc : docsTemp){
+            if(doc.getIstrash()==0) {
+                doc.setLastedittimeString(TimeUtils.formatTime(doc.getLastedittime()));
+                doc.setCreattimeString(TimeUtils.formatTime(doc.getCreattime()));
+                docs.add(doc);
+            }
+        }
+        return docs;
+    }
+
+
+    @Override
+    public List<Document> selectDocInTrashByCreatorId(Integer creatorid) {
+        List<Document> docsTemp = documentDao.selectDocByCreatorId(creatorid);
+        List<Document> docs = new ArrayList<>();
+        for(Document doc : docsTemp){
+            if(doc.getIstrash()==1) {
+                doc.setLastedittimeString(TimeUtils.formatTime(doc.getLastedittime()));
+                doc.setCreattimeString(TimeUtils.formatTime(doc.getCreattime()));
+                docs.add(doc);
+            }
+        }
+        return docs;
+    }
+
+
+    @Override
+    public void docMoveToTrash(Document document) {
+        document.setIstrash(1);
+        updateDocument(document,document.getLastedituserid());
+        userViewDocService.delUserViewDocByDocid(document.getDocid());
+        userFavDocService.deleteUserFavDocByDocid(document.getDocid());
     }
 }

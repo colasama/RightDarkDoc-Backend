@@ -10,6 +10,11 @@
         delete from `User_Doc_Fav` where userid=#{userid} and docid=#{docid}
     </delete>
 
+    <delete id="deleteUserFavDocByDocid">
+        delete from `User_Doc_Fav` where docid=#{docid}
+    </delete>
+
+
     <select id="selectDocByUserid" resultType="java.lang.Integer">
         select docid from `User_Doc_Fav` where userid=#{userid}
     </select>
@@ -18,4 +23,5 @@
         select docid from `User_Doc_Fav`
         where userid=#{userid} and docid=#{docid}
     </select>
+
 </mapper>

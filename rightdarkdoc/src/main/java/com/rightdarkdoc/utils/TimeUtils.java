@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class TimeUtils {
-    public static String  formatTime(Date date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static String formatTime(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         return  simpleDateFormat.format(date);
     }

@@ -2,6 +2,7 @@ package com.rightdarkdoc.service;
 
 import com.rightdarkdoc.entity.Document;
 
+import javax.print.Doc;
 import java.util.List;
 
 public interface DocumentService {
@@ -49,6 +50,12 @@ public interface DocumentService {
      */
     public void updateDocAuth(Integer docid,Integer auth);
 
+    /**
+     * 将一个文档移动到回收站中
+     * @param document
+     */
+    public void docMoveToTrash(Document document);
+
 
     /**
      * 根据doc的id查找doc
@@ -64,6 +71,13 @@ public interface DocumentService {
      */
     public List<Document> selectDocByCreatorId(Integer creatorid);
 
+
+    /**
+     * 根据创建者查找垃圾箱
+     * @param creatorid  创建者id
+     * @return 在垃圾箱中的doc文档
+     */
+    public List<Document> selectDocInTrashByCreatorId(Integer creatorid);
 
 
 }
