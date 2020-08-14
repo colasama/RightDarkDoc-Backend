@@ -286,7 +286,6 @@ public class TeamController {
         return map;
     }
 
-
     /**
      * 查看团队信息
      * @param  teamidString teamid
