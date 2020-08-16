@@ -83,17 +83,37 @@ public class UserController {
             DecodedJWT decoder = JWTUtils.verify(token);
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
+            User usertemp  = userService.selectUserByUserId(userid);
+            if(userTemp==null){
+                m.put("success",false);
+                m.put("message","user doesn't exists");
+                return m;
+            }
+            if(user.getPhone()==null){
+                user.setPhone(usertemp.getPhone());
+            }
+            if(user.getBirthday()==null){
+                user.setBirthday(usertemp.getBirthday());
+            }
+            if(user.getDescription()==null){
+                user.setDescription(usertemp.getDescription());
+            }
+            if(user.getAvatar()==null){
+                user.setAvatar(usertemp.getAvatar());
+            }
+            if(user.getEmail()==null){
+                user.setEmail(usertemp.getEmail());
+            }
             user.setUserid(userid);
             userService.updateUser(user);
             m.put("success",true);
             m.put("message","modify user info successfully");
         } catch (Exception ex){
             m.put("success",false);
-            m.put("message","token error");
+            m.put("message","failed to mod");
         }
         return m;
     }
-
 
     /**
      * 更改用户的密码,需要提供旧密码以及新密码
