@@ -148,15 +148,20 @@ public class DocumentController {
                 String userTemp = decoder.getClaim("userid").asString();
                 userid = Integer.valueOf(userTemp);
             }
+
             Document document = documentService.selectDocByDocId(docid);
             if(document!=null){             //对应别人分享了链接之后删除了的情况，保证文档存在
 
                 //判断是否可读
                 boolean canread = false;
-                if(document.getAuth()>MyConfig.PRIVATE){
+                if(document.getAuth()>=MyConfig.U_R){
                     canread = true;
                 }
-                if (userService.selectUserByUserId(userid) != null){
+                User user = userService.selectUserByUserId(userid);
+                if (user != null){
+                    if(document.getCreatorid().equals(user.getUserid())){
+                        canread = true;
+                    }
                     if(document.getTeamauth()>MyConfig.PRIVATE && userTeamService.isTeamMember(document.getTeamid(),userid)){
                         canread = true;
                     }
@@ -166,8 +171,8 @@ public class DocumentController {
                if(document.getIstrash()==0&&canread==true) {
 
                     //检查是否是最近浏览，如果不是将其加入
-                    //检查用户是否存在
-                    if (userService.selectUserByUserId(userid) != null) {
+                    //检查用户是否存在,若不存在为游客
+                    if (user != null) {
 
                         //检查是否是已浏览，若是则只更改时间
                         if (userViewDocService.selectUserViewDocByUidAndDid(userid, document.getDocid()) != null) {
@@ -180,7 +185,7 @@ public class DocumentController {
                             userViewDocService.addUserViewDoc(userid, document.getDocid(), date);
                         }
                     }
-                    remap.put("success",false);
+                    remap.put("success",true);
                     remap.put("contents",document);
                     remap.put("message","get doc success");
                 }
