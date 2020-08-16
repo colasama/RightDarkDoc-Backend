@@ -4,11 +4,9 @@ package com.rightdarkdoc.controller;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.config.MyConfig;
 import com.rightdarkdoc.entity.Document;
+import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
-import com.rightdarkdoc.service.DocumentService;
-import com.rightdarkdoc.service.UserFavDocService;
-import com.rightdarkdoc.service.UserService;
-import com.rightdarkdoc.service.UserViewDocService;
+import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.TimeUtils;
 import org.apache.ibatis.annotations.Delete;
@@ -17,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -35,6 +34,12 @@ public class DocumentController {
 
     @Autowired
     private UserViewDocService userViewDocService;
+
+    @Autowired
+    private UserTeamService userTeamService;
+
+    @Autowired
+    private TeamService teamService;
 
 
     /**
@@ -144,16 +149,23 @@ public class DocumentController {
                 userid = Integer.valueOf(userTemp);
             }
             Document document = documentService.selectDocByDocId(docid);
-            if(document!=null){
+            if(document!=null){             //对应别人分享了链接之后删除了的情况，保证文档存在
 
-                //该文档已经被删除
-                if(document.getIstrash()==0) {
-                    remap.put("success", true);
-                    remap.put("contents", document);
+                //判断是否可读
+                boolean canread = false;
+                if(document.getAuth()>MyConfig.PRIVATE){
+                    canread = true;
+                }
+                if (userService.selectUserByUserId(userid) != null){
+                    if(document.getTeamauth()>MyConfig.PRIVATE && userTeamService.isTeamMember(document.getTeamid(),userid)){
+                        canread = true;
+                    }
+                }
+
+                //该文档没有被删除且有可读权限
+               if(document.getIstrash()==0&&canread==true) {
+
                     //检查是否是最近浏览，如果不是将其加入
-                    System.out.println(userid);
-                    System.out.println(document.getDocid());
-
                     //检查用户是否存在
                     if (userService.selectUserByUserId(userid) != null) {
 
@@ -168,11 +180,19 @@ public class DocumentController {
                             userViewDocService.addUserViewDoc(userid, document.getDocid(), date);
                         }
                     }
+                    remap.put("success",false);
+                    remap.put("contents",document);
+                    remap.put("message","get doc success");
                 }
-                else{
-                    remap.put("success", false);
-                    remap.put("message", "this doc has been deleted");
-                }
+               else{
+                   remap.put("success", false);
+                   if(document.getIstrash()==0){
+                       remap.put("message", "haven't auth");
+                   }
+                   else{
+                       remap.put("message","this doc has been deleted");
+                   }
+               }
             }
             else{
                 remap.put("success",false);
@@ -181,7 +201,7 @@ public class DocumentController {
         } catch (Exception ex){
             ex.printStackTrace();
             remap.put("success",false);
-            remap.put("message","token error");
+            remap.put("message","get doc failed");
         }
         return remap;
     }
@@ -202,10 +222,50 @@ public class DocumentController {
             DecodedJWT decoder = JWTUtils.verify(token);
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
-            //后台更新编辑次数，最后编辑用户，最后编辑时间等信息
-            documentService.updateDocument(document,userid);
-            remap.put("success",true);
-            remap.put("message","modify doc successfully");
+            {
+
+                Document doc = documentService.selectDocByDocId(document.getDocid());
+                boolean canmodify = false;
+                if(doc!=null){
+
+                    //判断权限
+                    if(doc.getCreatorid().equals(userid)){        //创建者有修改的权限
+                        canmodify = true;
+                    }
+                    if(doc.getAuth()>=MyConfig.U_W){          //其他人如果文档有可写权限可以修改
+                        canmodify = true;
+                    }
+                    if(doc.getTeamauth()>=MyConfig.U_W && userTeamService.isTeamMember(doc.getTeamid(),userid)){       //团队成员有可写权限可以修改
+                        canmodify  = true;
+                    }
+
+                    if(canmodify==true && doc.getIstrash()==0){        //有修改权限且没有被删除
+
+                        //重合原来的文档与新的文档
+                        document.setTeamid(doc.getTeamid());
+                        document.setEditcount(doc.getEditcount());
+                        document.setCreattime(doc.getCreattime());
+                        document.setCreatorid(doc.getCreatorid());
+                        //后台更新编辑次数，最后编辑用户，最后编辑时间等信息
+                        documentService.updateDocument(document, userid);
+                        remap.put("success", true);
+                        remap.put("message", "modify doc successfully");
+                    }
+                    else{
+                        remap.put("success", false);
+                        if(doc.getIstrash()==1){
+                            remap.put("message", "doc has been deleted");
+                        }
+                        else{
+                            remap.put("message", "haven't auth");
+                        }
+                    }
+                }
+                else{
+                    remap.put("success",false);
+                    remap.put("message","doc does not exists");
+                }
+            }
         } catch(Exception ex) {
             ex.printStackTrace();
             remap.put("success",false);
@@ -219,7 +279,7 @@ public class DocumentController {
     /**
      * 请求方法：Get
      * 请求url：/document/creator
-     * 功能：根据创建者的id查找doc文件
+     * 功能：根据创建者的id查找doc文件,是创建者的个人文件
      * note: 需要token，用token来识别当前用户身份
      * @return
      */
@@ -238,7 +298,7 @@ public class DocumentController {
             m.put("contents",docs);
         } catch (Exception ex){
             m.put("success",false);
-            m.put("message","token error");
+            m.put("message","failed to get");
         }
         return m;
     }
@@ -253,19 +313,59 @@ public class DocumentController {
      * @return 包含返回信息的map
      */
     @PutMapping("mod_title")
-    public Map<String,Object> updateDocTitle(@RequestBody Map<String,Object> m){
+    public Map<String,Object> updateDocTitle(@RequestBody Map<String,Object> m,HttpServletRequest request){
         Map<String,Object> remap = new HashMap<>();
-
-        //获取参数
-        String docidTemp = m.get("docid").toString();
-        Integer docid = Integer.valueOf(docidTemp);
-        String title = m.get("title").toString();
 
         //调用接口更改文件名
         try{
-            documentService.updateDocTitle(docid,title);
-            remap.put("success",true);
-            remap.put("message","modify doc title successfully");
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+
+            //获取参数
+            String docidTemp = m.get("docid").toString();
+            Integer docid = Integer.valueOf(docidTemp);
+            String title = m.get("title").toString();
+
+            Document  doc = documentService.selectDocByDocId(docid);
+            boolean canmodify = false;
+
+
+            if(doc!=null){
+
+                if(doc.getCreatorid().equals(userid)){        //创建者有修改的权限
+                    canmodify = true;
+                }
+                if(doc.getAuth()>=MyConfig.U_W){          //其他人如果文档有可写权限可以修改
+                    canmodify = true;
+                }
+                if(doc.getTeamauth()>=MyConfig.U_W && userTeamService.isTeamMember(doc.getTeamid(),userid)){       //团队成员有可写权限可以修改
+                    canmodify  = true;
+                }
+
+                //文件名是可以更改的
+                if(canmodify == true && doc.getIstrash()==0){
+                    //更改文件名
+                    documentService.updateDocTitle(docid,title);
+                    remap.put("success",true);
+                    remap.put("message","modify doc title successfully");
+                }
+                else{
+                    remap.put("success", false);
+                    if(doc.getIstrash()==1){
+                        remap.put("message", "doc has been deleted");
+                    }
+                    else{
+                        remap.put("message", "haven't auth");
+                    }
+                }
+            }
+            else{
+                remap.put("success",false);
+                remap.put("message","doc does not exists");
+            }
+
         } catch (Exception ex){
             remap.put("success",false);
             remap.put("message","failed to modify title");
@@ -282,21 +382,49 @@ public class DocumentController {
      * @return
      */
     @PutMapping("mod_auth")
-    public Map<String,Object> updateDocAuth(@RequestBody Map<String,Object> m){
+    public Map<String,Object> updateDocAuth(@RequestBody Map<String,Object> m,HttpServletRequest request){
 
         Map<String,Object> remap = new HashMap<>();
 
-        //获取参数
-        String docidTemp = m.get("docid").toString();
-        Integer docid = Integer.valueOf(docidTemp);
-        String authTemp = m.get("auth").toString();
-        Integer auth = Integer.valueOf(authTemp);
-
-        //调用接口更改用户权限
         try{
-            documentService.updateDocAuth(docid,auth);
-            remap.put("success",true);
-            remap.put("message","modify doc auth successfully");
+            //获取用户名
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            //获取参数
+            String docidTemp = m.get("docid").toString();
+            Integer docid = Integer.valueOf(docidTemp);
+            String authTemp = m.get("auth").toString();
+            Integer auth = Integer.valueOf(authTemp);
+
+
+            Document  doc = documentService.selectDocByDocId(docid);
+            boolean canmodify = false;
+
+
+            if(doc!=null){
+                if(doc.getCreatorid().equals(userid)){        //创建者有修改的权限
+                    canmodify = true;
+                }
+                if(canmodify == true){
+                    documentService.updateDocAuth(docid,auth);
+                    remap.put("success",true);
+                    remap.put("message","modify doc auth successfully");
+                }
+                else{
+                    remap.put("success",false);
+                    remap.put("message","have't auth");
+                }
+            }else{
+                remap.put("success", false);
+                if(doc.getIstrash()==1){
+                    remap.put("message", "doc has been deleted");
+                }
+                else{
+                    remap.put("message", "haven't auth");
+                }
+            }
         } catch (Exception ex){
             remap.put("success",false);
             remap.put("message","failed to modify doc auth");
@@ -315,26 +443,55 @@ public class DocumentController {
      * @return
      */
     @PutMapping("mod_teamauth")
-    public Map<String,Object> updateDocTeamAuth(@RequestBody Map<String,Object> m){
+    public Map<String,Object> updateDocTeamAuth(@RequestBody Map<String,Object> m,HttpServletRequest request){
         Map<String,Object> remap = new HashMap<>();
 
         //获取参数
-        String docidTemp = m.get("docid").toString();
-        Integer docid = Integer.valueOf(docidTemp);
-        String authTemp = m.get("teamauth").toString();
-        Integer teamauth = Integer.valueOf(authTemp);
         try{
+            //获取用户名
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            //
+            String docidTemp = m.get("docid").toString();
+            Integer docid = Integer.valueOf(docidTemp);
+            String authTemp = m.get("teamauth").toString();
+            Integer teamauth = Integer.valueOf(authTemp);
             Document document = documentService.selectDocByDocId(docid);
+
+            boolean canmod = false;
+
             if(document==null){
+
                 remap.put("success",false);
                 remap.put("message","doc does not exists");
+                return remap;
             }
-            else {
+
+            //检查权限:文档的创建者和团队组长能够修改文档的团队权限
+            if(document.getCreatorid().equals(userid)) {
+                canmod = true;
+            }
+            Team team = teamService.findTeamByTeamid(document.getTeamid());
+            if(team!=null) {       //如果是一篇团队文档
+                if(userid.equals(team.getCreatorid())){
+                    canmod = true;
+                }
+            }
+
+            if(canmod == true){
                 document.setTeamauth(teamauth);
                 documentService.updateDocument(document,document.getLastedituserid());
                 remap.put("success", true);
                 remap.put("message", "modify doc team auth successfully");
             }
+            else{
+                remap.put("success", true);
+                remap.put("message", "haven't auth");
+            }
+
+
         } catch (Exception ex){
             remap.put("success",false);
             remap.put("message","failed to modify doc auth");
@@ -364,17 +521,31 @@ public class DocumentController {
             if(document==null){
                 m.put("success",false);
                 m.put("message","doc does not exists");
+                return m;
             }
-            else if(!document.getCreatorid().equals(userid)){
-                m.put("success",false);
-                m.put("message","haven't authority to move doc to trash");
+
+            boolean canDel = false;
+            if(document.getCreatorid().equals(userid)){
+                canDel = true;
             }
-            else{
+            Team team = teamService.findTeamByTeamid(document.getTeamid());
+            if(team!=null){           //是一个团队文档
+                if(team.getCreatorid().equals(userid)){
+                    canDel = true;
+                }
+            }
+
+
+            if(canDel==true){
 
                 //将文件放入trash，并删除在文档上的收藏以及浏览
                 documentService.docMoveToTrash(document);
                 m.put("success",true);
                 m.put("message","move to trash successfully");
+            }
+            else{
+                m.put("success",false);
+                m.put("message","haven't auth");
             }
         } catch (Exception ex){
             ex.printStackTrace();
@@ -387,7 +558,7 @@ public class DocumentController {
     /**
      * 请求方法：Delete
      * 请求Url：/document/permanent/{int:docid}
-     * 功能：永久删除一个文档
+     * 功能：永久删除一个文档,只能是团队的创建者永久删除其文档
      * @param docid 永久删除的文档id
      * @param request  请求体
      * @return  封装返回信息的map
@@ -405,10 +576,12 @@ public class DocumentController {
             if(document==null){
                 m.put("success",false);
                 m.put("message","doc does not exists");
+                return m;
             }
-            else if(!document.getCreatorid().equals(userid)){
+            if(!document.getCreatorid().equals(userid)){
                 m.put("success",false);
                 m.put("message","haven't authority to delete doc permanently");
+                return  m;
             }
             else{
                 //直接删除
@@ -428,7 +601,7 @@ public class DocumentController {
     /**
      * 请求方法：Delete
      * 请求Url：/document/permanent/all
-     * 功能:清空回收站里的所有doc文档，回收站里的文档的创建者都应该是这个用户，也就是说，只有
+     * 功能:清空回收站里的所有doc文档，回收站里的文档的创建者都应该是这个用户，也就是说，只有创建者才能删除所有文档
      *  创建者才有权限删除文档
      */
     @DeleteMapping("/permanent/all")
@@ -455,7 +628,7 @@ public class DocumentController {
     /**
      * 请求方法：Put
      * 请求Url：/recover/{int:docid}
-     * 功能：恢复一个被放入回收站的文档，恢复文档并不恢复收藏和浏览
+     * 功能：恢复一个被放入回收站的文档，恢复文档并不恢复收藏和浏览，只有创建者能够恢复
      * note : 需要token
      * @param docid 从回收站恢复的文档id
      * @param request   请求体
@@ -700,6 +873,4 @@ public class DocumentController {
         }
         return remap;
     }
-
-
 }

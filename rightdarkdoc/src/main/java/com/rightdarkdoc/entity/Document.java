@@ -17,7 +17,7 @@ public class Document {
     private Integer istrash;
     private String lastetidtimeString = "";
     private String createtimeString = "";
-    private Integer teamid;
+    private Integer teamid=0;
 
     public Integer getTeamid() {
         return teamid;
