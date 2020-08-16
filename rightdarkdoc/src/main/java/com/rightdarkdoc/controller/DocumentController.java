@@ -128,6 +128,99 @@ public class DocumentController {
 
 
     /**
+     * 请求方法：Post
+     * 请求url：/document/template
+     * note : 需要token来获取userid
+     * @param request
+     * @param document 封装document信息的对象
+     * @param tempid 模版的文档id
+     * @return
+     */
+    @PostMapping("template/{tempid}")
+    public Map<String,Object> addDocumentByTemp(HttpServletRequest request,
+                                                @RequestBody(required = false) Document document,
+                                                @PathVariable("tempid") Integer tempid){
+        Map<String,Object> m = new HashMap<>();
+        try {
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+
+            if(document == null){
+                document = new Document();
+            }
+
+
+            if(document.getContent()==null){
+                Document tmpDoc = documentService.selectDocByDocId(tempid);
+                if(tmpDoc!=null){
+                    document.setContent(tmpDoc.getContent());
+                }
+                else {
+                    document.setContent("");
+                }
+            }
+            if(document.getTitle()==null){
+                document.setTitle("untitle");
+            }
+            Date date = new Date();
+
+            //设置文档的创建者
+
+            if(document.getCreatorid()==null){
+                document.setCreatorid(userid);
+            }
+
+            if(document.getEditcount()==null){
+                document.setEditcount(1);
+            }
+
+            if(document.getIstrash()==null){
+                document.setIstrash(0);
+            }
+
+            if(document.getLastedituserid()==null){
+                document.setLastedituserid(userid);
+            }
+
+            if(document.getAuth()==null){
+                document.setAuth(0);
+            }
+
+            if(document.getTeamauth()==null){
+                document.setTeamauth(1);
+            }
+
+            if(document.getCreattime()==null){
+                document.setCreattime(date);
+            }
+
+            if(document.getLastedittime()==null){
+                document.setLastedittime(date);
+            }
+
+            if(document.getTeamid()==null){
+                document.setTeamid(0);
+            }
+            document = TimeUtils.setDocumentTimeString(document);
+            //创建document
+            documentService.addDocument(document);
+            userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
+            System.out.println(document);
+            m.put("contents",document);
+            m.put("success",true);
+            m.put("message","create file successfully");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            m.put("success",false);
+            m.put("message","failed to create doc");
+        }
+        return m;
+    }
+
+
+    /**
      * 请求方法：Get
      * 请求url：/document/{docid}
      * 功能：根据docid查找对应的doc文档,并将其加入用户的最近浏览列表
@@ -148,6 +241,7 @@ public class DocumentController {
                 String userTemp = decoder.getClaim("userid").asString();
                 userid = Integer.valueOf(userTemp);
             }
+            System.out.println(userid);
 
             Document document = documentService.selectDocByDocId(docid);
             if(document!=null){             //对应别人分享了链接之后删除了的情况，保证文档存在
@@ -542,7 +636,6 @@ public class DocumentController {
 
 
             if(canDel==true){
-
                 //将文件放入trash，并删除在文档上的收藏以及浏览
                 documentService.docMoveToTrash(document);
                 m.put("success",true);
@@ -878,4 +971,5 @@ public class DocumentController {
         }
         return remap;
     }
+
 }
