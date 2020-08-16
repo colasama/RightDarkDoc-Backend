@@ -17,12 +17,22 @@ public interface MessageDao {
     public int delMessageByMid(@Param("messageid") Integer messageid);
 
 
-    public int updateIsRead(@Param("messageid") Integer messageid,@Param("isread") Integer isread);
+    public int updateIsRead(@Param("messageid") Integer messageid, @Param("isread") Integer isread);
 
-
+    /**
+     * 根据messageid查看message
+     * @param messageid
+     * @return
+     */
     public Message selectMsgById(@Param("messageid") Integer messageid);
 
 
-    public List<Message> selectMsgByUid(@Param("userid") Integer userid);
+    /**
+     * 根据消息类型和用户名查找消息
+     * @param userid
+     * @param type
+     * @return
+     */
+    public List<Message> selectMsgByUidAndType(Integer userid, Integer type);
 
 }

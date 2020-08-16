@@ -1,6 +1,8 @@
 <component name="ProjectDictionaryState">
   <dictionary name="杨海波">
     <words>
+      <w>applyteamid</w>
+      <w>applyuserid</w>
       <w>comid</w>
       <w>commentable</w>
       <w>commentid</w>
@@ -12,7 +14,15 @@
       <w>favdoc</w>
       <w>inviteeid</w>
       <w>inviteename</w>
+      <w>inviteteamid</w>
+      <w>inviteuserid</w>
+      <w>invitorid</w>
       <w>iscreator</w>
+      <w>isread</w>
+      <w>messageid</w>
+      <w>messagetime</w>
+      <w>messagetimestring</w>
+      <w>requestmap</w>
       <w>requsetmap</w>
       <w>rightdarkdoc</w>
       <w>teamid</w>

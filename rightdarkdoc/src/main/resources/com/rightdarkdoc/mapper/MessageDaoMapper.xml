@@ -4,7 +4,9 @@
 
     
     <insert id="addMessage" parameterType="com.rightdarkdoc.entity.Message">
-        insert into `Message` values(#{messageid},#{userid},#{content},#{isread},#{type})
+        insert into `Message`(userid, content, isread, type, messagetime, messagetimestring, applyuserid, inviteteamid, applyteamid, inviteuserid)
+        values
+        (#{userid}, #{content}, #{isread}, #{type}, #{messagetime}, #{messagetimestring}, #{applyuserid}, #{inviteteamid}, #{applyteamid}, #{inviteuserid})
         <selectKey resultType="java.lang.Integer" keyProperty="messageid" order="AFTER">
             SELECT LAST_INSERT_ID();
         </selectKey>
@@ -14,7 +16,6 @@
         delete from `Message` where messageid = #{messageid}
     </delete>
 
-
     <update id="updateIsRead">
         update `Message` set isread=#{isread} where messageid=#{messageid}
     </update>
@@ -23,10 +24,10 @@
         select * from `Message` where messageid=#{messageid}
     </select>
 
-    <select id="selectMsgByUid" resultType="com.rightdarkdoc.entity.Message">
-        select * from `Message` where userid=#{userid}
+    <!--根据消息类型和用户id查看message，时间按照降序排列-->
+    <select id="selectMsgByUidAndType" resultType="com.rightdarkdoc.entity.Message">
+        select * from `Message` where userid=#{userid} and type = #{type}
+        order by messagetime desc
     </select>
-
-
 
 </mapper>

@@ -32,7 +32,7 @@ public class JWTInterceptor implements HandlerInterceptor {
             map.put("message","token算法不一致!");
         }catch (Exception e){
             e.printStackTrace();
-            map.put("message","token无效!!");
+            map.put("message","token无效!");
         }
         map.put("state",false);//设置状态
         //将map 专为json  jackson
