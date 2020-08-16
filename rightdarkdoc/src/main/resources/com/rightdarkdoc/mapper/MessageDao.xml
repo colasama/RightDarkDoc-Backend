@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rightdarkdoc.dao.MessageDao">
+
+    
+    <insert id="addMessage" parameterType="com.rightdarkdoc.entity.Message">
+        insert into `Message` values(#{messageid},#{userid},#{content},#{isread},#{type})
+        <selectKey resultType="java.lang.Integer" keyProperty="messageid" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+    <delete id="delMessageByMid">
+        delete from `Message` where messageid = #{messageid}
+    </delete>
+
+
+    <update id="updateIsRead">
+        update `Message` set isread=#{isread} where messageid=#{messageid}
+    </update>
+
+    <select id="selectMsgById" resultType="com.rightdarkdoc.entity.Message">
+        select * from `Message` where messageid=#{messageid}
+    </select>
+
+    <select id="selectMsgByUid" resultType="com.rightdarkdoc.entity.Message">
+        select * from `Message` where userid=#{userid}
+    </select>
+
+
+
+</mapper>

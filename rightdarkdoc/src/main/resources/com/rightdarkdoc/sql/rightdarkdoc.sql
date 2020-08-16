@@ -77,10 +77,14 @@ create table Team_Document(
 
 
 -- 用户消息通知表
-create table Message(
-	userid int REFERENCES `USER`(userid),				-- 用户id
-	content varchar(2000), 								-- 评论内容
-	isread TINYINT										-- 是否已读0, 1
+create table Message
+(
+	messageid int PRIMARY key auto_increment,
+	userid int not NULL,
+	content VARCHAR(2000),
+	isread int,
+	type int,
+	CONSTRAINT `mesg_user_fk` FOREIGN key (`userid`) REFERENCES `User`(`userid`)
 );
 
 show tables;

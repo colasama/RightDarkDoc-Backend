@@ -2,6 +2,7 @@ package com.rightdarkdoc.controller;
 
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.rightdarkdoc.config.MyConfig;
 import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.DocumentService;
@@ -9,6 +10,7 @@ import com.rightdarkdoc.service.UserFavDocService;
 import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.service.UserViewDocService;
 import com.rightdarkdoc.utils.JWTUtils;
+import com.rightdarkdoc.utils.TimeUtils;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -103,6 +105,7 @@ public class DocumentController {
             if(document.getTeamid()==null){
                 document.setTeamid(0);
             }
+            document = TimeUtils.setDocumentTimeString(document);
             //创建document
             documentService.addDocument(document);
             userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
@@ -228,6 +231,8 @@ public class DocumentController {
             DecodedJWT decoder = JWTUtils.verify(token);
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
+
+            //获得用户没有放入回收站中的文档
             List<Document> docs = documentService.selectDocByCreatorId(userid);
             m.put("success",true);
             m.put("contents",docs);
@@ -365,6 +370,8 @@ public class DocumentController {
                 m.put("message","haven't authority to move doc to trash");
             }
             else{
+
+                //将文件放入trash，并删除在文档上的收藏以及浏览
                 documentService.docMoveToTrash(document);
                 m.put("success",true);
                 m.put("message","move to trash successfully");
@@ -404,6 +411,7 @@ public class DocumentController {
                 m.put("message","haven't authority to delete doc permanently");
             }
             else{
+                //直接删除
                 documentService.deleteDoc(docid);
                 m.put("success",true);
                 m.put("message","successfully delete doc permanently");
@@ -447,7 +455,7 @@ public class DocumentController {
     /**
      * 请求方法：Put
      * 请求Url：/recover/{int:docid}
-     * 功能：恢复一个被放入回收站的文档
+     * 功能：恢复一个被放入回收站的文档，恢复文档并不恢复收藏和浏览
      * note : 需要token
      * @param docid 从回收站恢复的文档id
      * @param request   请求体
@@ -575,7 +583,7 @@ public class DocumentController {
             System.out.println(len);
             for(int i=0;i<len;i++){
                 Document doc = documentService.selectDocByDocId(docids.get(i));
-                if(doc!=null){
+                if(doc!=null){              //判断是否搜索到了这个文档
                     reList.add(doc);
                 }
             }
@@ -628,7 +636,7 @@ public class DocumentController {
     /**
      * 请求方法：Get
      * 请求URL: /document/view
-     * 功能: 查找用户最近浏览
+     * 功能: 查找用户最近浏览，根据时间排序，最多显示50个
      * note： 需要token
      * @param request 请求
      * @return 封装返回信息的map
@@ -642,12 +650,14 @@ public class DocumentController {
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
             List<Integer> docids = userViewDocService.selectUserViewDoc(userid);
+
             List<Document> reList = new ArrayList<>();
             int len = docids.size();
             System.out.println(len);
-            for(int i=0;i<len;i++){
+            for(int i = 0,j=0; i<len&&j< MyConfig.MAX_VIEW_DOC_NUM; i++){
                 Document doc = documentService.selectDocByDocId(docids.get(i));
-                if(doc!=null){
+                if(doc!=null){              //最多显示MAX_VIEW_DOC_NUM个最近浏览文档
+                    j++;
                     reList.add(doc);
                 }
             }

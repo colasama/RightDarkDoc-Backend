@@ -39,13 +39,13 @@ public class UserController {
     }
 
     /**
-     * 请求方法：Put
+     * 请求方法：Post
      * 请求Url：/user/fuzSearch
      * 功能：模糊匹配user信息并返回前端
      * @param map 参数：1. String: username
      * @return
      */
-    @GetMapping("fuzSearch")
+    @PostMapping("fuzSearch")
     public Map<String,Object> getUserByUserNameFuz(@RequestBody Map<String,Object> map){
         HashMap<String,Object> remap = new HashMap<>();
         try{
@@ -134,7 +134,5 @@ public class UserController {
         }
         return remap;
     }
-
-
 
 }

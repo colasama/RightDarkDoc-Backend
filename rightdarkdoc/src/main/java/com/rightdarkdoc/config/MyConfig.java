@@ -15,5 +15,11 @@ public interface MyConfig {
     public static Integer SYS_APPLY = 1;       //系统请求
 
 
+    /**
+     * 访问文档相关
+     */
+    public static Integer MAX_VIEW_DOC_NUM = 50;
+
+
 
 }

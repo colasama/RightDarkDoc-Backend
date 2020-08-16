@@ -7,7 +7,6 @@ import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.TimeUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;

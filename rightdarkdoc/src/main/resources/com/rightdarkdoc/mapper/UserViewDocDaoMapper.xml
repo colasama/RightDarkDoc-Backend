@@ -22,11 +22,11 @@
     </update>
 
     <select id="selectUserViewDoc" resultType="java.lang.Integer">
-        select docid from `User_Doc_View` where userid=#{userid}
+        select docid from `User_Doc_View` where userid=#{userid} order by viewtime DESC
     </select>
 
     <select id="selectUserViewDocByUidAndDid" resultType="java.lang.Integer">
-        select docid from `User_Doc_View` where userid=#{userid} and docid=#{docid}
+        select docid from `User_Doc_View` where userid=#{userid} and docid=#{docid} order by viewtime
     </select>
 
 
