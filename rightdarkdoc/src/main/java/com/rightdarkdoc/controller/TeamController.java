@@ -2,6 +2,7 @@ package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.Document;
+import com.rightdarkdoc.entity.Message;
 import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
@@ -14,6 +15,8 @@ import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.rightdarkdoc.config.MyConfig.*;
 
 @RestController
 @RequestMapping("team")
@@ -30,6 +33,9 @@ public class TeamController {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 创建新的团队
@@ -52,34 +58,30 @@ public class TeamController {
             DecodedJWT verify = JWTUtils.verify(token);
 
             String userid1 = verify.getClaim("userid").asString();
-            //System.out.println(userid1);
             Integer userid = Integer.valueOf(userid1);
-            //System.out.println(userid);
+            Team tempTeam = teamService.findTeamByTeamnameAndCreatorId(team.getTeamname(), userid);
+            if(tempTeam != null) {
+                map.put("success", false);
+                map.put("message", "您已经创建过一个同名团队，请尝试更改团队名称。");
 
-            //取出request body中的信息作为team
-//            //teamid
-//            Integer teamid = Integer.valueOf(request.getParameter("teamid"));
-//
-//            //teaminfo
-//            String teaminfo = request.getParameter("teaminfo");
-//
-//            //teamname
-//            String teamname = request.getParameter("teamname");
-            team.setCreatorid(userid);
-            teamService.createNewTeam(team);
+            } else {
+                team.setCreatorid(userid);
 
-            /**
-             * 2. 将表插入user_team表中
-             */
-            Team team1 = teamService.findTeamByTeamnameAndCreatorId(team.getTeamname(), team.getCreatorid());
-            userTeamService.userCreateTeam(userid, team1.getTeamid());
 
-            /**
-             * 3. 设置返回数据
-             */
-            map.put("success", true);
-            map.put("message", "创建团队成功！");
+                teamService.createNewTeam(team);
 
+                /**
+                 * 2. 将表插入user_team表中
+                 */
+                Team team1 = teamService.findTeamByTeamnameAndCreatorId(team.getTeamname(), team.getCreatorid());
+                userTeamService.userCreateTeam(userid, team1.getTeamid());
+
+                /**
+                 * 3. 设置返回数据
+                 */
+                map.put("success", true);
+                map.put("message", "创建团队成功！");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);
@@ -96,30 +98,43 @@ public class TeamController {
      * @return
      */
     @GetMapping("/{teamidString}/inviteMember")
-    public Map<String, Object> registerNewUser(@RequestParam(value = "inviteename", required = false) String inviteename,
+    public Map<String, Object> registerNewUser(HttpServletRequest request,
+                                               @RequestParam(value = "inviteename", required = false) String inviteename,
                                                @PathVariable String teamidString) {
         System.out.println("接收到一个团队邀请请求");
 
         Map<String, Object> map = new HashMap<>();
         try {
+            //看是否是创建者发起的请求
+            String token = request.getHeader("token");
+            //取出token中的用户id
+            DecodedJWT verify = JWTUtils.verify(token);
+            String userid1 = verify.getClaim("userid").asString();
+            //System.out.println(userid1);
+            Integer userid = Integer.valueOf(userid1);
             /**
              * 取出被邀请对象的userid和teamid
              */
-            //System.out.println(inviteename);
             User invitee = userService.selectUserByUsername(inviteename);
-            //System.out.println(invitee);
             Integer inviteeId = invitee.getUserid();
             Integer teamid = Integer.valueOf(teamidString);
+            Team team = teamService.findTeamByTeamid(teamid);
 
-            //判断是否在团队中
-            Boolean isInTeam = userTeamService.isTeamMember(teamid, inviteeId);
-            if (isInTeam) {
-                map.put("success", false);
-                map.put("message", "该成员已在团队中！");
+            //判断是否有邀请权限
+            if (team.getCreatorid().equals(userid)) {
+                //判断是否在团队中
+                Boolean isInTeam = userTeamService.isTeamMember(teamid, inviteeId);
+                if (isInTeam) {
+                    map.put("success", false);
+                    map.put("message", "该成员已在团队中！");
+                } else {
+                    messageService.inviteTeamMemberMessage(teamid, userid, inviteeId, INVITE_MESSAGE);
+                    map.put("success", true);
+                    map.put("message", "邀请已发送，请等待对方同意！");
+                }
             } else {
-                userTeamService.inviteTeamMember(teamid, inviteeId);
-                map.put("success", true);
-                map.put("message", "邀请成功！");
+                map.put("success", false);
+                map.put("message", "您没有邀请权限！");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,9 +176,15 @@ public class TeamController {
             } else {
                 //删除User_Team表对应的记录
                 User deleted = userService.selectUserByUsername(deletedname);
-                //System.out.println(invitee);
                 Integer deletedid = deleted.getUserid();
                 userTeamService.deleteTeamMember(teamid, deletedid);
+
+                //4.给被删除者发一条消息
+                Message message = new Message();
+                message.setUserid(deletedid);
+                message.setContent("您已被移出团队"+team.getTeamname()+"(teamid:"+team.getTeamid().toString()+")!");
+                messageService.addMessage(message, SYS_MESSAGE);
+
                 map.put("success", true);
                 map.put("message", "删除成员成功！");
             }
@@ -200,8 +221,8 @@ public class TeamController {
             Integer teamid = Integer.valueOf(teamidString);
             Team team = teamService.findTeamByTeamid(teamid);
 
-            System.out.println(userid);
-            System.out.println(team.getCreatorid());
+            List<Integer> teamMembersId = userTeamService.findTeamMembers(teamid);
+
             if (!team.getCreatorid().equals(userid)) {
                 map.put("success", false);
                 map.put("message", "用户没有删除权限！");
@@ -209,6 +230,15 @@ public class TeamController {
                 //删除User_Team, Team表对应的记录
                 userTeamService.deleteTeamByTeamid(teamid);
                 teamService.deleteTeamByTeamid(teamid);
+
+                //4.给所有用户发一条消息。
+                for (Integer integer : teamMembersId) {
+                    Message message = new Message();
+                    message.setUserid(integer);
+                    message.setContent("团队"+team.getTeamname()+"(teamid:"+team.getTeamid().toString()+")已解散， " + "您已被移出团队");
+                    messageService.addMessage(message, SYS_MESSAGE);
+                }
+
                 map.put("success", true);
                 map.put("message", "删除团队成功！");
             }
@@ -219,7 +249,6 @@ public class TeamController {
         }
         return map;
     }
-
 
     /**
      * 申请加入团队
@@ -242,11 +271,23 @@ public class TeamController {
             String userid1 = verify.getClaim("userid").asString();
             //System.out.println(userid1);
             Integer userid = Integer.valueOf(userid1);
-
             Integer teamid = Integer.valueOf(teamidString);
-            userTeamService.applyToBeATeamMember(teamid, userid);
-            map.put("success", true);
-            map.put("message", "申请成功！");
+            //给团队创建者发送申请MESSAGE
+
+            Boolean isInTeam = userTeamService.isTeamMember(teamid, userid);
+            if (isInTeam) {
+                map.put("success", false);
+                map.put("message", "你已经是该团队成员！");
+            }
+            else {
+                if (messageService.applyTeamMessage(teamid, userid, APPLY_MESSAGE)) {
+                    map.put("success", true);
+                    map.put("message", "申请信息已发送，请等待团队管理员审核！");
+                } else {
+                    map.put("success", false);
+                    map.put("message", "申请信息发送失败！");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);
@@ -409,6 +450,7 @@ public class TeamController {
         }
         return map;
     }
+
 
     /**
      * 查看团队的所有文章
