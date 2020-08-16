@@ -43,7 +43,7 @@ public class User {
         this.password = password;
     }
 
-    public int getUserid() {
+    public Integer getUserid() {
         return userid;
     }
 

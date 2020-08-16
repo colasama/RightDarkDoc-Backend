@@ -2,6 +2,7 @@ package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.Document;
+import com.rightdarkdoc.entity.Message;
 import com.rightdarkdoc.entity.Team;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
@@ -15,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.rightdarkdoc.config.MyConfig.APPLY_MESSAGE;
-import static com.rightdarkdoc.config.MyConfig.INVITE_MESSAGE;
+import static com.rightdarkdoc.config.MyConfig.*;
 
 @RestController
 @RequestMapping("team")
@@ -59,21 +59,29 @@ public class TeamController {
 
             String userid1 = verify.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userid1);
-            team.setCreatorid(userid);
-            teamService.createNewTeam(team);
+            Team tempTeam = teamService.findTeamByTeamnameAndCreatorId(team.getTeamname(), userid);
+            if(tempTeam != null) {
+                map.put("success", false);
+                map.put("message", "您已经创建过一个同名团队，请尝试更改团队名称。");
 
-            /**
-             * 2. 将表插入user_team表中
-             */
-            Team team1 = teamService.findTeamByTeamnameAndCreatorId(team.getTeamname(), team.getCreatorid());
-            userTeamService.userCreateTeam(userid, team1.getTeamid());
+            } else {
+                team.setCreatorid(userid);
 
-            /**
-             * 3. 设置返回数据
-             */
-            map.put("success", true);
-            map.put("message", "创建团队成功！");
 
+                teamService.createNewTeam(team);
+
+                /**
+                 * 2. 将表插入user_team表中
+                 */
+                Team team1 = teamService.findTeamByTeamnameAndCreatorId(team.getTeamname(), team.getCreatorid());
+                userTeamService.userCreateTeam(userid, team1.getTeamid());
+
+                /**
+                 * 3. 设置返回数据
+                 */
+                map.put("success", true);
+                map.put("message", "创建团队成功！");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);
@@ -168,9 +176,15 @@ public class TeamController {
             } else {
                 //删除User_Team表对应的记录
                 User deleted = userService.selectUserByUsername(deletedname);
-                //System.out.println(invitee);
                 Integer deletedid = deleted.getUserid();
                 userTeamService.deleteTeamMember(teamid, deletedid);
+
+                //4.给被删除者发一条消息
+                Message message = new Message();
+                message.setUserid(deletedid);
+                message.setContent("您已被移出团队"+team.getTeamname()+"(teamid:"+team.getTeamid().toString()+")!");
+                messageService.addMessage(message, SYS_MESSAGE);
+
                 map.put("success", true);
                 map.put("message", "删除成员成功！");
             }
@@ -207,8 +221,8 @@ public class TeamController {
             Integer teamid = Integer.valueOf(teamidString);
             Team team = teamService.findTeamByTeamid(teamid);
 
-            System.out.println(userid);
-            System.out.println(team.getCreatorid());
+            List<Integer> teamMembersId = userTeamService.findTeamMembers(teamid);
+
             if (!team.getCreatorid().equals(userid)) {
                 map.put("success", false);
                 map.put("message", "用户没有删除权限！");
@@ -216,6 +230,15 @@ public class TeamController {
                 //删除User_Team, Team表对应的记录
                 userTeamService.deleteTeamByTeamid(teamid);
                 teamService.deleteTeamByTeamid(teamid);
+
+                //4.给所有用户发一条消息。
+                for (Integer integer : teamMembersId) {
+                    Message message = new Message();
+                    message.setUserid(integer);
+                    message.setContent("团队"+team.getTeamname()+"(teamid:"+team.getTeamid().toString()+")已解散， " + "您已被移出团队");
+                    messageService.addMessage(message, SYS_MESSAGE);
+                }
+
                 map.put("success", true);
                 map.put("message", "删除团队成功！");
             }
@@ -226,7 +249,6 @@ public class TeamController {
         }
         return map;
     }
-
 
     /**
      * 申请加入团队

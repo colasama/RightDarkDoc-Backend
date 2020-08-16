@@ -47,8 +47,7 @@ public class MessageController {
         Map<String, Object> map = new HashMap<>();
         try {
             Integer messageid = Integer.valueOf(messageidString);
-            //1. 将消息设置为已读
-            messageService.updateIsRead(messageid, 1);
+
             //2. 取出消息
             Message message = messageService.selectMessageByMessageId(messageid);
             if (userTeamService.isTeamMember(message.getApplyteamid(), message.getApplyuserid())) {
@@ -66,7 +65,8 @@ public class MessageController {
                 message1.setContent("你的申请信息已通过，你已成功加入团队" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "(teamid:"
                                 + message.getApplyteamid().toString() + ")!");
                 messageService.addMessage(message1, SYS_MESSAGE);
-
+                //1. 将消息设置为已读
+                messageService.updateIsRead(messageid, 1);
                 map.put("success", true);
                 map.put("message", "同意申请成功！");
             }
@@ -91,8 +91,7 @@ public class MessageController {
         Map<String, Object> map = new HashMap<>();
         try {
             Integer messageid = Integer.valueOf(messageidString);
-            //1. 将消息设置为已读
-            messageService.updateIsRead(messageid, 1);
+
 
             Message message = messageService.selectMessageByMessageId(messageid);
 
@@ -102,6 +101,8 @@ public class MessageController {
             message1.setContent("你的申请信息已处理，团队管理者拒绝你加入团队" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "(teamid:"
                     + message.getApplyteamid().toString() + ")!");
             messageService.addMessage(message1, SYS_MESSAGE);
+            //1. 将消息设置为已读
+            messageService.updateIsRead(messageid, 1);
             map.put("success", true);
             map.put("message", "拒绝申请成功！");
         } catch (Exception e) {
@@ -156,8 +157,7 @@ public class MessageController {
         Map<String, Object> map = new HashMap<>();
         try {
             Integer messageid = Integer.valueOf(messageidString);
-            //1. 将消息设置为已读
-            messageService.updateIsRead(messageid, 1);
+
             //2. 取出消息
             Message message = messageService.selectMessageByMessageId(messageid);
             if (userTeamService.isTeamMember(message.getInviteteamid(), message.getUserid())) {
@@ -167,16 +167,21 @@ public class MessageController {
             else {
                 //3. 插入user_team表中
                 userTeamService.inviteTeamMember(message.getInviteteamid(), message.getUserid());
+
                 map.put("success", true);
                 map.put("message", "已同意邀请！");
                 //4. 给团队创建者发一条消息，表示已经加入团队成功。
                 Message message1 = new Message();
                 Team team = teamService.findTeamByTeamid(message.getInviteteamid());
                 message1.setUserid(team.getCreatorid());
-                message1.setContent("你已成功加入团队" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "(teamid:"
-                        + message.getApplyteamid().toString() + ")!");
+
+                User user = userService.selectUserByUserId(message.getUserid());
+                message1.setContent(user.getUsername() + "(uid:" + user.getUserid()+ ")" + "已成功加入团队" + team.getTeamname() + "(teamid:"
+                        + team.getTeamid().toString() + ")!");
                 messageService.addMessage(message1, SYS_MESSAGE);
 
+                //1. 将消息设置为已读
+                messageService.updateIsRead(messageid, 1);
                 map.put("success", true);
                 map.put("message", "同意邀请成功！");
             }
@@ -201,18 +206,17 @@ public class MessageController {
         Map<String, Object> map = new HashMap<>();
         try {
             Integer messageid = Integer.valueOf(messageidString);
-            //1. 将消息设置为已读
-            messageService.updateIsRead(messageid, 1);
-
             Message message = messageService.selectMessageByMessageId(messageid);
             User user = userService.selectUserByUserId(message.getUserid());
             //2. 给团队管理员发一条消息，表示已拒绝对方的邀请。
             Message message1 = new Message();
             message1.setUserid(message.getInviteuserid());
-            message1.setContent("用户" + user.getUsername() +"(uid:" + message.getUserid() + ")"+ "已拒绝加入您的团队" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "(teamid:"
-                    + message.getApplyteamid().toString() + ")!");
+            message1.setContent("用户" + user.getUsername() + "(uid:" + user.getUserid().toString() + ")"+ "已拒绝加入您的团队" +
+                                teamService.findTeamByTeamid(message.getInviteteamid()).getTeamname() +
+                                "(teamid:" + message.getInviteteamid() + ")!");
             messageService.addMessage(message1, SYS_MESSAGE);
-
+            //1. 将消息设置为已读
+            messageService.updateIsRead(messageid, 1);
             map.put("success", true);
             map.put("message", "拒绝邀请成功！");
         } catch (Exception e) {
@@ -222,4 +226,28 @@ public class MessageController {
         }
         return map;
     }
+
+    /**
+     * 查看用户的所有消息
+     * @param request
+     * @return
+     */
+    @GetMapping("/{messageidString}")
+    public Map<String, Object> viewMessage(HttpServletRequest request,
+                                           @PathVariable String messageidString) {
+        System.out.println("接收到一个 已读消息 的请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Integer messageid = Integer.valueOf(messageidString);
+            messageService.updateIsRead(messageid, 1);
+            map.put("success", true);
+            map.put("message", "查看成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "查看失败！");
+        }
+        return map;
+    }
+
 }
