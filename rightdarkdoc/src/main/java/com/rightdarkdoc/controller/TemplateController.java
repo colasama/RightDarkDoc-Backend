@@ -34,7 +34,7 @@ public class TemplateController {
             templateService.createTemplate(template,userid);
             remap.put("success",true);
             remap.put("contents",template);
-            remap.put("message","get message successfully");
+            remap.put("message","create template successfully");
             return  remap;
         } catch (Exception ex){
             ex.printStackTrace();
@@ -69,6 +69,23 @@ public class TemplateController {
     }
 
 
+    @DeleteMapping("{tempid}")
+    public Map<String ,Object> delTemplate(@PathVariable("tempid") Integer tempid){
+        Map<String,Object> remap = new HashMap<>();
+        try {
+            templateService.delTemplate(tempid);
+            remap.put("success",true);
+            remap.put("message","delete template successfully");
+            return remap;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","delete template failed");
+            return remap;
+        }
+    }
+
+
     @GetMapping("{tempid}")
     public Map<String,Object> getTemplate(@PathVariable("tempid") Integer tempid,
                                           HttpServletRequest request){
@@ -78,7 +95,8 @@ public class TemplateController {
             DecodedJWT decoder = JWTUtils.verify(token);
             String userTemp = decoder.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userTemp);
-            templateService.delTemplate(tempid);
+            Template template = templateService.selectTemplateByTempid(tempid);
+            remap.put("contents",template);
             remap.put("success",true);
             remap.put("message","get template successfully");
             return remap;
@@ -111,5 +129,21 @@ public class TemplateController {
         }
     }
 
+    @GetMapping("pub")
+    public Map<String,Object> getPubTemplate(){
+        Map<String,Object> remap = new HashMap<>();
+        try{
+            List<Template> temps = templateService.selectPubTemp();
+            remap.put("contents",temps);
+            remap.put("success",true);
+            remap.put("message","get public template successfully");
+            return remap;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            remap.put("success",false);
+            remap.put("message","get public template failed");
+            return remap;
+        }
+    }
 
 }
