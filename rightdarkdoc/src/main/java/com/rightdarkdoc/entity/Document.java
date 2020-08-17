@@ -132,6 +132,7 @@ public class Document {
         this.istrash = istrash;
     }
 
+
     @Override
     public String toString() {
         return "Document{" +
@@ -148,6 +149,5 @@ public class Document {
                 ", istrash=" + istrash +
                 '}';
     }
-
 
 }

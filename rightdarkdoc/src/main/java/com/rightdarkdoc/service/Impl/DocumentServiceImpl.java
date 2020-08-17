@@ -2,8 +2,10 @@ package com.rightdarkdoc.service.Impl;
 
 import com.rightdarkdoc.dao.DocumentDao;
 import com.rightdarkdoc.entity.Document;
+import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.DocumentService;
 import com.rightdarkdoc.service.UserFavDocService;
+import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.service.UserViewDocService;
 import com.rightdarkdoc.utils.SortUtils;
 import com.rightdarkdoc.utils.TimeUtils;
@@ -28,6 +30,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private UserFavDocService userFavDocService;
+
 
     /**
      * 创建一个新的文件
