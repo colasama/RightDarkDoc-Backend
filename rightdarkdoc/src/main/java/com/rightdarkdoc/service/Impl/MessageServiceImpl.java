@@ -63,6 +63,17 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
+     * 根据用户id查找message
+     *
+     * @param userid
+     * @return
+     */
+    @Override
+    public List<Message> selectMessageByUserId(Integer userid) {
+        return messageDao.selectMsgByUid(userid);
+    }
+
+    /**
      * 用户申请加入团队时创建消息
      *  @param teamid 申请加入的团队id
      * @param applyuserid 申请者的用户id

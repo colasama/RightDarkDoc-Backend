@@ -21,6 +21,12 @@ public interface MessageService {
      */
     public List<Message> selectMessageByUserIdAndType(Integer userid, Integer type);
 
+    /**
+     * 根据用户id查找message
+     * @param userid
+     * @return
+     */
+    public List<Message> selectMessageByUserId(Integer userid);
 
     /**
      * 用户申请加入团队时创建消息
