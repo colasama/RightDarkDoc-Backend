@@ -3,6 +3,7 @@ package com.rightdarkdoc.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.Calendar;
@@ -44,8 +45,13 @@ public class JWTUtils {
      *
      */
     public static DecodedJWT verify(String token){
-        return JWT.require(Algorithm.HMAC256(SING)).build().verify(token);
+        try {
+            return JWT.require(Algorithm.HMAC256(SING)).build().verify(token);
+        } catch (JWTVerificationException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-
-    
 }
