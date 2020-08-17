@@ -1,10 +1,7 @@
 package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rightdarkdoc.entity.Document;
-import com.rightdarkdoc.entity.Message;
-import com.rightdarkdoc.entity.Team;
-import com.rightdarkdoc.entity.User;
+import com.rightdarkdoc.entity.*;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.TimeUtils;
@@ -36,6 +33,10 @@ public class TeamController {
 
     @Autowired
     private MessageService messageService;
+
+
+    @Autowired
+    private TemplateService templateService;
 
     /**
      * 创建新的团队
@@ -565,6 +566,103 @@ public class TeamController {
 
                 if (document.getContent() == null) {
                     document.setContent("");
+                }
+
+                if (document.getTitle() == null) {
+                    document.setTitle("untitle");
+                }
+                //设置当前时间
+                Date date = new Date();
+                //设置文档的创建者
+//                System.out.println(date);
+
+                if (document.getCreatorid() == null) {
+                    document.setCreatorid(userid);
+                }
+
+                if (document.getEditcount() == null) {
+                    document.setEditcount(1);
+                }
+
+                if (document.getIstrash() == null) {
+                    document.setIstrash(0);
+                }
+
+                if (document.getLastedituserid() == null) {
+                    document.setLastedituserid(userid);
+                }
+
+                if (document.getAuth() == null) {
+                    document.setAuth(0);
+                }
+
+                if (document.getTeamauth() == null) {
+                    document.setTeamauth(1);
+                }
+
+                if (document.getCreattime() == null) {
+                    document.setCreattime(date);
+                }
+
+                if (document.getLastedittime() == null) {
+                    document.setLastedittime(date);
+                }
+
+                if (document.getLastedituserid() == null) {
+                    document.setLastedittime(date);
+                }
+
+                //创建document
+                documentService.addDocument(document);
+                document = TimeUtils.setDocumentTimeString(document);
+                m.put("teamDocument", document);
+                m.put("success", true);
+                m.put("message", "create file successfully");
+            } else {
+                m.put("success", false);
+                m.put("message", "您不是团队成员，没有权限创建文档！");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            m.put("success", false);
+            m.put("message", "failed to create doc");
+        }
+        return m;
+    }
+
+
+    @PostMapping("/{teamidString}/createDocument/template/{tempid}")
+    public Map<String, Object> createNewTeamDocByTemp(HttpServletRequest request,
+                                                        @RequestBody(required = false) Document document,
+                                                        @PathVariable("teamidString") String teamidString,
+                                                        @PathVariable("tempid") Integer tempid) {
+        Map<String, Object> m = new HashMap<>();
+        try {
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
+            Integer teamid = Integer.valueOf(teamidString);
+            //判断你是不是团队成员
+            Boolean isTeamMember = userTeamService.isTeamMember(teamid, userid);
+
+            //是团队成员
+            if (isTeamMember) {
+                if (document == null) {
+                    document = new Document();
+                }
+
+                //给团队文档附上团队值
+                document.setTeamid(teamid);
+
+                if (document.getContent() == null) {
+                    Template template = templateService.selectTemplateByTempid(tempid);
+                    if(template!=null){
+                        document.setContent(template.getContent());
+                    }
+                    else{
+                        document.setContent("");
+                    }
                 }
 
                 if (document.getTitle() == null) {
