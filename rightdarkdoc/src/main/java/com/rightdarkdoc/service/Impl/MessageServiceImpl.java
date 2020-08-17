@@ -97,7 +97,7 @@ public class MessageServiceImpl implements MessageService {
             User user = userService.selectUserByUserId(applyuserid);
 
             //设置message内容
-            message.setContent("您收到一条来自用户" + user.getUsername() + "(uid: " + applyuserid.toString() + ")" + "的团队申请消息。");
+            message.setContent(user.getUsername() + "申请加入您的团队："  + team.getTeamname() + "(团队号: " + teamid + ")");
 
             //创建这条消息
             addMessage(message, type);
@@ -111,9 +111,10 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 邀请团队新成员时创建消息
      *
-     * @param inviteteamid
-     * @param inviteuserid
-     * @param type
+     * @param inviteteamid  邀请对方加入的团队
+     * @param invitorid     邀请者的id
+     * @param inviteuserid  被邀请者的id
+     * @param type          消息的类型 INVITE_MESSAGE
      * @return
      */
     @Override
@@ -126,9 +127,11 @@ public class MessageServiceImpl implements MessageService {
         message.setInviteteamid(inviteteamid);
         message.setInviteuserid(invitorid);
 
+        User user = userService.selectUserByUserId(invitorid);
+
         //设置message内容
         Team team = teamService.findTeamByTeamid(inviteteamid);
-        message.setContent("您收到一条来自团队" + team.getTeamname() + "(teamid: " + team.getTeamid().toString() + ")" + "的邀请。");
+        message.setContent(user.getUsername() + "邀请您加入团队：" + team.getTeamname() + "(团队号: " + team.getTeamid().toString() + ")");
 
         //创建这条消息
         addMessage(message, type);
