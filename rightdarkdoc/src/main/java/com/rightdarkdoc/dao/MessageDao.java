@@ -35,4 +35,10 @@ public interface MessageDao {
      */
     public List<Message> selectMsgByUidAndType(Integer userid, Integer type);
 
+    /**
+     * 查看用户所有消息
+     * @param userid
+     * @return
+     */
+    public List<Message> selectMsgByUid(Integer userid);
 }

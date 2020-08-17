@@ -30,4 +30,10 @@
         order by messagetime desc
     </select>
 
+    <!--根据用户id查看message，时间按照降序排列-->
+    <select id="selectMsgByUid" resultType="com.rightdarkdoc.entity.Message">
+        select * from `Message` where userid=#{userid}
+        order by messagetime desc
+    </select>
+
 </mapper>

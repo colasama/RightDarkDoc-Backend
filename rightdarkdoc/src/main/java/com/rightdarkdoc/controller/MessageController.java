@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -228,7 +229,7 @@ public class MessageController {
     }
 
     /**
-     * 查看用户的所有消息
+     * 确认未读消息
      * @param request
      * @return
      */
@@ -250,4 +251,40 @@ public class MessageController {
         return map;
     }
 
+    /**
+     * 查看用户的所有未读消息
+     * @param request
+     * @return
+     */
+    @GetMapping("/unread")
+    public Map<String, Object> showUnReadMyMessages(HttpServletRequest request) {
+        System.out.println("接收到一个 拒绝他人申请加入团队 的请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String token = request.getHeader("token");
+            DecodedJWT verify = JWTUtils.verify(token);
+            String userid1 = verify.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userid1);
+
+            ArrayList<Message> allMessages = (ArrayList<Message>) messageService.selectMessageByUserId(userid);
+            ArrayList<Message> unReadMessages = new ArrayList<>();
+            ArrayList<Message> readMessages = new ArrayList<>();
+            for (Message message : allMessages) {
+                if (message.getIsread() == 0) {
+                    unReadMessages.add(message);
+                } else {
+                    readMessages.add(message);
+                }
+            }
+            map.put("unReadMessages", unReadMessages);
+            map.put("readMessages", readMessages);
+            map.put("success", true);
+            map.put("message", "查看成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "查看失败！");
+        }
+        return map;
+    }
 }
