@@ -23,5 +23,4 @@ public interface MyConfig {
     public static final Integer MAX_VIEW_DOC_NUM = 50;
 
 
-
 }
