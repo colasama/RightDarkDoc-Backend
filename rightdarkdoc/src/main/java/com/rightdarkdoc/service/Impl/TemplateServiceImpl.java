@@ -7,6 +7,7 @@ import com.rightdarkdoc.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,16 +73,31 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public Template selectTemplateByTempid(Integer tempid) {
-        return templateDao.selectTempBytempid(tempid);
+
+        Template template =  templateDao.selectTempBytempid(tempid);
+        template.setCreattimeString(TimeUtils.formatTime(template.getCreattime()));
+        return template;
     }
 
     @Override
     public List<Template> selectTempByUserid(Integer userid) {
-        return templateDao.selectTempByUserid(userid);
+        List<Template> temps =  templateDao.selectTempByUserid(userid);
+        List<Template> templates = new ArrayList<>();
+        for(Template template : temps){
+            if(template.getIspublic()==0){
+                template.setCreattimeString(TimeUtils.formatTime(template.getCreattime()));
+                templates.add(template);
+            }
+        }
+        return templates;
     }
 
     @Override
     public List<Template> selectPubTemp() {
-        return templateDao.selectPubTemplate();
+        List<Template> temps = templateDao.selectPubTemplate();
+        for(Template template : temps){
+            template.setCreattimeString(TimeUtils.formatTime(template.getCreattime()));
+        }
+        return temps;
     }
 }
