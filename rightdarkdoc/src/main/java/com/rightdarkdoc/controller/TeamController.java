@@ -465,15 +465,15 @@ public class TeamController {
             Integer teamid = Integer.valueOf(teamidString);
             //取出docids
             List<Document> documents = documentService.selectDocByTeamId(teamid);
+            List<Document> docre = new ArrayList<>();
             for (Document doc : documents) {
                 //判断一下是不是垃圾文件
                 if (doc.getIstrash() == 0) {
                     doc = TimeUtils.setDocumentTimeString(doc);         //给时间赋值
-                } else {
-                    documents.remove(doc);
+                    docre.add(doc);
                 }
             }
-            map.put("documents", documents);
+            map.put("documents", docre);
             map.put("success", true);
             map.put("message", "查看文章成功！");
         } catch (Exception e) {

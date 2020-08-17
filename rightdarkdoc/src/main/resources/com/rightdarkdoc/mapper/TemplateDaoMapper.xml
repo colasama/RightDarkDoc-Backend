@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rightdarkdoc.dao.TemplateDao">
+
+
+    <insert id="addTemplate" parameterType="com.rightdarkdoc.entity.Template" keyColumn="tempid">
+        insert into `Template`
+        values(#{tempid},#{creatorid},#{title},#{content},#{creattime},#{istrash},#{ispublic})
+        <selectKey resultType="java.lang.Integer" keyProperty="tempid" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+
+    <delete id="delTemplate">
+        delete from `Template` where tempid=#{tempid}
+    </delete>
+
+    <select id="selectTempBytempid" resultType="com.rightdarkdoc.entity.Template">
+        select * from `Template` where tempid=#{tempid}
+    </select>
+
+
+    <select id="selectTempByUserid" resultType="com.rightdarkdoc.entity.Template">
+        select * from `Template` where creatorid=#{creatorid}
+    </select>
+
+    <select id="selectPubTemplate" resultType="com.rightdarkdoc.entity.Template">
+        select * from `Template` where ispublic=1
+    </select>
+</mapper>

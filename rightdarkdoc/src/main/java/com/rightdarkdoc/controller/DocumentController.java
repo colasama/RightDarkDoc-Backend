@@ -249,6 +249,7 @@ public class DocumentController {
 
                 //判断是否可读
                 boolean canread = false;
+                boolean isTeammember = false;
                 if(document.getAuth()>=MyConfig.U_R){
                     canread = true;
                 }
@@ -259,6 +260,7 @@ public class DocumentController {
                     }
                     if(document.getTeamauth()>MyConfig.PRIVATE && userTeamService.isTeamMember(document.getTeamid(),userid)){
                         canread = true;
+                        isTeammember = true;
                     }
                 }
 
@@ -283,8 +285,10 @@ public class DocumentController {
                     remap.put("success",true);
                     remap.put("contents",document);
                     remap.put("message","get doc success");
+                    remap.put("isTeammember",isTeammember);
                 }
                else{
+                   remap.put("isTeammember",isTeammember);
                    remap.put("success", false);
                    if(document.getIstrash()==0){
                        remap.put("message", "haven't auth");

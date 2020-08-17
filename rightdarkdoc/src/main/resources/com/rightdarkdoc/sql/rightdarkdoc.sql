@@ -16,14 +16,14 @@ create table User(
 
 -- 2.文档表
 create table Document(
-	docid int PRIMARY key auto_increment,												
+	docid int PRIMARY key auto_increment,
 	creatorid INT REFERENCES `USER`(userid),			-- 创建者id
 	title VARCHAR(200) not null,						-- 文档标题
 	content TEXT,									    -- 文档内容
 	creattime datetime,							-- 创建时间，默认为插入时间
 	lastedittime datetime,							    -- 最后修改时间， 默认为插入时间
 	editcount int not null DEFAULT 1,					-- 修改次数
-	lastedituserid int REFERENCES `USER`(userid),		-- 最后修改用户userid																					
+	lastedituserid int REFERENCES `USER`(userid),		-- 最后修改用户userid
 	auth INT,										    -- 文档权限 1(可删除等操作) 1(可修改) 1(可评论) 1(可读)    1111
 	teamauth INT,										-- 团队文档权限
 	istrash TINYINT DEFAULT 0							-- 垃圾桶中 0(不在), 1(在)
