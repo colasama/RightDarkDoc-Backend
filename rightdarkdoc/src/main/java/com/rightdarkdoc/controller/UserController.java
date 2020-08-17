@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.Keymap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,4 +156,26 @@ public class UserController {
         return remap;
     }
 
+    /**
+     * 根据用户id获取用户信息
+     * @param useridString
+     * @return
+     */
+    @GetMapping("/{useridString}")
+    public Map<String, Object> getUserInfo(@PathVariable String useridString) {
+        Map<String, Object> map = new HashMap<>();
+        Integer userid = Integer.valueOf(useridString);
+
+        User user = userService.selectUserByUserId(userid);
+        if (user != null) {
+            user.setPassword("");
+            map.put("user", user);
+            map.put("success", true);
+            map.put("message", "用户获取成功！");
+        } else {
+            map.put("success", false);
+            map.put("message", "用户不存在或者已注销！");
+        }
+        return map;
+    }
 }

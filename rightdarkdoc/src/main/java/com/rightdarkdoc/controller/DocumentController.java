@@ -224,7 +224,6 @@ public class DocumentController {
         return m;
     }
 
-
     /**
      * 请求方法：Get
      * 请求url：/document/{docid}
@@ -383,8 +382,6 @@ public class DocumentController {
         }
         return remap;
     }
-
-
 
     /**
      * 请求方法：Get
