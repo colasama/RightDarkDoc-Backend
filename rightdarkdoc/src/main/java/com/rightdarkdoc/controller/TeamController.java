@@ -469,6 +469,8 @@ public class TeamController {
                 //判断一下是不是垃圾文件
                 if (doc.getIstrash() == 0) {
                     doc = TimeUtils.setDocumentTimeString(doc);         //给时间赋值
+                } else {
+                    documents.remove(doc);
                 }
             }
             map.put("documents", documents);

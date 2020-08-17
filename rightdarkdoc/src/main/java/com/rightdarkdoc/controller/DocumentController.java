@@ -236,10 +236,12 @@ public class DocumentController {
             Integer userid = 0;
 
             //未登陆的人也可以访问
-            if(token!=null) {
+            if(token != null) {
                 DecodedJWT decoder = JWTUtils.verify(token);
-                String userTemp = decoder.getClaim("userid").asString();
-                userid = Integer.valueOf(userTemp);
+                if (decoder != null) {
+                    String userTemp = decoder.getClaim("userid").asString();
+                    userid = Integer.valueOf(userTemp);
+                }
             }
             System.out.println(userid);
 
