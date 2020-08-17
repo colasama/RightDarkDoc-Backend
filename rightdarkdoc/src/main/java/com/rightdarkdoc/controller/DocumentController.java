@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.config.MyConfig;
 import com.rightdarkdoc.entity.Document;
 import com.rightdarkdoc.entity.Team;
+import com.rightdarkdoc.entity.Template;
 import com.rightdarkdoc.entity.User;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
@@ -40,6 +41,9 @@ public class DocumentController {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private TemplateService templateService;
 
 
     /**
@@ -153,9 +157,10 @@ public class DocumentController {
 
 
             if(document.getContent()==null){
-                Document tmpDoc = documentService.selectDocByDocId(tempid);
-                if(tmpDoc!=null){
-                    document.setContent(tmpDoc.getContent());
+                Template template = templateService.selectTemplateByTempid(tempid);
+                if(template!=null){
+                    System.out.println(template);
+                    document.setContent(template.getContent());
                 }
                 else {
                     document.setContent("");

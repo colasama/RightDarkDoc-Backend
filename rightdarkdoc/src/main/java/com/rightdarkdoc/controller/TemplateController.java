@@ -22,7 +22,12 @@ public class TemplateController {
     private TemplateServiceImpl templateService;
 
 
-
+    /**
+     * 创建个人模版
+     * @param request
+     * @param template
+     * @return
+     */
     @PostMapping("")
     public Map<String,Object> createTemp(HttpServletRequest request, @RequestBody Template template){
         Map<String,Object> remap = new HashMap<>();
@@ -45,7 +50,12 @@ public class TemplateController {
     }
 
 
-
+    /**
+     * 创建公共模版
+     * @param request
+     * @param template
+     * @return
+     */
     @PostMapping("pub")
     public Map<String,Object> createPubTemp(HttpServletRequest request,
                                             @RequestBody Template template){
@@ -69,6 +79,11 @@ public class TemplateController {
     }
 
 
+    /**
+     * 删除一个模版
+     * @param tempid
+     * @return
+     */
     @DeleteMapping("{tempid}")
     public Map<String ,Object> delTemplate(@PathVariable("tempid") Integer tempid){
         Map<String,Object> remap = new HashMap<>();
@@ -86,6 +101,12 @@ public class TemplateController {
     }
 
 
+    /**
+     * 根据模版id获得一个模版
+     * @param tempid
+     * @param request
+     * @return
+     */
     @GetMapping("{tempid}")
     public Map<String,Object> getTemplate(@PathVariable("tempid") Integer tempid,
                                           HttpServletRequest request){
@@ -108,6 +129,12 @@ public class TemplateController {
         }
     }
 
+
+    /**
+     * 获得一个用户创建的模版
+     * @param request
+     * @return
+     */
     @GetMapping("creator")
     public Map<String,Object> getTemplate(HttpServletRequest request){
         Map<String,Object> remap = new HashMap<>();
@@ -129,6 +156,11 @@ public class TemplateController {
         }
     }
 
+
+    /**
+     * 获得公共的模版
+     * @return
+     */
     @GetMapping("pub")
     public Map<String,Object> getPubTemplate(){
         Map<String,Object> remap = new HashMap<>();
