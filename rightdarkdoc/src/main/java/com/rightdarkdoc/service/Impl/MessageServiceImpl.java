@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+import static com.rightdarkdoc.config.MyConfig.APPLY_MESSAGE;
+import static com.rightdarkdoc.config.MyConfig.INVITE_MESSAGE;
+
 @Service
 public class MessageServiceImpl implements MessageService {
 
@@ -78,10 +81,10 @@ public class MessageServiceImpl implements MessageService {
      *  @param teamid 申请加入的团队id
      * @param applyuserid 申请者的用户id
      * @param type   APPLY_MESSAGE
-     * @return
+     * @return  0:团队不存在；    1：申请成功      2：重复申请
      */
     @Override
-    public boolean applyTeamMessage(Integer teamid, Integer applyuserid, Integer type) {
+    public int applyTeamMessage(Integer teamid, Integer applyuserid, Integer type) {
         Message message = new Message();
         //取出team
         Team team = teamService.findTeamByTeamid(teamid);
@@ -98,13 +101,21 @@ public class MessageServiceImpl implements MessageService {
 
             //设置message内容
             message.setContent(user.getUsername() + "申请加入您的团队："  + team.getTeamname() + "(团队号: " + teamid + ")");
-
-            //创建这条消息
-            addMessage(message, type);
-            return true;
+            message.setIsread(0);
+            message.setType(APPLY_MESSAGE);
+            System.out.println(message);
+            List<Message> tempMessage = messageDao.selectMsgByUseridAndContent(message);
+            System.out.println(tempMessage);
+            if (tempMessage.size() == 0) {
+                //创建这条消息
+                addMessage(message, type);
+                return 1;
+            } else {
+                return 2;
+            }
         }
         else {
-            return false;
+            return 0;
         }
     }
 
@@ -115,26 +126,39 @@ public class MessageServiceImpl implements MessageService {
      * @param invitorid     邀请者的id
      * @param inviteuserid  被邀请者的id
      * @param type          消息的类型 INVITE_MESSAGE
-     * @return
+     * @return 0:返回错误   1：成功邀请      2：重复邀请
      */
     @Override
-    public void inviteTeamMemberMessage(Integer inviteteamid, Integer invitorid, Integer inviteuserid, Integer type) {
-        Message message = new Message();
-        //取出被邀请者id，作为message的接受方
-        message.setUserid(inviteuserid);
+    public int inviteTeamMemberMessage(Integer inviteteamid, Integer invitorid, Integer inviteuserid, Integer type) {
+        try {
+            Message message = new Message();
+            //取出被邀请者id，作为message的接受方
+            message.setUserid(inviteuserid);
 
-        //设置message的inviteteamid
-        message.setInviteteamid(inviteteamid);
-        message.setInviteuserid(invitorid);
+            //设置message的inviteteamid
+            message.setInviteteamid(inviteteamid);
+            message.setInviteuserid(invitorid);
 
-        User user = userService.selectUserByUserId(invitorid);
+            User user = userService.selectUserByUserId(invitorid);
 
-        //设置message内容
-        Team team = teamService.findTeamByTeamid(inviteteamid);
-        message.setContent(user.getUsername() + "邀请您加入团队：" + team.getTeamname() + "(团队号: " + team.getTeamid().toString() + ")");
+            //设置message内容
+            Team team = teamService.findTeamByTeamid(inviteteamid);
 
-        //创建这条消息
-        addMessage(message, type);
+            message.setContent(user.getUsername() + "邀请您加入团队：" + team.getTeamname() + "(团队号: " + team.getTeamid().toString() + ")");
+            message.setIsread(0);
+            message.setType(INVITE_MESSAGE);
+            List<Message> tempMessage = messageDao.selectMsgByUseridAndContent(message);
+            if (tempMessage.size() == 0) {
+                //创建这条消息
+                addMessage(message, type);
+                return 1;
+            } else {
+                return 2;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
@@ -160,15 +184,15 @@ public class MessageServiceImpl implements MessageService {
     }
 
     /**
-     * 更具用户id和内容搜索消息
+     * 根据用户id和内容搜索消息
      *
      * @param userid
      * @param content
      * @return
      */
     @Override
-    public Message selectMessageByUseridAndContent(Integer userid, String content) {
-        return messageDao.selectMsgByUseridAndContent(userid, content);
+    public List<Message> selectMessageByUseridAndContent(Message message) {
+        return messageDao.selectMsgByUseridAndContent(message);
     }
 
 }

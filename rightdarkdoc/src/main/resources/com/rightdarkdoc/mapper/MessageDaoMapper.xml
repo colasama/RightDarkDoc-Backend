@@ -38,7 +38,12 @@
 
     <!--根据用户id和内容查看消息-->
     <select id="selectMsgByUseridAndContent" resultType="Message">
-        select * from Message where userid = #{userid} and content = #{content}
+        select * from Message
+        where
+        userid = #{userid} and
+        isread = #{isread} and type = #{type} and
+        applyuserid = #{applyuserid} and inviteteamid = #{inviteteamid} and
+        applyteamid = #{applyteamid} and inviteuserid = #{inviteuserid}
     </select>
 
 </mapper>

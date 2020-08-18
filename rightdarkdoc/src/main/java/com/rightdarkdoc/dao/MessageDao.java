@@ -44,10 +44,8 @@ public interface MessageDao {
 
     /**
      * 查找是否有相同内容的消息
-     * @param userid
-     * @param content
      * @return
      */
-    public Message selectMsgByUseridAndContent(Integer userid, String content);
+    public List<Message> selectMsgByUseridAndContent (Message message);
 
 }

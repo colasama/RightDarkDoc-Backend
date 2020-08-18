@@ -35,7 +35,7 @@ public interface MessageService {
      * @param type      APPLY_MESSAGE
      * @return
      */
-    public boolean applyTeamMessage(Integer teamid, Integer applyuserid, Integer type);
+    public int applyTeamMessage(Integer teamid, Integer applyuserid, Integer type);
 
     /**
      * 邀请团队新成员时创建消息
@@ -44,7 +44,7 @@ public interface MessageService {
      * @param type
      * @return
      */
-    public void inviteTeamMemberMessage(Integer inviteteamid, Integer invitorid, Integer inviteuserid, Integer type);
+    public int inviteTeamMemberMessage(Integer inviteteamid, Integer invitorid, Integer inviteuserid, Integer type);
 
 
 
@@ -68,6 +68,6 @@ public interface MessageService {
      * @param content
      * @return
      */
-    public Message selectMessageByUseridAndContent(Integer userid, String content);
+    public List<Message> selectMessageByUseridAndContent(Message message);
 
 }

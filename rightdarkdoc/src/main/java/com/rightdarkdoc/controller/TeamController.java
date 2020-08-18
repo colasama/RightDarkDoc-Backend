@@ -129,9 +129,17 @@ public class TeamController {
                     map.put("success", false);
                     map.put("message", "该成员已在团队中！");
                 } else {
-                    messageService.inviteTeamMemberMessage(teamid, userid, inviteeId, INVITE_MESSAGE);
-                    map.put("success", true);
-                    map.put("message", "邀请已发送，请等待对方同意！");
+                    int ans = messageService.inviteTeamMemberMessage(teamid, userid, inviteeId, INVITE_MESSAGE);
+                    if (ans == 1) {
+                        map.put("success", true);
+                        map.put("message", "邀请已发送，请等待对方同意！");
+                    } else if (ans == 0){
+                        map.put("success", false);
+                        map.put("message", "邀请信息发送失败！");
+                    } else if (ans == 2){
+                        map.put("success", false);
+                        map.put("message", "您已经发送邀请信息，请不要重复邀请！");
+                    }
                 }
             } else {
                 map.put("success", false);
@@ -282,13 +290,16 @@ public class TeamController {
             }
             else {
 
-
-                if (messageService.applyTeamMessage(teamid, userid, APPLY_MESSAGE)) {
+                int ans = messageService.applyTeamMessage(teamid, userid, APPLY_MESSAGE);
+                if (ans == 1) {
                     map.put("success", true);
                     map.put("message", "申请信息已发送，请等待团队管理员审核！");
-                } else {
+                } else if (ans == 0){
                     map.put("success", false);
                     map.put("message", "申请信息发送失败！");
+                } else if (ans == 2){
+                    map.put("success", false);
+                    map.put("message", "您已经发送申请信息，请不要重复申请！");
                 }
             }
         } catch (Exception e) {
