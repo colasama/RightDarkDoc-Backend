@@ -186,8 +186,6 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 根据用户id和内容搜索消息
      *
-     * @param userid
-     * @param content
      * @return
      */
     @Override

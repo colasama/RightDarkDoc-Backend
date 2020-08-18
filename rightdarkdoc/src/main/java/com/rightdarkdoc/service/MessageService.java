@@ -64,8 +64,6 @@ public interface MessageService {
 
     /**
      * 更具用户id和内容搜索消息
-     * @param userid
-     * @param content
      * @return
      */
     public List<Message> selectMessageByUseridAndContent(Message message);

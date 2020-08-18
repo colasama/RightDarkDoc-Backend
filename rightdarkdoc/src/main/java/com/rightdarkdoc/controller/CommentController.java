@@ -177,12 +177,13 @@ public class CommentController {
                 commentService.createNewComment(comment);
 
                 //5. 给文档创建者发一条消息提醒
-                Message message = new Message();
-                message.setUserid(document.getCreatorid());
-                message.setContent(user.getUsername() + "评论了你的文档:" + document.getTitle() +
-                                    "(文档号："+ docid + ")");
-                messageService.addMessage(message, SYS_MESSAGE);
-
+                if (!userid.equals(document.getCreatorid())) {
+                    Message message = new Message();
+                    message.setUserid(document.getCreatorid());
+                    message.setContent(user.getUsername() + "评论了你的文档:" + document.getTitle() +
+                            "(文档号："+ docid + ")");
+                    messageService.addMessage(message, SYS_MESSAGE);
+                }
                 map.put("success", true);
                 map.put("message", "用户评论成功！");
             }
