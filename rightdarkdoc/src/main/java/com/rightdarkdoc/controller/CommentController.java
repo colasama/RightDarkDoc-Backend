@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.rightdarkdoc.config.MyConfig.SYS_MESSAGE;
+
 @RestController
 public class CommentController {
     @Autowired
@@ -29,6 +31,9 @@ public class CommentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 删除评论   只有评论者自己或者是文档作者可以删除评论
@@ -139,6 +144,8 @@ public class CommentController {
             String userid1 = verify.getClaim("userid").asString();
             Integer userid = Integer.valueOf(userid1);
 
+            User user = userService.selectUserByUserId(userid);
+
             //判断document是否可评论
             Integer docid = Integer.valueOf(docidString);
             Document document = documentService.selectDocByDocId(docid);
@@ -168,6 +175,14 @@ public class CommentController {
                 String content = requestmap.get("content");
                 Comment comment = new Comment(docid, content, userid);
                 commentService.createNewComment(comment);
+
+                //5. 给文档创建者发一条消息提醒
+                Message message = new Message();
+                message.setUserid(document.getCreatorid());
+                message.setContent(user.getUsername() + "评论了你的文档:" + document.getTitle() +
+                                    "(文档号："+ docid + ")");
+                messageService.addMessage(message, SYS_MESSAGE);
+
                 map.put("success", true);
                 map.put("message", "用户评论成功！");
             }
