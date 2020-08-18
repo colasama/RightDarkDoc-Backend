@@ -281,6 +281,8 @@ public class TeamController {
                 map.put("message", "你已经是该团队成员！");
             }
             else {
+
+
                 if (messageService.applyTeamMessage(teamid, userid, APPLY_MESSAGE)) {
                     map.put("success", true);
                     map.put("message", "申请信息已发送，请等待团队管理员审核！");

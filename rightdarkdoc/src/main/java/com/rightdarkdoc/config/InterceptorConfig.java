@@ -25,6 +25,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/document/{docid}")
                 .excludePathPatterns("/document/{docid}/comments")
                 .excludePathPatterns("/user/{userid}")
+                .excludePathPatterns("/document/{docidString}/editRecord")
                 .excludePathPatterns("/register");
     }
 

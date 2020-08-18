@@ -62,5 +62,12 @@ public interface MessageService {
      */
     public Message selectMessageByMessageId(Integer messageid);
 
+    /**
+     * 更具用户id和内容搜索消息
+     * @param userid
+     * @param content
+     * @return
+     */
+    public Message selectMessageByUseridAndContent(Integer userid, String content);
 
 }

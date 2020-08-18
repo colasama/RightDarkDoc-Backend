@@ -11,6 +11,8 @@
       <w>deletedname</w>
       <w>docid</w>
       <w>docids</w>
+      <w>edittime</w>
+      <w>edittimestring</w>
       <w>favdoc</w>
       <w>inviteeid</w>
       <w>inviteename</w>

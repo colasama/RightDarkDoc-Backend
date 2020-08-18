@@ -159,4 +159,16 @@ public class MessageServiceImpl implements MessageService {
         return messageDao.selectMsgById(messageid);
     }
 
+    /**
+     * 更具用户id和内容搜索消息
+     *
+     * @param userid
+     * @param content
+     * @return
+     */
+    @Override
+    public Message selectMessageByUseridAndContent(Integer userid, String content) {
+        return messageDao.selectMsgByUseridAndContent(userid, content);
+    }
+
 }

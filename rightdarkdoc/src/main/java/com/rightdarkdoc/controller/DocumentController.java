@@ -3,10 +3,7 @@ package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.config.MyConfig;
-import com.rightdarkdoc.entity.Document;
-import com.rightdarkdoc.entity.Team;
-import com.rightdarkdoc.entity.Template;
-import com.rightdarkdoc.entity.User;
+import com.rightdarkdoc.entity.*;
 import com.rightdarkdoc.service.*;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.TimeUtils;
@@ -45,6 +42,9 @@ public class DocumentController {
     @Autowired
     private TemplateService templateService;
 
+    @Autowired
+    private DocEditService docEditService;
+
 
     /**
      * 请求方法：Post
@@ -72,7 +72,7 @@ public class DocumentController {
             if(document.getContent()==null){
                 document.setContent("");
             }
-            if(document.getTitle()==null){
+            if(document.getTitle() == null){
                 document.setTitle("untitle");
             }
             Date date = new Date();
@@ -118,6 +118,10 @@ public class DocumentController {
             //创建document
             documentService.addDocument(document);
             userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
+
+            //增加一条编辑记录
+            docEditService.addANewEditRecord(userid, document.getDocid());
+
             System.out.println(document);
             m.put("contents",document);
             m.put("success",true);
@@ -357,6 +361,10 @@ public class DocumentController {
                         document.setCreatorid(doc.getCreatorid());
                         //后台更新编辑次数，最后编辑用户，最后编辑时间等信息
                         documentService.updateDocument(document, userid);
+
+                        //增加一条编辑记录
+                        docEditService.addANewEditRecord(userid, document.getDocid());
+
                         remap.put("success", true);
                         remap.put("message", "modify doc successfully");
                     }
@@ -455,6 +463,10 @@ public class DocumentController {
                 if(canmodify == true && doc.getIstrash()==0){
                     //更改文件名
                     documentService.updateDocTitle(docid,title);
+
+                    //增加一条编辑记录
+                    docEditService.addANewEditRecord(userid, docid);
+
                     remap.put("success",true);
                     remap.put("message","modify doc title successfully");
                 }
@@ -516,6 +528,10 @@ public class DocumentController {
                 }
                 if(canmodify == true){
                     documentService.updateDocAuth(docid,auth);
+
+                    //增加一条编辑记录
+                    docEditService.addANewEditRecord(userid, docid);
+
                     remap.put("success",true);
                     remap.put("message","modify doc auth successfully");
                 }
@@ -590,6 +606,10 @@ public class DocumentController {
             if(canmod == true){
                 document.setTeamauth(teamauth);
                 documentService.updateDocument(document,document.getLastedituserid());
+
+                //增加一条编辑记录
+                docEditService.addANewEditRecord(userid, docid);
+
                 remap.put("success", true);
                 remap.put("message", "modify doc team auth successfully");
             }
@@ -980,4 +1000,27 @@ public class DocumentController {
         return remap;
     }
 
+    @GetMapping("/{docidString}/editRecord")
+    public Map<String, Object> getDocumentEditRecord(@PathVariable String docidString) {
+
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Integer docid = Integer.valueOf(docidString);
+            Document document = documentService.selectDocByDocId(docid);
+            if (document != null) {
+                ArrayList<DocEdit> docEditArrayList = (ArrayList<DocEdit>) docEditService.findDocEditorRecord(docid);
+                map.put("docRecord", docEditArrayList);
+                map.put("success", true);
+                map.put("message", "查看编辑记录成功！");
+            } else {
+                map.put("success", false);
+                map.put("message", "文档不存在！");
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "查看失败！");
+        }
+        return map;
+    }
 }
