@@ -35,6 +35,9 @@ public class TemplateServiceImpl implements TemplateService {
         if(template.getContent()==null){
             template.setTitle("");
         }
+        if(template.getCover()==null){
+            template.setCover("");
+        }
         Date date = new Date();
         template.setCreattime(date);
         template.setCreattimeString(TimeUtils.formatTime(date));
@@ -57,6 +60,9 @@ public class TemplateServiceImpl implements TemplateService {
         }
         if(template.getContent()==null){
             template.setTitle("");
+        }
+        if(template.getCover()==null){
+            template.setCover("");
         }
         Date date = new Date();
         template.setCreattime(date);

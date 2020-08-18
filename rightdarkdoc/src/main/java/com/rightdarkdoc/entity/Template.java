@@ -12,6 +12,7 @@ public class Template {
     private String creattimeString;
     private Integer istrash;
     private Integer ispublic;
+    private String cover="";
 
 
     public Integer getTempid() {
@@ -78,6 +79,14 @@ public class Template {
         this.ispublic = ispublic;
     }
 
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
     @Override
     public String toString() {
         return "Template{" +
@@ -89,6 +98,9 @@ public class Template {
                 ", creattimeString='" + creattimeString + '\'' +
                 ", istrash=" + istrash +
                 ", ispublic=" + ispublic +
+                ", cover='" + cover + '\'' +
                 '}';
     }
+
+
 }
