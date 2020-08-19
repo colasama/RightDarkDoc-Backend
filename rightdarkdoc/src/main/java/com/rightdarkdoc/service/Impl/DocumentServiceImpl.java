@@ -73,6 +73,10 @@ public class DocumentServiceImpl implements DocumentService {
         documentDao.updateDocument(document);
     }
 
+    @Override
+    public void setDocTeamidToZero(Integer teamid) {
+        documentDao.setDocTeamidToZero(teamid);
+    }
 
     /**
      * 对文件重命名
@@ -163,5 +167,10 @@ public class DocumentServiceImpl implements DocumentService {
     public List<Document> selectDocByTeamId(Integer teamid) {
         ArrayList<Document> documents = (ArrayList<Document>) documentDao.selectDocByTeamId(teamid);
         return SortUtils.sortByLastEditTime(documents);
+    }
+
+    @Override
+    public void setTeamUserDocTeamidToZero(Integer teamid, Integer userid) {
+        documentDao.setTeamUserDocTeamidToZero(teamid, userid);
     }
 }

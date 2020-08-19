@@ -236,6 +236,9 @@ public class TeamController {
                 map.put("success", false);
                 map.put("message", "用户没有删除权限！");
             } else {
+                //3.给所有团队文档teamid置0
+                documentService.setDocTeamidToZero(teamid);
+
                 //删除User_Team, Team表对应的记录
                 userTeamService.deleteTeamByTeamid(teamid);
                 teamService.deleteTeamByTeamid(teamid);
@@ -333,6 +336,10 @@ public class TeamController {
             Integer userid = Integer.valueOf(userid1);
 
             Integer teamid = Integer.valueOf(teamidString);
+
+            //1.把所有自己创建的文档都置为0
+            documentService.setTeamUserDocTeamidToZero(teamid, userid);
+
             userTeamService.exitTeam(teamid, userid);
             map.put("success", true);
             map.put("message", "退出团队成功！");

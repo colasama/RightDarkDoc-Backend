@@ -57,6 +57,8 @@ public interface TeamDao {
      */
     public List<Team> findMyCreateTeams(Integer creatorid);
 
+
+
 //
 //
 //    @Select("select * from Team where teamid=#{teamId}")

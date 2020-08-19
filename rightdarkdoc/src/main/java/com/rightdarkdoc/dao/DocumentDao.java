@@ -54,6 +54,11 @@ public interface DocumentDao {
      */
     public void updateDocAuth(@Param("docid") Integer docid,@Param("auth") Integer auth);
 
+    /**
+     * 删除团队时讲团队文档置为0
+     * @param teamid
+     */
+    public void setDocTeamidToZero(Integer teamid);
 
     /**
      * 根据doc的id查找doc
@@ -76,6 +81,14 @@ public interface DocumentDao {
      * @return
      */
      public List<Document> selectDocByTeamId(Integer teamid);
+
+
+    /**
+     * 用户退出团队时将自己创建的团队文档置为个人文档
+     * @param teamid
+     * @param userid
+     */
+    public void setTeamUserDocTeamidToZero(Integer teamid, Integer userid);
 
 }
 

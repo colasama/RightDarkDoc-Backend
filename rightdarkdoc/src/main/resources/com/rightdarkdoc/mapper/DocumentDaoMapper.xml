@@ -52,4 +52,13 @@
         select * from `Document`
         where teamid=#{teamid}
     </select>
+
+    <update id="setDocTeamidToZero" parameterType="Integer">
+        update Document set teamid = 0 where teamid = #{teamid}
+    </update>
+
+    <select id="setTeamUserDocTeamidToZero" parameterType="Integer">
+        update Document set teamid = 0 where teamid = #{teamid} and creatorid = #{userid}
+    </select>
+
 </mapper>
