@@ -139,6 +139,7 @@ public class UserController {
             if(user == null){
                 remap.put("success",false);
                 remap.put("message","user does not exist");
+                return  remap;
             }
             else if(!user.getPassword().contentEquals(oldPassword)){
                 remap.put("success",false);
@@ -151,7 +152,7 @@ public class UserController {
         } catch (Exception ex){
             ex.printStackTrace();
             remap.put("success",false);
-            remap.put("message","token error");
+            remap.put("message","修改密码失败!");
         }
         return remap;
     }

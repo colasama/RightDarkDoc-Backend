@@ -5,12 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+
 @SpringBootTest
 public class UserFavDocServiceTest {
 
 
     @Autowired
     private UserFavDocService userFavDocService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Test
     public void addUserFavDocTest(){
@@ -32,6 +36,15 @@ public class UserFavDocServiceTest {
     public void selectAllTest(){
         System.out.println(userFavDocService.selectDocByUidAndDid(1,2));
         System.out.println(userFavDocService.selectDocByUidAndDid(1,4));
+    }
+
+    @Test
+    public void sendEmailTest(){
+        try {
+            emailService.sendVerifyCode("123456", "2846175443@qq.com");
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
 }
