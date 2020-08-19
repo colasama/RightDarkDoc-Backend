@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
@@ -24,8 +25,11 @@ public class EmailSeviceImpl implements EmailService {
     private String from;
 
 
+
     @Override
+    @Async
     public void sendVerifyCode(String verifyCode,String userEmail) throws Exception {
+        System.out.println("正在发送邮件");
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true);
 
@@ -37,4 +41,6 @@ public class EmailSeviceImpl implements EmailService {
 
         mailSender.send(mimeMessage);
     }
+
+
 }

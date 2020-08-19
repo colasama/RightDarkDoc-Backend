@@ -42,6 +42,7 @@ public class UserFavDocServiceTest {
     public void sendEmailTest(){
         try {
             emailService.sendVerifyCode("123456", "2846175443@qq.com");
+            Thread.sleep(3000);
         }catch (Exception ex){
             ex.printStackTrace();
         }
