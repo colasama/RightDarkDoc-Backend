@@ -16,12 +16,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @RestController                 //返回json数据
 public class LoginController {
 
+    //存储验证码
+    //String : 邮箱
+    //String ：验证码
+    private static Map<String, String> codeMap = new HashMap<>();
+
     @Autowired
     private UserService userService;
+
+
+    @Autowired
+    private MailService mailService;
 
     /**
      * 注册用户
@@ -29,10 +39,15 @@ public class LoginController {
      * @return
      */
     @PostMapping("register")
-    public Map<String, Object> registerNewUser(@RequestBody User user) {
+    public Map<String, Object> registerNewUser(@RequestParam(value = "username", required = true) String username,
+                                               @RequestParam(value = "email", required = true) String email,
+                                               @RequestParam(value = "password", required = true) String password,
+                                               @RequestParam(value = "phone", required = false) String phone,
+                                               @RequestParam(value = "code", required = true) String code) {
         System.out.println("接收到一个注册请求");
         Map<String, Object> map = new HashMap<>();
         try {
+            User user = new User(username, password, phone, email);
             User user1 = userService.selectUserByUsername(user.getUsername());
             User user2 = userService.selectUserByEmail(user.getEmail());
             if (user1 != null) {
@@ -43,9 +58,17 @@ public class LoginController {
                 map.put("message", "该邮箱已注册");
             }
             else {
-                userService.registerNewUser(user);
-                map.put("success", true);
-                map.put("message", "用户注册成功！");
+                String myCode = codeMap.get(email);
+                if (myCode.equals(code)) {
+                    userService.registerNewUser(user);
+                    map.put("success", true);
+                    map.put("message", "用户注册成功！");
+                    map.remove(email);                          //从本地存储中删除刚刚的验证码
+                }
+                else {
+                    map.put("success", false);
+                    map.put("message", "注册码错误！");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +77,50 @@ public class LoginController {
         }
         return map;
     }
+
+    /**
+     * 获取验证码
+     * @param username 用户名
+     * @param email 验证邮箱
+     * @return
+     */
+    @PostMapping("code")
+    public Map<String, Object> registerCode(@RequestParam(value = "username", required = true) String username,
+                                            @RequestParam(value = "email", required = true) String email) {
+        System.out.println("接收到一个注册码的请求");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            User user1 = userService.selectUserByUsername(username);
+            User user2 = userService.selectUserByEmail(email);
+            if (user1 != null) {
+                map.put("success", false);
+                map.put("message", "用户名已注册！");
+            } else if (user2 != null) {
+                map.put("success", false);
+                map.put("message", "该邮箱已注册");
+            }
+            else {
+                String checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
+                String message = "您的注册验证码为："+checkCode;
+                if (codeMap.containsKey(email)) {
+                    codeMap.replace(email, checkCode);
+                }
+                else {
+                    codeMap.put(email, checkCode);
+                }
+                mailService.sendSimpleMail(email, "注册验证码", message);
+                map.put("success", true);
+                map.put("message", "验证码发送成功！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "用户注册失败！");
+        }
+        return map;
+    }
+
+
 
 
     /**
