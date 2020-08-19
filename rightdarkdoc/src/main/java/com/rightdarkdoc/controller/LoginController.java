@@ -96,14 +96,6 @@ public class LoginController {
         return map;
     }
 
-    @GetMapping("logout")
-    public void logout() {
-
-    }
-
-
-
-
     /**
      * 测试连接
      * @return
