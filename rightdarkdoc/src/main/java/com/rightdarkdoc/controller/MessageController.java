@@ -63,8 +63,7 @@ public class MessageController {
                 //4. 给申请者发一条消息，表示已经加入团队成功。
                 Message message1 = new Message();
                 message1.setUserid(message.getApplyuserid());
-                message1.setContent("你的申请信息已通过，你已成功加入团队" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "(teamid:"
-                                + message.getApplyteamid().toString() + ")!");
+                message1.setContent("你的申请信息已通过，你已成功加入团队：" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "。");
                 messageService.addMessage(message1, SYS_MESSAGE);
                 //1. 将消息设置为已读
                 messageService.updateIsRead(messageid, 1);
@@ -88,7 +87,6 @@ public class MessageController {
     @GetMapping("apply/{messageidString}/reject")
     public Map<String, Object> rejectTeamApply(HttpServletRequest request,
                                                   @PathVariable String messageidString) {
-        System.out.println("接收到一个 拒绝他人申请加入团队 的请求");
         Map<String, Object> map = new HashMap<>();
         try {
             Integer messageid = Integer.valueOf(messageidString);
@@ -99,8 +97,7 @@ public class MessageController {
             //2. 给申请者发一条消息，表示拒绝对方加入团队。
             Message message1 = new Message();
             message1.setUserid(message.getApplyuserid());
-            message1.setContent("你的申请信息已处理，团队管理者拒绝你加入团队" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "(teamid:"
-                    + message.getApplyteamid().toString() + ")!");
+            message1.setContent("你的申请信息已处理，团队创建者拒绝你加入团队：" + teamService.findTeamByTeamid(message.getApplyteamid()).getTeamname() + "。");
             messageService.addMessage(message1, SYS_MESSAGE);
             //1. 将消息设置为已读
             messageService.updateIsRead(messageid, 1);
@@ -177,8 +174,7 @@ public class MessageController {
                 message1.setUserid(team.getCreatorid());
 
                 User user = userService.selectUserByUserId(message.getUserid());
-                message1.setContent(user.getUsername() + "(uid:" + user.getUserid()+ ")" + "已成功加入团队" + team.getTeamname() + "(teamid:"
-                        + team.getTeamid().toString() + ")!");
+                message1.setContent(user.getUsername() + "已成功加入团队：" + team.getTeamname() + "。");
                 messageService.addMessage(message1, SYS_MESSAGE);
 
                 //1. 将消息设置为已读
@@ -212,9 +208,8 @@ public class MessageController {
             //2. 给团队管理员发一条消息，表示已拒绝对方的邀请。
             Message message1 = new Message();
             message1.setUserid(message.getInviteuserid());
-            message1.setContent("用户" + user.getUsername() + "(uid:" + user.getUserid().toString() + ")"+ "已拒绝加入您的团队" +
-                                teamService.findTeamByTeamid(message.getInviteteamid()).getTeamname() +
-                                "(teamid:" + message.getInviteteamid() + ")!");
+            message1.setContent(user.getUsername() + "已拒绝加入您的团队：" +
+                                teamService.findTeamByTeamid(message.getInviteteamid()).getTeamname() + "。");
             messageService.addMessage(message1, SYS_MESSAGE);
             //1. 将消息设置为已读
             messageService.updateIsRead(messageid, 1);
@@ -286,41 +281,4 @@ public class MessageController {
         }
         return map;
     }
-
-//    /**
-//     * 查看用户的所有未读消息
-//     * @param request
-//     * @return
-//     */
-//    @GetMapping("/unread")
-//    public Map<String, Object> showAllMessages(HttpServletRequest request) {
-//        Map<String, Object> map = new HashMap<>();
-//        try {
-//            String token = request.getHeader("token");
-//            DecodedJWT verify = JWTUtils.verify(token);
-//            String userid1 = verify.getClaim("userid").asString();
-//            Integer userid = Integer.valueOf(userid1);
-//
-//            ArrayList<Message> allMessages = (ArrayList<Message>) messageService.selectMessageByUserId(userid);
-//            ArrayList<Message> unReadMessages = new ArrayList<>();
-//            ArrayList<Message> readMessages = new ArrayList<>();
-//            for (Message message : allMessages) {
-//                if (message.getIsread() == 0) {
-//                    unReadMessages.add(message);
-//                } else {
-//                    readMessages.add(message);
-//                }
-//            }
-//            map.put("unReadMessages", unReadMessages);
-//            map.put("readMessages", readMessages);
-//            map.put("success", true);
-//            map.put("message", "查看成功！");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            map.put("success", false);
-//            map.put("message", "查看失败！");
-//        }
-//        return map;
-//    }
-
 }

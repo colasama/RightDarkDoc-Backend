@@ -180,8 +180,7 @@ public class CommentController {
                 if (!userid.equals(document.getCreatorid())) {
                     Message message = new Message();
                     message.setUserid(document.getCreatorid());
-                    message.setContent(user.getUsername() + "评论了你的文档:" + document.getTitle() +
-                            "(文档号："+ docid + ")");
+                    message.setContent(user.getUsername() + "评论了你的文档:" + document.getTitle() + "。");
                     messageService.addMessage(message, SYS_MESSAGE);
                 }
                 map.put("success", true);
