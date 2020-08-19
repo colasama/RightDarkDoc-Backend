@@ -36,6 +36,12 @@ public interface DocumentService {
     public void updateDocument(Document document,Integer userid);
 
     /**
+     * 设置teamid为0
+     * @param teamid
+     */
+    public void setDocTeamidToZero(Integer teamid);
+
+    /**
      * 更新一个文件的名字
      * @param docid 待更改文件的id
      * @param title 待更改的新文件名
@@ -86,4 +92,12 @@ public interface DocumentService {
      * @return
      */
     public List<Document> selectDocByTeamId(Integer teamid);
+
+    /**
+     * 退出团队时将个人创建的团队文档置为个人文档
+     * @param teamid
+     * @param userid
+     */
+    public void setTeamUserDocTeamidToZero(Integer teamid, Integer userid);
+
 }

@@ -24,8 +24,6 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
 
-
-
 #mybatis
 mybatis:
   mapper-locations: classpath:com/rightdarkdoc/mapper/*.xml
