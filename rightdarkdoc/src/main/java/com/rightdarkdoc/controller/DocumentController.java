@@ -213,6 +213,10 @@ public class DocumentController {
                 document.setTeamid(0);
             }
             document = TimeUtils.setDocumentTimeString(document);
+
+
+            //增加一条编辑记录
+            docEditService.addANewEditRecord(userid, document.getDocid());
             //创建document
             documentService.addDocument(document);
             userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
