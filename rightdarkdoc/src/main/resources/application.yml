@@ -11,17 +11,19 @@ spring:
       username: root
       password: yhb13579@
   mail:
-    host: smtp.qq.com
-    username: 869693441@qq.com
-    password: jikncfcxskglbcdg
+    host: smtpdm.aliyun.com
+    username: noreply@colanns.me
+    password: QWErty1234
     default-encoding: UTF-8
+    port: 465
     properties:
       mail:
         debug: true
-      smtp:
-        socketFactory:
-          class: javax.net.ssl.SSLSocketFactory
-    port: 465
+        smtp:
+          port: 465
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+
 
 
 #mybatis
