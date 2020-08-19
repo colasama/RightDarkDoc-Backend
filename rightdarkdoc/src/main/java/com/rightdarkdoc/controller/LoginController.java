@@ -119,6 +119,39 @@ public class LoginController {
     }
 
     /**
+     * 获取验证码
+     * @return
+     */
+    @PostMapping("/changeEmail/code")
+    public Map<String, Object> changeEmailCode(@RequestBody Map<String, String> remap) {
+        System.out.println("接收到一个注册码的请求");
+        String email = remap.get("email");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            User user = userService.selectUserByEmail(email);
+            if (user != null) {
+                map.put("success", false);
+                map.put("message", "该邮箱已被注册！");
+            } else {
+                String checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
+                emailService.sendVerifyCode(checkCode, email);
+                if (codeMap.containsKey(email)) {
+                    codeMap.replace(email, checkCode);
+                } else {
+                    codeMap.put(email, checkCode);
+                }
+                map.put("success", true);
+                map.put("message", "验证码发送成功！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "验证码发送失败！");
+        }
+        return map;
+    }
+
+    /**
      * 登录
      * @param user
      * @return

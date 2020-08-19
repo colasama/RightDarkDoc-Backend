@@ -198,7 +198,7 @@ public class TeamController {
                 //4.给被删除者发一条消息
                 Message message = new Message();
                 message.setUserid(deletedid);
-                message.setContent("您已被移出团队"+team.getTeamname()+"(teamid:"+team.getTeamid().toString()+")!");
+                message.setContent("您已被移出团队"+team.getTeamname()+"。");
                 messageService.addMessage(message, SYS_MESSAGE);
 
                 map.put("success", true);
