@@ -152,7 +152,7 @@ public class UserController {
         } catch (Exception ex){
             ex.printStackTrace();
             remap.put("success",false);
-            remap.put("message","修改密码失败！");
+            remap.put("message","修改密码失败!");
         }
         return remap;
     }
