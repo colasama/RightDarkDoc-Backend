@@ -188,6 +188,10 @@ public class TeamController {
                 Integer deletedid = deleted.getUserid();
                 userTeamService.deleteTeamMember(teamid, deletedid);
 
+                //3.将被删除者的文档全部置为个人文档
+                documentService.setTeamUserDocTeamidToZero(teamid, deletedid);
+
+
                 //4.给被删除者发一条消息
                 Message message = new Message();
                 message.setUserid(deletedid);
