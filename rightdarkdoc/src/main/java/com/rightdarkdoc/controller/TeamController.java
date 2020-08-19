@@ -38,6 +38,9 @@ public class TeamController {
     @Autowired
     private TemplateService templateService;
 
+    @Autowired
+    private DocEditService docEditService;
+
     /**
      * 创建新的团队
      * @param request   传入创建团队的teamname和teaminfo
@@ -638,6 +641,9 @@ public class TeamController {
 
                 //创建document
                 documentService.addDocument(document);
+
+                //增加编辑记录
+                docEditService.addANewEditRecord(userid,document.getDocid());
                 document = TimeUtils.setDocumentTimeString(document);
                 m.put("teamDocument", document);
                 m.put("success", true);
@@ -735,6 +741,9 @@ public class TeamController {
 
                 //创建document
                 documentService.addDocument(document);
+
+                //增加编辑记录
+                docEditService.addANewEditRecord(userid,document.getDocid());
                 document = TimeUtils.setDocumentTimeString(document);
                 m.put("teamDocument", document);
                 m.put("success", true);

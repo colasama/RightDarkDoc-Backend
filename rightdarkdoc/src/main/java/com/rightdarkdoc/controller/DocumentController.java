@@ -215,11 +215,13 @@ public class DocumentController {
             document = TimeUtils.setDocumentTimeString(document);
 
 
-            //增加一条编辑记录
-            docEditService.addANewEditRecord(userid, document.getDocid());
+
             //创建document
             documentService.addDocument(document);
             userViewDocService.addUserViewDoc(userid,document.getDocid(),date);
+
+            //增加编辑记录
+            docEditService.addANewEditRecord(userid, document.getDocid());
             System.out.println(document);
             m.put("contents",document);
             m.put("success",true);
