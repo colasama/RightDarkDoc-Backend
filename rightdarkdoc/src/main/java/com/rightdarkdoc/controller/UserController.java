@@ -158,15 +158,40 @@ public class UserController {
         return remap;
     }
 
+    /**
+     * 更改邮箱
+     * @param remap
+     * @return
+     */
     @PostMapping("/updateEmail")
-    public Map<String, Object> updateEmail(@RequestBody Map<String, String> remap) {
+    public Map<String, Object> updateEmail(@RequestBody Map<String, String> remap,HttpServletRequest request) {
         System.out.println("接收到一个修改邮箱的请求");
         String email = remap.get("email");
         String code = remap.get("code");
         Map<String, Object> map = new HashMap<>();
         try {
+
+            //获取用户的userid
+            String token = request.getHeader("token");
+            DecodedJWT decoder = JWTUtils.verify(token);
+            String userTemp = decoder.getClaim("userid").asString();
+            Integer userid = Integer.valueOf(userTemp);
             String myCode = LoginController.codeMap.get(email);
+
+            //验证码是否通过
             if (myCode.equals(code)) {
+                User user2 = userService.selectUserByEmail(email);
+
+                //验证是否重复邮箱并且不是之前可用邮箱
+                if(user2!=null&&user2.getUserid()!=userid){
+                    map.put("success", false);
+                    map.put("message", "此邮箱已被使用");
+                    LoginController.codeMap.remove(email);
+                    return map;
+                }
+                User user = userService.selectUserByUserId(userid);
+                user.setEmail(email);
+                userService.updateUser(user);
                 map.put("success", true);
                 map.put("message", "修改成功！");
                 LoginController.codeMap.remove(email);
