@@ -100,7 +100,7 @@ public class MessageServiceImpl implements MessageService {
             User user = userService.selectUserByUserId(applyuserid);
 
             //设置message内容
-            message.setContent(user.getUsername() + "申请加入您的团队："  + team.getTeamname() + "(团队号: " + teamid + ")");
+            message.setContent(user.getUsername() + "申请加入您的团队："  + team.getTeamname() + "。");
             message.setIsread(0);
             message.setType(APPLY_MESSAGE);
             System.out.println(message);
@@ -144,7 +144,7 @@ public class MessageServiceImpl implements MessageService {
             //设置message内容
             Team team = teamService.findTeamByTeamid(inviteteamid);
 
-            message.setContent(user.getUsername() + "邀请您加入团队：" + team.getTeamname() + "(团队号: " + team.getTeamid().toString() + ")");
+            message.setContent(user.getUsername() + "邀请您加入团队：" + team.getTeamname() + "。");
             message.setIsread(0);
             message.setType(INVITE_MESSAGE);
             List<Message> tempMessage = messageDao.selectMsgByUseridAndContent(message);
