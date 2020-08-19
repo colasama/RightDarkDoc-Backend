@@ -34,9 +34,13 @@ public class LoginController {
         Map<String, Object> map = new HashMap<>();
         try {
             User user1 = userService.selectUserByUsername(user.getUsername());
+            User user2 = userService.selectUserByEmail(user.getEmail());
             if (user1 != null) {
                 map.put("success", false);
                 map.put("message", "用户名已注册！");
+            } else if (user2 != null) {
+                map.put("success", false);
+                map.put("message", "该邮箱已注册");
             }
             else {
                 userService.registerNewUser(user);

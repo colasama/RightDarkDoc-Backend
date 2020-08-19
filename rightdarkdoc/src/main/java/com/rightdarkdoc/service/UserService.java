@@ -39,6 +39,7 @@ public interface UserService {
      */
     public User selectUserByUserId(Integer userid);
 
+    public User selectUserByEmail(String email);
 
     /**
      * 根据用户username查找用户

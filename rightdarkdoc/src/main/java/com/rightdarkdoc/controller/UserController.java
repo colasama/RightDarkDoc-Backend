@@ -163,6 +163,7 @@ public class UserController {
      */
     @GetMapping("/{useridString}")
     public Map<String, Object> getUserInfo(@PathVariable String useridString) {
+        System.out.println("用户你好呀");
         Map<String, Object> map = new HashMap<>();
         Integer userid = Integer.valueOf(useridString);
 

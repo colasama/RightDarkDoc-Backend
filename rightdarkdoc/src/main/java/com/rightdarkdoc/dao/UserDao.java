@@ -54,6 +54,9 @@ public interface UserDao {
     public User selectUserByUsername(String username);
 
 
+    public User selectUserByEmail(String email);
+
+
     /**
      * 根据用户名进行模糊匹配
      * @param username  待查询用户名

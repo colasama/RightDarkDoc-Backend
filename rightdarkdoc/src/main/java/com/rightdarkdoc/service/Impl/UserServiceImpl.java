@@ -61,6 +61,11 @@ public class UserServiceImpl implements UserService {
         return userDao.selectUserByUserId(userid);
     }
 
+    @Override
+    public User selectUserByEmail(String email) {
+        return userDao.selectUserByEmail(email);
+    }
+
     /**
      * 根据用户username查找用户
      *
