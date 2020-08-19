@@ -14,6 +14,7 @@ import javax.swing.text.Keymap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("user")
@@ -156,6 +157,32 @@ public class UserController {
         }
         return remap;
     }
+
+    @PostMapping("/updateEmail")
+    public Map<String, Object> updateEmail(@RequestBody Map<String, String> remap) {
+        System.out.println("接收到一个修改邮箱的请求");
+        String email = remap.get("email");
+        String code = remap.get("code");
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String myCode = LoginController.codeMap.get(email);
+            if (myCode.equals(code)) {
+                map.put("success", true);
+                map.put("message", "修改成功！");
+                LoginController.codeMap.remove(email);
+            } else {
+                map.put("success", false);
+                map.put("message", "验证码错误！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "修改失败！");
+        }
+        return map;
+    }
+
+
 
     /**
      * 根据用户id获取用户信息

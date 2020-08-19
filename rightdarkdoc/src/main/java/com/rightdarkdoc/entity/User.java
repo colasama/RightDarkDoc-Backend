@@ -10,7 +10,6 @@ import java.util.Date;
 @Data
 @ToString
 @AllArgsConstructor
-@NoArgsConstructor
 @Accessors(chain = true)
 
 public class User {
@@ -24,6 +23,9 @@ public class User {
     private String avatar;
     private String description;
 
+
+
+
     /**
      * 注册时用到的构造函数
      * @param userName
@@ -31,6 +33,9 @@ public class User {
      * @param phone
      * @param email
      */
+
+
+
     public User(String userName, String password, String phone, String email) {
         this.username = userName;
         this.password = password;
@@ -41,6 +46,9 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User() {
     }
 
     public Integer getUserid() {
@@ -106,18 +114,5 @@ public class User {
     public void setDescription(String description) {
         this.description = description;
     }
-    //
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "userId=" + userId +
-//                ", userName='" + userName + '\'' +
-//                ", passWord='" + passWord + '\'' +
-//                ", phone='" + phone + '\'' +
-//                ", birthday=" + birthday +
-//                ", email='" + email + '\'' +
-//                ", avatar='" + avatar + '\'' +
-//                ", description='" + description + '\'' +
-//                '}';
-//    }
+
 }

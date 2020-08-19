@@ -17,6 +17,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 //验证出了user请求外的其他请求
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login")
+                .excludePathPatterns("/code")
               //  .excludePathPatterns("/test")
                 .excludePathPatterns("/team/{teamid}/view")
                 .excludePathPatterns("/team/search")

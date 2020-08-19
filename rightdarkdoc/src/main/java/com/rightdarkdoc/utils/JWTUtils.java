@@ -51,6 +51,8 @@ public class JWTUtils {
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

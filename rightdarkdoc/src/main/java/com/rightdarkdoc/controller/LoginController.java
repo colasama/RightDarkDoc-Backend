@@ -3,6 +3,7 @@ package com.rightdarkdoc.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rightdarkdoc.entity.User;
+import com.rightdarkdoc.service.EmailService;
 import com.rightdarkdoc.service.UserService;
 import com.rightdarkdoc.utils.JWTUtils;
 import com.rightdarkdoc.utils.PayloadUtils;
@@ -24,14 +25,13 @@ public class LoginController {
     //存储验证码
     //String : 邮箱
     //String ：验证码
-    private static Map<String, String> codeMap = new HashMap<>();
+    public static Map<String, String> codeMap = new HashMap<>();
 
     @Autowired
     private UserService userService;
 
-
     @Autowired
-    private MailService mailService;
+    private EmailService emailService;
 
     /**
      * 注册用户
@@ -39,12 +39,13 @@ public class LoginController {
      * @return
      */
     @PostMapping("register")
-    public Map<String, Object> registerNewUser(@RequestParam(value = "username", required = true) String username,
-                                               @RequestParam(value = "email", required = true) String email,
-                                               @RequestParam(value = "password", required = true) String password,
-                                               @RequestParam(value = "phone", required = false) String phone,
-                                               @RequestParam(value = "code", required = true) String code) {
+    public Map<String, Object> registerNewUser(@RequestBody Map<String, String> remap) {
         System.out.println("接收到一个注册请求");
+        String username = remap.get("username");
+        String password = remap.get("password");
+        String phone = remap.get("phone");
+        String email = remap.get("email");
+        String code = remap.get("code");
         Map<String, Object> map = new HashMap<>();
         try {
             User user = new User(username, password, phone, email);
@@ -63,7 +64,7 @@ public class LoginController {
                     userService.registerNewUser(user);
                     map.put("success", true);
                     map.put("message", "用户注册成功！");
-                    map.remove(email);                          //从本地存储中删除刚刚的验证码
+                    codeMap.remove(email);                          //从本地存储中删除刚刚的验证码
                 }
                 else {
                     map.put("success", false);
@@ -80,14 +81,13 @@ public class LoginController {
 
     /**
      * 获取验证码
-     * @param username 用户名
-     * @param email 验证邮箱
      * @return
      */
-    @PostMapping("code")
-    public Map<String, Object> registerCode(@RequestParam(value = "username", required = true) String username,
-                                            @RequestParam(value = "email", required = true) String email) {
+    @PostMapping("/code")
+    public Map<String, Object> registerCode(@RequestBody Map<String, String> remap) {
         System.out.println("接收到一个注册码的请求");
+        String username = remap.get("username");
+        String email = remap.get("email");
         Map<String, Object> map = new HashMap<>();
         try {
             User user1 = userService.selectUserByUsername(username);
@@ -101,27 +101,23 @@ public class LoginController {
             }
             else {
                 String checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
-                String message = "您的注册验证码为："+checkCode;
+                emailService.sendVerifyCode(checkCode, email);
                 if (codeMap.containsKey(email)) {
                     codeMap.replace(email, checkCode);
                 }
                 else {
                     codeMap.put(email, checkCode);
                 }
-                mailService.sendSimpleMail(email, "注册验证码", message);
                 map.put("success", true);
                 map.put("message", "验证码发送成功！");
             }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);
-            map.put("message", "用户注册失败！");
+            map.put("message", "验证码发送失败！");
         }
         return map;
     }
-
-
-
 
     /**
      * 登录
