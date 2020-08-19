@@ -35,7 +35,6 @@ public class LoginController {
 
     /**
      * 注册用户
-     * @param user
      * @return
      */
     @PostMapping("register")

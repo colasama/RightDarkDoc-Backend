@@ -11,16 +11,18 @@ spring:
       username: root
       password: yhb13579@
   mail:
-      host: smtp.qq.com
-      username: 869693441@qq.com
-      password: jikncfcxskglbcdg
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-              required: true
+    host: smtp.qq.com
+    username: 869693441@qq.com
+    password: jikncfcxskglbcdg
+    default-encoding: UTF-8
+    properties:
+      mail:
+        debug: true
+      smtp:
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+    port: 465
+
 
 #mybatis
 mybatis:
